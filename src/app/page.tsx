@@ -1,65 +1,248 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import Navbar from "@/components/Navbar";
+import RouteSection from "@/components/RouteSection";
+import VehicleSelector from "@/components/VehicleSelector";
+import AdditionalServices from "@/components/AdditionalServices";
+import MapView from "@/components/MapView";
+import PricingFooter from "@/components/PricingFooter";
+import PricingFooterSkeleton from "@/components/PricingFooterSkeleton";
+import OrderSummary from "@/components/OrderSummary";
+import DateTimePicker from "@/components/DateTimePicker";
+import DriverNoteInput from "@/components/DriverNoteInput";
+import PaymentMethodSelector from "@/components/PaymentMethodSelector";
+import ConfirmationFooter from "@/components/ConfirmationFooter";
+import { OrderStorage } from "@/lib/orderStorage";
+import type { Vehicle, AddressDetail, OrderDraft, OrderConfirmation } from "@/data/mockData";
+
+type ViewMode = "configure" | "confirm";
+
+export default function OrderPage() {
+  const [currentStep, setCurrentStep] = useState<ViewMode>("configure");
+  const [pickupAddress, setPickupAddress] = useState<AddressDetail | null>(null);
+  const [dropoffAddress, setDropoffAddress] = useState<AddressDetail | null>(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [isPricingLoading, setIsPricingLoading] = useState(false);
+  const [selectedServices, setSelectedServices] = useState<{
+    itemIds: string[];
+    groupSelections: Record<string, string[]>;
+  }>({ itemIds: [], groupSelections: {} });
+
+  // 确认页状态
+  const [scheduledTime, setScheduledTime] = useState<string>("");
+  const [driverNote, setDriverNote] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 页面加载时清除旧的草稿数据
+  useEffect(() => {
+    OrderStorage.clear();
+  }, []);
+
+  // 价格显示条件：2个地址（且address字段不为空）+ 1个车型
+  const showPricing =
+    pickupAddress !== null &&
+    pickupAddress.address &&
+    dropoffAddress !== null &&
+    dropoffAddress.address &&
+    selectedVehicle !== null;
+
+  // 构建订单草稿
+  const orderDraft: OrderDraft | null = useMemo(() => {
+    if (!showPricing || !pickupAddress || !dropoffAddress || !selectedVehicle) {
+      return null;
+    }
+
+    // TODO: 实际价格计算逻辑（包含附加服务）
+    const basePrice = 74.0; // 临时硬编码
+    const totalPrice = 74.0; // 临时硬编码
+
+    return {
+      pickup: pickupAddress,
+      dropoff: dropoffAddress,
+      vehicle: selectedVehicle,
+      pricingOption: 'standard',
+      selectedServices,
+      basePrice,
+      totalPrice,
+    };
+  }, [pickupAddress, dropoffAddress, selectedVehicle, selectedServices, showPricing]);
+
+
+  // 当价格模块应该显示时，先显示loading，然后加载真实内容
+  useEffect(() => {
+    if (showPricing) {
+      setIsPricingLoading(true);
+      const timer = setTimeout(() => {
+        setIsPricingLoading(false);
+      }, 500); // 500ms的loading时间
+      return () => clearTimeout(timer);
+    } else {
+      setIsPricingLoading(false);
+    }
+  }, [showPricing]);
+
+  const handleVehicleSelect = useCallback((vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+  }, []);
+
+  const handleNext = useCallback(() => {
+    if (!orderDraft) return;
+    OrderStorage.save(orderDraft);
+    setCurrentStep("confirm");
+  }, [orderDraft]);
+
+  const handleBack = useCallback(() => {
+    setCurrentStep("configure");
+  }, []);
+
+  const handleConfirm = useCallback(async () => {
+    if (!orderDraft) return;
+
+    setIsSubmitting(true);
+
+    const confirmation: OrderConfirmation = {
+      scheduledTime: scheduledTime ? new Date(scheduledTime) : undefined,
+      driverNote,
+      paymentMethod: "credit",
+    };
+
+    const completeOrder = {
+      ...orderDraft,
+      ...confirmation,
+      orderId: `ORD-${Date.now()}`,
+      createdAt: new Date(),
+    };
+
+    console.log("提交订单:", completeOrder);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    OrderStorage.clear();
+    setIsSubmitting(false);
+
+    // TODO: 跳转到等待司机应答页面
+    alert("订单已提交");
+  }, [orderDraft, scheduledTime, driverNote]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="h-screen flex flex-col bg-gray-50">
+      <Navbar />
+
+      {/* Main Content: Left Panel + Right Map */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
+        {/* Left Panel — Form */}
+        <div className="relative overflow-hidden h-full">
+          {/* 配置模式 */}
+          {currentStep === "configure" && (
+            <div
+              className="h-full overflow-y-scroll subtle-scroll p-4 lg:p-6 space-y-4 lg:space-y-6 bg-white
+                         animate-in fade-in slide-in-from-left-8 duration-300"
+              style={{ paddingBottom: showPricing ? '320px' : '24px' }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              <RouteSection
+                pickupAddress={pickupAddress}
+                dropoffAddress={dropoffAddress}
+                onPickupChange={setPickupAddress}
+                onDropoffChange={setDropoffAddress}
+              />
+
+              <VehicleSelector
+                selectedVehicle={selectedVehicle}
+                onSelect={handleVehicleSelect}
+              />
+
+              <AdditionalServices
+                visible={selectedVehicle !== null}
+                selectedVehicle={selectedVehicle}
+                onSelectionChange={setSelectedServices}
+              />
+            </div>
+          )}
+
+          {/* 确认模式 */}
+          {currentStep === "confirm" && orderDraft && (
+            <div
+              className="h-full overflow-y-scroll subtle-scroll bg-white
+                         animate-in fade-in slide-in-from-right-8 duration-300"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              {/* 固定顶部导航: 返回按钮 + 确认订单标题 */}
+              <div
+                className="sticky top-0 z-10 bg-white -mx-0 px-4 lg:px-6 py-3.5 border-b border-gray-200"
+                style={{
+                  boxShadow: "0px 1px 3px 0px rgba(0,0,0,0.04)"
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleBack}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg
+                             text-gray-500 hover:text-gray-900 hover:bg-gray-100
+                             transition-colors cursor-pointer"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+                  <h1 className="text-base font-semibold text-gray-900">确认订单</h1>
+                </div>
+              </div>
+
+              {/* 内容区 */}
+              <div className="p-4 lg:p-6 space-y-4 lg:space-y-6" style={{ paddingBottom: "120px" }}>
+              <OrderSummary
+                pickup={orderDraft.pickup}
+                dropoff={orderDraft.dropoff}
+                vehicle={orderDraft.vehicle}
+                pricingOption={orderDraft.pricingOption}
+                totalPrice={orderDraft.totalPrice}
+              />
+
+              <DateTimePicker value={scheduledTime} onChange={setScheduledTime} />
+
+              <DriverNoteInput value={driverNote} onChange={setDriverNote} />
+
+              <PaymentMethodSelector />
+              </div>
+            </div>
+          )}
+
+          {/* 价格模块（配置模式底部） */}
+          {currentStep === "configure" && showPricing && (
+            <div className="absolute bottom-0 left-0 right-0 transition-opacity duration-300 ease-out">
+              {isPricingLoading ? (
+                <PricingFooterSkeleton />
+              ) : (
+                <PricingFooter orderDraft={orderDraft || undefined} onNext={handleNext} />
+              )}
+            </div>
+          )}
+
+          {/* 确认按钮（确认模式底部） */}
+          {currentStep === "confirm" && orderDraft && (
+            <ConfirmationFooter
+              totalPrice={orderDraft.totalPrice}
+              onConfirm={handleConfirm}
+              isSubmitting={isSubmitting}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          )}
         </div>
-      </main>
+
+        {/* Right Panel — Map (hidden on mobile) */}
+        <div className="hidden lg:block min-h-0">
+          <MapView pickupAddress={pickupAddress} dropoffAddress={dropoffAddress} />
+        </div>
+      </div>
     </div>
   );
 }

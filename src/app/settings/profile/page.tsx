@@ -37,7 +37,7 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-gray-900 mb-6">
+      <h1 className="text-lg font-semibold text-gray-900 mb-6">
         个人资料
       </h1>
 

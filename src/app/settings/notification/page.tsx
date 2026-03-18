@@ -9,7 +9,7 @@ export default function NotificationPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-gray-900 mb-6">
+      <h1 className="text-lg font-semibold text-gray-900 mb-6">
         通知设置
       </h1>
 

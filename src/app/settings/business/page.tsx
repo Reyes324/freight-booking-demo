@@ -29,7 +29,7 @@ export default function BusinessPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-gray-900 mb-2">
+      <h1 className="text-lg font-semibold text-gray-900 mb-2">
         升级企业账户
       </h1>
       <p className="text-sm text-gray-500 mb-6">

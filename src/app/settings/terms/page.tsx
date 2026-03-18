@@ -1,7 +1,7 @@
 export default function TermsPage() {
   return (
     <div>
-      <h1 className="text-xl font-semibold text-gray-900 mb-6">
+      <h1 className="text-lg font-semibold text-gray-900 mb-6">
         条款和政策
       </h1>
 

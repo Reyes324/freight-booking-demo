@@ -101,7 +101,7 @@ export default function WalletPage() {
 
       <div className="p-6">
         {/* 账期余额 */}
-        <h1 className="text-xl font-semibold text-gray-900 mb-4">账期余额</h1>
+        <h1 className="text-lg font-semibold text-gray-900 mb-4">账期余额</h1>
         <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
           <div className="flex items-center justify-between">
             <div>
@@ -123,7 +123,7 @@ export default function WalletPage() {
         <div className="space-y-4">
           {/* 标题栏 */}
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">交易历史</h2>
+            <h2 className="text-lg font-semibold text-gray-900">交易历史</h2>
 
             {/* 日期范围选择器 */}
             <div className="flex items-center gap-4">

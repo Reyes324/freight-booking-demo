@@ -136,7 +136,7 @@ export default function OrdersPage() {
       <div className="p-6">
         {/* 标题栏 */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-xl font-semibold text-gray-900">订单记录</h1>
+          <h1 className="text-lg font-semibold text-gray-900">订单记录</h1>
         </div>
 
         {/* 搜索栏 */}

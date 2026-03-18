@@ -25,6 +25,7 @@ export default function MapView({ pickupAddress, dropoffAddress }: MapViewProps)
   const mapInstanceRef = useRef<any>(null);
   const pickupMarkerRef = useRef<any>(null);
   const dropoffMarkerRef = useRef<any>(null);
+  const polylineRef = useRef<any>(null);
 
   useEffect(() => {
     // 设置安全密钥（如果有）
@@ -79,13 +80,14 @@ export default function MapView({ pickupAddress, dropoffAddress }: MapViewProps)
         position: [pickupAddress.lng, pickupAddress.lat],
         title: '装货点',
         icon: new window.AMap.Icon({
-          size: new window.AMap.Size(32, 32),
+          size: new window.AMap.Size(36, 36),
           image: 'data:image/svg+xml;base64,' + btoa(`
-            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="10" fill="#2257D4" stroke="white" stroke-width="3"/>
+            <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="18" cy="18" r="12" fill="#2563EB" stroke="white" stroke-width="3"/>
+              <text x="18" y="18" text-anchor="middle" dominant-baseline="central" fill="white" font-size="14" font-weight="500" font-family="system-ui, -apple-system, sans-serif">1</text>
             </svg>
           `),
-          imageSize: new window.AMap.Size(32, 32),
+          imageSize: new window.AMap.Size(36, 36),
         }),
       });
 
@@ -107,29 +109,53 @@ export default function MapView({ pickupAddress, dropoffAddress }: MapViewProps)
       dropoffMarkerRef.current = null;
     }
 
+    // 清除旧连线
+    if (polylineRef.current) {
+      mapInstanceRef.current.remove(polylineRef.current);
+      polylineRef.current = null;
+    }
+
     // 如果有卸货地址且有经纬度，添加标记
     if (dropoffAddress?.lat && dropoffAddress?.lng) {
       const marker = new window.AMap.Marker({
         position: [dropoffAddress.lng, dropoffAddress.lat],
         title: '卸货点',
         icon: new window.AMap.Icon({
-          size: new window.AMap.Size(32, 32),
+          size: new window.AMap.Size(36, 36),
           image: 'data:image/svg+xml;base64,' + btoa(`
-            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="10" fill="#F97316" stroke="white" stroke-width="3"/>
+            <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="18" cy="18" r="12" fill="white" stroke="#2563EB" stroke-width="3"/>
+              <text x="18" y="18" text-anchor="middle" dominant-baseline="central" fill="#2563EB" font-size="14" font-weight="500" font-family="system-ui, -apple-system, sans-serif">2</text>
             </svg>
           `),
-          imageSize: new window.AMap.Size(32, 32),
+          imageSize: new window.AMap.Size(36, 36),
         }),
       });
 
       mapInstanceRef.current.add(marker);
       dropoffMarkerRef.current = marker;
 
+      // 如果起点和终点都存在，画连线
+      if (pickupAddress?.lat && pickupAddress?.lng) {
+        const polyline = new window.AMap.Polyline({
+          path: [
+            [pickupAddress.lng, pickupAddress.lat],
+            [dropoffAddress.lng, dropoffAddress.lat]
+          ],
+          strokeColor: '#D1D5DB',  // gray-300
+          strokeWeight: 2,
+          strokeStyle: 'dashed',
+          strokeDasharray: [10, 10],
+        });
+
+        mapInstanceRef.current.add(polyline);
+        polylineRef.current = polyline;
+      }
+
       // 自动调整视野
       updateMapView();
     }
-  }, [dropoffAddress]);
+  }, [dropoffAddress, pickupAddress]);
 
   // 自动调整地图视野
   const updateMapView = () => {

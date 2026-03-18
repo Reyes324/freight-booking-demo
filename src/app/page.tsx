@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import RouteSection from "@/components/RouteSection";
 import VehicleSelector from "@/components/VehicleSelector";
@@ -19,6 +20,7 @@ import type { Vehicle, AddressDetail, OrderDraft, OrderConfirmation } from "@/da
 type ViewMode = "configure" | "confirm";
 
 export default function OrderPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState<ViewMode>("configure");
   const [pickupAddress, setPickupAddress] = useState<AddressDetail | null>(null);
   const [dropoffAddress, setDropoffAddress] = useState<AddressDetail | null>(null);
@@ -116,14 +118,17 @@ export default function OrderPage() {
 
     console.log("提交订单:", completeOrder);
 
+    // TODO: 保存订单到数据库或本地存储
+    // 目前使用 mock 数据，实际应该调用 API 保存订单
+
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     OrderStorage.clear();
     setIsSubmitting(false);
 
-    // TODO: 跳转到等待司机应答页面
-    alert("订单已提交");
-  }, [orderDraft, scheduledTime, driverNote]);
+    // 跳转到订单记录页面
+    router.push('/orders');
+  }, [orderDraft, scheduledTime, driverNote, router]);
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">

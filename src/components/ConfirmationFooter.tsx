@@ -22,7 +22,7 @@ export default function ConfirmationFooter({
       <div className="flex items-center gap-4">
         {/* 总价显示 */}
         <div className="flex-1">
-          <p className="text-xs text-gray-500">总价</p>
+          <p className="text-xs text-gray-400">总价</p>
           <p className="text-2xl font-bold text-gray-900">
             HK$ {totalPrice.toFixed(2)}
           </p>
@@ -33,7 +33,7 @@ export default function ConfirmationFooter({
           onClick={onConfirm}
           disabled={isSubmitting}
           className="h-[54px] px-8 rounded-lg bg-blue-600 hover:bg-blue-700
-                   active:bg-blue-800 text-white text-base font-semibold
+                   active:bg-blue-800 text-white text-sm font-medium
                    flex items-center gap-2 transition-all duration-200
                    disabled:opacity-50 disabled:cursor-not-allowed
                    hover:shadow-lg active:scale-[0.98]"

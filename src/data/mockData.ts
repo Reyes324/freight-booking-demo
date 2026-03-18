@@ -594,3 +594,323 @@ export interface CompleteOrder extends OrderDraft, OrderConfirmation {
   orderId?: string;
   createdAt: Date;
 }
+
+// ── Order Status Types ──
+export type OrderStatus =
+  | 'calling_driver'    // 呼叫司机中
+  | 'in_transit'        // 运输中
+  | 'cancelled'         // 订单已取消
+  | 'completed'         // 订单已完成
+
+// ── Order Interface ──
+export interface Order extends CompleteOrder {
+  orderId: string;
+  status: OrderStatus;
+  actualPickupTime?: Date;
+  completedTime?: Date;
+  cancelledTime?: Date;
+  driver?: {
+    name: string;
+    phone: string;
+    vehiclePlate: string;
+  };
+}
+
+// ── Mock Orders Data ──
+export const mockOrders: Order[] = [
+  {
+    orderId: 'ORD-1710681234567',
+    status: 'calling_driver',
+    pickup: {
+      address: '香港中环德辅道中99号中环中心',
+      contactName: '张先生',
+      phone: '+852 9876 5432',
+      unit: '25楼A室',
+      lat: 22.2819,
+      lng: 114.1580,
+    },
+    dropoff: {
+      address: '尖沙咀海港城海运大厦',
+      contactName: '李小姐',
+      phone: '+852 9123 4567',
+      unit: '10楼',
+      lat: 22.2943,
+      lng: 114.1723,
+    },
+    vehicle: vehicles[4], // 5.5吨货车
+    pricingOption: 'standard',
+    selectedServices: {
+      itemIds: [],
+      groupSelections: {},
+    },
+    basePrice: 74.0,
+    totalPrice: 74.0,
+    scheduledTime: new Date(),
+    driverNote: '',
+    paymentMethod: 'credit',
+    createdAt: new Date(),
+  },
+  {
+    orderId: 'ORD-1710667890123',
+    status: 'in_transit',
+    pickup: {
+      address: '铜锣湾时代广场',
+      contactName: '王先生',
+      phone: '+852 9234 5678',
+      lat: 22.2783,
+      lng: 114.1822,
+    },
+    dropoff: {
+      address: '旺角朗豪坊',
+      contactName: '陈小姐',
+      phone: '+852 9345 6789',
+      lat: 22.3193,
+      lng: 114.1694,
+    },
+    vehicle: vehicles[0], // Van仔
+    pricingOption: 'priority',
+    selectedServices: {
+      itemIds: ['premium-car'],
+      groupSelections: {},
+    },
+    basePrice: 117.0,
+    totalPrice: 147.0,
+    scheduledTime: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2小时前
+    actualPickupTime: new Date(Date.now() - 1.5 * 60 * 60 * 1000),
+    driverNote: '请小心搬运',
+    paymentMethod: 'credit',
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    driver: {
+      name: '张师傅',
+      phone: '+852 6789 0123',
+      vehiclePlate: 'AB 1234',
+    },
+  },
+  {
+    orderId: 'ORD-1710654567890',
+    status: 'completed',
+    pickup: {
+      address: '尖沙咀广东道海港城',
+      contactName: '刘先生',
+      phone: '+852 9456 7890',
+      lat: 22.2943,
+      lng: 114.1723,
+    },
+    dropoff: {
+      address: '中环IFC国际金融中心',
+      contactName: '黄小姐',
+      phone: '+852 9567 8901',
+      lat: 22.2856,
+      lng: 114.1577,
+    },
+    vehicle: vehicles[2], // 电单车
+    pricingOption: 'standard',
+    selectedServices: {
+      itemIds: [],
+      groupSelections: {},
+    },
+    basePrice: 74.0,
+    totalPrice: 74.0,
+    scheduledTime: new Date(Date.now() - 24 * 60 * 60 * 1000), // 昨天
+    actualPickupTime: new Date(Date.now() - 23.5 * 60 * 60 * 1000),
+    completedTime: new Date(Date.now() - 23 * 60 * 60 * 1000),
+    driverNote: '',
+    paymentMethod: 'credit',
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+    driver: {
+      name: '李师傅',
+      phone: '+852 6890 1234',
+      vehiclePlate: 'CD 5678',
+    },
+  },
+  {
+    orderId: 'ORD-1710641234567',
+    status: 'cancelled',
+    pickup: {
+      address: '观塘APM创纪之城',
+      contactName: '吴先生',
+      phone: '+852 9678 9012',
+      lat: 22.3108,
+      lng: 114.2253,
+    },
+    dropoff: {
+      address: '红磡黄埔花园',
+      contactName: '赵小姐',
+      phone: '+852 9789 0123',
+      lat: 22.3050,
+      lng: 114.1886,
+    },
+    vehicle: vehicles[5], // 9吨货车
+    pricingOption: 'standard',
+    selectedServices: {
+      itemIds: [],
+      groupSelections: {},
+    },
+    basePrice: 74.0,
+    totalPrice: 74.0,
+    scheduledTime: new Date(Date.now() - 48 * 60 * 60 * 1000), // 2天前
+    cancelledTime: new Date(Date.now() - 47.5 * 60 * 60 * 1000),
+    driverNote: '',
+    paymentMethod: 'credit',
+    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+  },
+];
+
+// ============================================
+// 钱包相关类型和数据
+// ============================================
+
+export type TransactionType = 'topup' | 'payment' | 'refund';
+export type TransactionStatus = 'success' | 'pending' | 'failed';
+
+export interface Transaction {
+  id: string;
+  type: TransactionType;
+  date: Date;
+  orderId?: string;
+  amount: number; // 正数=入账，负数=支出
+  status: TransactionStatus;
+  description: string;
+}
+
+export interface WalletBalance {
+  balance: number;
+  currency: 'HKD';
+}
+
+// Mock 钱包余额
+export const mockWalletBalance: WalletBalance = {
+  balance: 1250.50,
+  currency: 'HKD',
+};
+
+// Mock 交易记录
+export const mockTransactions: Transaction[] = [
+  {
+    id: 'TXN-20260315-001',
+    type: 'payment',
+    date: new Date('2026-03-15T14:30:00'),
+    orderId: 'ORD-20260315-001',
+    amount: -74.00,
+    status: 'success',
+    description: '订单支付',
+  },
+  {
+    id: 'TXN-20260314-002',
+    type: 'topup',
+    date: new Date('2026-03-14T10:15:00'),
+    orderId: undefined,
+    amount: 500.00,
+    status: 'success',
+    description: '钱包充值',
+  },
+  {
+    id: 'TXN-20260313-003',
+    type: 'payment',
+    date: new Date('2026-03-13T16:45:00'),
+    orderId: 'ORD-20260313-002',
+    amount: -120.50,
+    status: 'success',
+    description: '订单支付',
+  },
+  {
+    id: 'TXN-20260312-004',
+    type: 'refund',
+    date: new Date('2026-03-12T09:20:00'),
+    orderId: 'ORD-20260311-003',
+    amount: 74.00,
+    status: 'success',
+    description: '订单退款',
+  },
+  {
+    id: 'TXN-20260310-005',
+    type: 'payment',
+    date: new Date('2026-03-10T13:00:00'),
+    orderId: 'ORD-20260310-004',
+    amount: -95.50,
+    status: 'success',
+    description: '订单支付',
+  },
+  {
+    id: 'TXN-20260308-006',
+    type: 'topup',
+    date: new Date('2026-03-08T11:30:00'),
+    orderId: undefined,
+    amount: 1000.00,
+    status: 'success',
+    description: '钱包充值',
+  },
+  {
+    id: 'TXN-20260305-007',
+    type: 'payment',
+    date: new Date('2026-03-05T15:20:00'),
+    orderId: 'ORD-20260305-005',
+    amount: -88.00,
+    status: 'success',
+    description: '订单支付',
+  },
+  {
+    id: 'TXN-20260302-008',
+    type: 'payment',
+    date: new Date('2026-03-02T10:45:00'),
+    orderId: 'ORD-20260302-006',
+    amount: -105.50,
+    status: 'success',
+    description: '订单支付',
+  },
+];
+
+// 用户资料
+export interface UserProfile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  city: string;
+  language: 'zh' | 'en';
+}
+
+export const mockUserProfile: UserProfile = {
+  id: 'USER-001',
+  firstName: '张',
+  lastName: '三',
+  phone: '+852 6312345678',
+  email: 'zhangsan@example.com',
+  city: 'hongkong',
+  language: 'zh',
+};
+
+// 通知设置
+export interface NotificationSettings {
+  promotions: {
+    sms: boolean;
+    email: boolean;
+  };
+  orderUpdates: {
+    browser: boolean;
+  };
+}
+
+export const mockNotificationSettings: NotificationSettings = {
+  promotions: {
+    sms: true,
+    email: true,
+  },
+  orderUpdates: {
+    browser: false,
+  },
+};
+
+// 订单设置
+export interface OrderSettings {
+  electronicReceipt: boolean;
+  receiptEmail: string;
+  deliveryProof: boolean;
+}
+
+export const mockOrderSettings: OrderSettings = {
+  electronicReceipt: true,
+  receiptEmail: 'zhangsan@example.com',
+  deliveryProof: true,
+};

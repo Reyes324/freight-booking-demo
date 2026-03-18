@@ -16,7 +16,7 @@ export default function DriverNoteInput({ value, onChange }: DriverNoteInputProp
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+      <label className="block text-sm text-gray-700 mb-1.5">
         向司机留言
         <span className="text-xs text-gray-400 ml-2">(选填)</span>
       </label>

@@ -84,7 +84,7 @@ export default function DateTimePicker({ value, onChange }: DateTimePickerProps)
 
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-gray-900 mb-1.5">用车时间</label>
+      <label className="block text-sm text-gray-700 mb-1.5">用车时间</label>
 
       {/* 选择框 */}
       <button
@@ -119,7 +119,7 @@ export default function DateTimePicker({ value, onChange }: DateTimePickerProps)
             >
               {/* 标题 */}
               <div className="px-4 py-2.5 border-b border-gray-100">
-                <h3 className="text-sm font-semibold text-gray-900">选择用车时间</h3>
+                <h3 className="text-base font-semibold text-gray-900">选择用车时间</h3>
               </div>
 
               {/* 内容区 */}

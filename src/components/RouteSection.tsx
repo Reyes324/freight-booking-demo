@@ -236,7 +236,7 @@ export default function RouteSection({
                         </p>
                         {(address.contactName || address.phone || address.unit) && (
                           <p
-                            className="text-xs text-gray-500 mt-1.5 cursor-pointer hover:text-gray-700 leading-snug"
+                            className="text-xs text-gray-400 mt-1.5 cursor-pointer hover:text-gray-700 leading-snug"
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedAddressText(address.address);

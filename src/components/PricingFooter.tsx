@@ -65,8 +65,8 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
               onMouseLeave={() => setHoveredOption(null)}
               className={`flex-1 flex flex-col gap-6 items-start justify-center p-4 rounded-md border relative transition-all duration-200 cursor-pointer ${
                 isSelected
-                  ? "bg-[#e6edff] border-[#2257d4] shadow-sm"
-                  : "bg-white border-[#d8deeb]"
+                  ? "bg-blue-50 border-blue-600 shadow-sm"
+                  : "bg-white border-gray-200"
               } ${isHovered && !isSelected ? "border-gray-400 shadow-sm" : ""} ${
                 isSelected ? "scale-[1.02]" : "scale-100"
               }`}
@@ -86,15 +86,15 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
 
               {/* 标题区域 */}
               <div className="flex flex-col items-start text-sm leading-[22px]">
-                <p className={`font-medium transition-colors ${isSelected ? "text-[#0f1229]" : "text-[#0f1229]"}`}>
+                <p className="text-gray-900 font-medium transition-colors">
                   {option.title}
                 </p>
-                <p className="text-[#8990a3] font-medium">{option.subtitle}</p>
+                <p className="text-xs text-gray-400">{option.subtitle}</p>
               </div>
 
               {/* 价格区域 */}
               <div className="flex gap-2 items-end">
-                <p className="text-[#0f1229] text-2xl leading-[22px] font-bold tracking-tight transition-transform">
+                <p className="text-gray-900 text-2xl leading-[22px] font-bold tracking-tight transition-transform">
                   HK$ {option.price.toFixed(2)}
                 </p>
                 {/* Info icon（仅选中时显示） */}
@@ -120,12 +120,12 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
       <button
         onClick={handleNext}
         disabled={!orderDraft}
-        className="w-full h-[54px] bg-[#2257d4] hover:bg-[#1a47b0] active:bg-[#153a8f]
+        className="w-full h-[54px] bg-blue-600 hover:bg-blue-700 active:bg-blue-800
                  rounded-lg flex items-center justify-center transition-all duration-200
                  hover:shadow-lg active:scale-[0.98] group cursor-pointer
                  disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <span className="text-white text-base font-semibold group-hover:scale-105 transition-transform">
+        <span className="text-white text-sm font-medium group-hover:scale-105 transition-transform">
           下一步
         </span>
       </button>

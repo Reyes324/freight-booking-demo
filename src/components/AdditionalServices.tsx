@@ -105,7 +105,7 @@ export default function AdditionalServices({
   const renderPrice = (price: number, isChecked: boolean) => {
     if (price > 0) {
       return (
-        <span className="text-xs text-gray-500 flex-shrink-0">
+        <span className="text-xs text-gray-400 flex-shrink-0">
           {formatPrice(price)}
         </span>
       );

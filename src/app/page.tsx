@@ -36,6 +36,16 @@ export default function OrderPage() {
   const [driverNote, setDriverNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // 防止浏览器 scrollIntoView 静默滚动父容器（checkbox 获取焦点时会触发）
+  const leftColRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = leftColRef.current;
+    if (!el) return;
+    const handler = () => { el.scrollTop = 0; };
+    el.addEventListener('scroll', handler);
+    return () => el.removeEventListener('scroll', handler);
+  }, []);
+
   // 页面加载时清除旧的草稿数据
   useEffect(() => {
     OrderStorage.clear();
@@ -137,7 +147,7 @@ export default function OrderPage() {
       {/* Main Content: Left Panel + Right Map */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
         {/* Left Panel — Form */}
-        <div className="relative overflow-hidden h-full">
+        <div ref={leftColRef} className="relative overflow-hidden h-full">
           {/* 配置模式 */}
           {currentStep === "configure" && (
             <div

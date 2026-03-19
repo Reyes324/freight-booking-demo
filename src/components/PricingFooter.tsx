@@ -95,7 +95,7 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
 
               {/* 价格区域 */}
               <div className="flex gap-2 items-end">
-                <p className="text-gray-900 text-2xl leading-[22px] font-bold tracking-tight transition-transform">
+                <p className="font-price text-gray-900 text-2xl leading-[22px] font-bold tracking-tight transition-transform">
                   HK$ {option.price.toFixed(2)}
                 </p>
                 {/* Info icon（仅选中时显示） */}

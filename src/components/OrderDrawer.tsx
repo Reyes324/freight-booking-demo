@@ -311,13 +311,13 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">基础运费</span>
-                  <span className="text-sm text-gray-900">
+                  <span className="font-price text-sm text-gray-900">
                     HK$ {(order.basePrice || order.totalPrice).toFixed(2)}
                   </span>
                 </div>
                 <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-900">总计</span>
-                  <span className="text-lg font-bold text-gray-900">
+                  <span className="font-price text-lg font-bold text-gray-900">
                     HK$ {order.totalPrice.toFixed(2)}
                   </span>
                 </div>

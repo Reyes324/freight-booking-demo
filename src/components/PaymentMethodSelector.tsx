@@ -19,7 +19,7 @@ export default function PaymentMethodSelector() {
             <p className="text-sm text-gray-900">账期支付</p>
             <p className="text-xs text-gray-400 mb-1">企业账期结算</p>
             <p className="text-sm text-gray-500">
-              余额: <span className="font-medium text-gray-900">HK$ {balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              余额: <span className="font-price font-medium text-gray-900">HK$ {balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </p>
           </div>
           <div className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded flex-shrink-0">

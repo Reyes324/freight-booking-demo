@@ -21,8 +21,8 @@ body {
   width: 100%;
   overflow: hidden;
   overflow-x: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC",
-    "Helvetica Neue", Arial, sans-serif;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
 }
 
 /* 防止所有元素超出屏幕宽度 */
@@ -124,6 +124,11 @@ body {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Price font — use western typeface for numbers */
+.font-price {
+  font-family: "DIN Alternate", "Helvetica Neue", Arial, sans-serif;
 }
 
 /* Safe area padding for mobile */

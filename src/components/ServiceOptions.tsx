@@ -45,7 +45,7 @@ export default function ServiceOptions({
                 )}
               </div>
               <div className="mt-3 flex items-baseline gap-1">
-                <span className="text-xl font-bold text-gray-900">
+                <span className="font-price text-xl font-bold text-gray-900">
                   {option.currency} {option.price.toFixed(2)}
                 </span>
                 {option.recommended && (

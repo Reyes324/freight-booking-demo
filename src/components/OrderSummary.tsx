@@ -74,7 +74,7 @@ export default function OrderSummary({
             <p className="text-sm font-medium text-gray-900 leading-tight">{vehicle.name}</p>
             <p className="text-xs text-gray-400 leading-tight mt-0.5">{optionLabel}</p>
           </div>
-          <p className="text-lg font-bold text-gray-900 flex-shrink-0 leading-none">
+          <p className="font-price text-lg font-bold text-gray-900 flex-shrink-0 leading-none">
             HK$ {totalPrice.toFixed(2)}
           </p>
         </div>

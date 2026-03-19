@@ -147,17 +147,17 @@ export default function VehicleSelector({
                     {vehicle.name}
                   </div>
                   {vehicle.dimensions && (
-                    <div className="text-xs text-gray-400 leading-relaxed">
+                    <div className="text-xs text-gray-600 leading-relaxed">
                       {vehicle.dimensions}
                     </div>
                   )}
                   {vehicle.weight && (
-                    <div className="text-xs text-gray-400 leading-relaxed">
+                    <div className="text-xs text-gray-600 leading-relaxed">
                       {vehicle.weight}
                     </div>
                   )}
                   {vehicle.description && (
-                    <div className="text-xs text-gray-400 mt-1 leading-relaxed">
+                    <div className="text-xs text-gray-600 mt-1 leading-relaxed">
                       {vehicle.description}
                     </div>
                   )}

@@ -65,6 +65,7 @@ export default function SettingsLayout({
                       <li key={item.id}>
                         <Link
                           href={item.path}
+                          prefetch={true}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-lg
                                      text-sm transition-all duration-200 cursor-pointer ${
                             isActive

@@ -158,17 +158,20 @@ export default function AddressDetailsModal({
         </div>
       </div>
 
-      {/* Modal - Mobile bottom drawer */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[110] bg-white rounded-t-2xl shadow-2xl max-h-[85vh] flex flex-col
-                      animate-in slide-in-from-bottom duration-300 ease-out">
-        {/* Handle */}
-        <div className="flex justify-center pt-3 pb-2 flex-shrink-0">
-          <div className="w-10 h-1 bg-gray-300 rounded-full" />
-        </div>
-
-        {/* Header */}
-        <div className="px-4 pb-3 border-b border-gray-100 flex-shrink-0">
-          <h3 className="text-base font-semibold text-gray-900">填写地址详情</h3>
+      {/* Modal - Mobile full screen slide from right */}
+      <div className="lg:hidden fixed inset-0 z-[110] bg-white flex flex-col
+                      animate-in slide-in-from-right duration-300 ease-out">
+        {/* Header with back button */}
+        <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-3 flex-shrink-0">
+          <button
+            onClick={onClose}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors"
+          >
+            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h3 className="text-base font-semibold text-gray-900 flex-1">填写地址详情</h3>
         </div>
 
         {/* Content - Scrollable */}

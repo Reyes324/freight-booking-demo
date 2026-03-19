@@ -145,10 +145,8 @@ export default function AddressSearchInput({
     if (onFocus) {
       onFocus();
     }
-    // 如果输入框为空，显示地址簿
-    if (!value) {
-      setShowDropdown(true);
-    }
+    // 总是显示下拉列表（有输入则显示联想，无输入则显示地址簿）
+    setShowDropdown(true);
   };
 
   const handleBlur = () => {

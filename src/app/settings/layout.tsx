@@ -89,7 +89,7 @@ export default function SettingsLayout({
               onClick={handleLogout}
               className="w-full px-3 py-2.5 rounded-lg text-sm text-red-600
                          hover:bg-red-50 transition-all duration-200 cursor-pointer
-                         border border-red-200 text-left"
+                         border border-red-200 text-center"
             >
               退出登录
             </button>

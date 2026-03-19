@@ -194,8 +194,13 @@ export default function MobileAddressFlow({
 
       {step === "search" ? (
         <>
-          {/* Search input */}
-          <div className="flex-shrink-0 px-4 py-3 border-b border-gray-100">
+          {/* Map background — full screen */}
+          <div className="absolute inset-x-0 top-14 bottom-0">
+            <MapView pickupAddress={mapPickup} dropoffAddress={null} />
+          </div>
+
+          {/* Search input (floats on map) */}
+          <div className="relative z-10 flex-shrink-0 px-4 py-3 bg-white border-b border-gray-100">
             <div className="relative">
               <svg
                 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
@@ -247,13 +252,8 @@ export default function MobileAddressFlow({
             </div>
           </div>
 
-          {/* Map area — ~40% height */}
-          <div className="flex-shrink-0 h-[35vh] border-b border-gray-100">
-            <MapView pickupAddress={mapPickup} dropoffAddress={null} />
-          </div>
-
-          {/* Results list — fills remaining space */}
-          <div className="flex-1 overflow-y-auto">
+          {/* Results list — floats on map, below search input */}
+          <div className="relative z-10 flex-1 overflow-y-auto bg-white">
             {suggestions.length > 0 ? (
               <div className="py-1">
                 {suggestions.map((suggestion) => (

@@ -159,9 +159,14 @@ export default function OrderPage() {
       <Navbar />
 
       {/* Main Content: Left Panel + Right Map */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
-        {/* Left Panel — Form */}
-        <div ref={leftColRef} className="relative overflow-hidden h-full border-r border-slate-200/60">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden relative">
+        {/* Map - Mobile background (full screen) + Desktop right panel */}
+        <div className="absolute inset-0 lg:relative lg:col-start-2 lg:col-end-3 lg:row-start-1">
+          <MapView pickupAddress={pickupAddress} dropoffAddress={dropoffAddress} />
+        </div>
+
+        {/* Left Panel — Form (floats on mobile, fixed on desktop) */}
+        <div ref={leftColRef} className="relative overflow-hidden h-full lg:border-r lg:border-slate-200/60 z-10">
           {/* 配置模式 */}
           {currentStep === "configure" && (
             <div
@@ -266,11 +271,6 @@ export default function OrderPage() {
               isSubmitting={isSubmitting}
             />
           )}
-        </div>
-
-        {/* Right Panel — Map (hidden on mobile) */}
-        <div className="hidden lg:block min-h-0">
-          <MapView pickupAddress={pickupAddress} dropoffAddress={dropoffAddress} />
         </div>
       </div>
     </div>

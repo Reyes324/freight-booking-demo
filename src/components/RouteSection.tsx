@@ -158,7 +158,7 @@ export default function RouteSection({
   return (
     <div>
       <h2 className="text-sm font-semibold text-gray-900 mb-3">
-        路线
+        装卸点
       </h2>
 
       <div className="border border-gray-200/60 rounded-xl p-4 bg-white shadow-sm transition-shadow duration-200">

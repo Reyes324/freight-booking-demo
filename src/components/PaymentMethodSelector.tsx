@@ -1,20 +1,26 @@
 "use client";
 
 export default function PaymentMethodSelector() {
+  // Mock 余额数据
+  const balance = 50000.00;
+
   return (
     <div>
       <label className="block text-sm text-gray-700 mb-1.5">
         支付方式
       </label>
       <div className="border border-gray-200 rounded-lg p-4 bg-gray-50/50">
-        <div className="flex items-center gap-3 opacity-60">
-          <div className="w-4 h-4 rounded-full border-2 border-gray-400 flex-shrink-0
+        <div className="flex items-start gap-3 opacity-60">
+          <div className="w-4 h-4 rounded-full border-2 border-gray-400 flex-shrink-0 mt-0.5
                         flex items-center justify-center">
             <div className="w-2 h-2 rounded-full bg-gray-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm text-gray-900">账期支付</p>
-            <p className="text-xs text-gray-400">企业账期结算</p>
+            <p className="text-xs text-gray-400 mb-1">企业账期结算</p>
+            <p className="text-sm text-gray-500">
+              余额: <span className="font-medium text-gray-900">HK$ {balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            </p>
           </div>
           <div className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded flex-shrink-0">
             默认

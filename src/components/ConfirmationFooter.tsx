@@ -33,10 +33,10 @@ export default function ConfirmationFooter({
           onClick={onConfirm}
           disabled={isSubmitting}
           className="h-[54px] px-8 rounded-lg bg-blue-600 hover:bg-blue-700
-                   active:bg-blue-800 text-white text-sm font-medium
+                   active:bg-blue-800 text-white text-base font-medium
                    flex items-center gap-2 transition-all duration-200
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   hover:shadow-lg active:scale-[0.98]"
+                   hover:shadow-lg active:scale-[0.98] cursor-pointer"
         >
           <span>{isSubmitting ? '提交中...' : '确认叫车'}</span>
           {!isSubmitting && (

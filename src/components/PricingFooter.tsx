@@ -125,7 +125,7 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
                  hover:shadow-lg active:scale-[0.98] group cursor-pointer
                  disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <span className="text-white text-sm font-medium group-hover:scale-105 transition-transform">
+        <span className="text-white text-base font-medium group-hover:scale-105 transition-transform">
           下一步
         </span>
       </button>

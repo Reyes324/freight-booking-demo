@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { DatePicker } from "antd";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import "dayjs/locale/zh-cn";
+import locale from "antd/locale/zh_CN";
+import { useState } from "react";
+import "@/styles/datepicker-override.css";
 
 interface DateTimePickerProps {
   value: string;
@@ -8,88 +14,41 @@ interface DateTimePickerProps {
 }
 
 export default function DateTimePicker({ value, onChange }: DateTimePickerProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [tempDate, setTempDate] = useState<Date | null>(null);
-  const [selectedHour, setSelectedHour] = useState(new Date().getHours());
-  const [selectedMinute, setSelectedMinute] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const formatDateTime = (isoString: string) => {
     if (!isoString) return "现在用车";
-    const date = new Date(isoString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const date = dayjs(isoString);
+    const month = date.month() + 1;
+    const day = date.date();
+    const hours = date.hour().toString().padStart(2, "0");
+    const minutes = date.minute().toString().padStart(2, "0");
     return `${month}月${day}日 ${hours}:${minutes}`;
   };
 
-  // 生成未来14天的日期
-  const dateOptions = useMemo(() => {
-    const dates = [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    for (let i = 0; i < 14; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      dates.push(date);
-    }
-    return dates;
-  }, []);
-
-  const hours = Array.from({ length: 24 }, (_, i) => i);
-  const minutes = [0, 15, 30, 45];
-
-  const handleOpen = () => {
-    setIsOpen(true);
-    if (value) {
-      const date = new Date(value);
-      setTempDate(date);
-      setSelectedHour(date.getHours());
-      setSelectedMinute(date.getMinutes());
+  const handleChange = (date: Dayjs | null) => {
+    if (date) {
+      onChange(date.toISOString());
     } else {
-      setTempDate(null);
+      onChange("");
     }
+    setOpen(false);
   };
 
   const handleNow = () => {
     onChange("");
-    setIsOpen(false);
+    setOpen(false);
   };
 
-  const handleConfirm = () => {
-    if (!tempDate) {
-      onChange("");
-    } else {
-      const finalDate = new Date(tempDate);
-      finalDate.setHours(selectedHour, selectedMinute, 0, 0);
-      onChange(finalDate.toISOString().slice(0, 16));
-    }
-    setIsOpen(false);
-  };
-
-  const formatDate = (date: Date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
-    if (date.getTime() === today.getTime()) return "今天";
-    if (date.getTime() === tomorrow.getTime()) return "明天";
-
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${month}月${day}日`;
-  };
+  const dayjsValue = value ? dayjs(value) : null;
 
   return (
     <div className="relative">
       <label className="block text-sm text-gray-700 mb-1.5">用车时间</label>
 
-      {/* 选择框 */}
-      <button
-        type="button"
-        onClick={handleOpen}
+      {/* 自定义触发按钮 */}
+      <div
+        onClick={() => setOpen(!open)}
         className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white
                  flex items-center justify-between text-sm text-gray-900
                  hover:border-gray-300 transition-colors cursor-pointer"
@@ -98,142 +57,49 @@ export default function DateTimePicker({ value, onChange }: DateTimePickerProps)
         <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
-      </button>
+      </div>
 
-      {/* 弹窗 */}
-      {isOpen && (
-        <>
-          {/* 遮罩 (点击关闭) */}
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setIsOpen(false)}
-          />
-
-          {/* 弹窗内容 - 下拉式 */}
-          <div className="absolute top-full left-0 right-0 mt-2 z-50">
-            <div
-              className="bg-white rounded-xl w-full max-h-[70vh] overflow-hidden
-                         animate-in fade-in slide-in-from-top-2 duration-200
-                         flex flex-col shadow-xl border border-gray-200"
-              onClick={(e) => e.stopPropagation()}
+      {/* Ant Design DatePicker */}
+      <DatePicker
+        value={dayjsValue}
+        onChange={handleChange}
+        showTime={{
+          format: "HH:mm",
+          minuteStep: 15,
+        }}
+        format="YYYY-MM-DD HH:mm"
+        locale={locale.DatePicker}
+        open={open}
+        onOpenChange={setOpen}
+        placement="bottomLeft"
+        className="!absolute !top-full !left-0 !mt-2 !opacity-0 !pointer-events-none"
+        popupClassName="datetime-picker-popup"
+        style={{ width: 0, height: 0 }}
+        renderExtraFooter={() => (
+          <div className="border-t border-gray-100 pt-2 mt-2">
+            <button
+              onClick={handleNow}
+              className="w-full h-9 px-4 rounded-lg border-2 border-blue-600 bg-blue-50
+                       text-blue-600 font-medium text-sm hover:bg-blue-100
+                       transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              {/* 标题 */}
-              <div className="px-4 py-2.5 border-b border-gray-100">
-                <h3 className="text-base font-semibold text-gray-900">选择用车时间</h3>
-              </div>
-
-              {/* 内容区 */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {/* 现在用车快捷按钮 */}
-                <button
-                  onClick={handleNow}
-                  className="w-full h-11 px-4 rounded-lg border-2 border-blue-600 bg-blue-50
-                           text-blue-600 font-medium text-sm hover:bg-blue-100
-                           transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  现在用车
-                </button>
-
-                {/* 日期选择 */}
-                <div>
-                  <p className="text-xs font-medium text-gray-500 mb-2">选择日期</p>
-                  <div className="grid grid-cols-4 gap-2">
-                    {dateOptions.map((date) => {
-                      const isSelected =
-                        tempDate && date.getTime() === new Date(tempDate.setHours(0, 0, 0, 0)).getTime();
-                      return (
-                        <button
-                          key={date.getTime()}
-                          onClick={() => setTempDate(new Date(date))}
-                          className={`h-11 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
-                            isSelected
-                              ? "border-blue-600 bg-blue-50 text-blue-600"
-                              : "border-gray-200 bg-white text-gray-900 hover:border-gray-300"
-                          }`}
-                        >
-                          {formatDate(date)}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 时间选择 */}
-                {tempDate && (
-                  <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                    {/* 小时选择 */}
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 mb-2">小时</p>
-                      <div className="grid grid-cols-6 gap-2">
-                        {hours.map((hour) => (
-                          <button
-                            key={hour}
-                            onClick={() => setSelectedHour(hour)}
-                            className={`h-9 rounded-lg border text-sm transition-all cursor-pointer ${
-                              selectedHour === hour
-                                ? "border-blue-600 bg-blue-50 text-blue-600 font-medium"
-                                : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
-                            }`}
-                          >
-                            {hour.toString().padStart(2, "0")}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* 分钟选择 */}
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 mb-2">分钟</p>
-                      <div className="grid grid-cols-4 gap-2">
-                        {minutes.map((minute) => (
-                          <button
-                            key={minute}
-                            onClick={() => setSelectedMinute(minute)}
-                            className={`h-9 rounded-lg border text-sm transition-all cursor-pointer ${
-                              selectedMinute === minute
-                                ? "border-blue-600 bg-blue-50 text-blue-600 font-medium"
-                                : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
-                            }`}
-                          >
-                            {minute.toString().padStart(2, "0")}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* 底部按钮 */}
-              <div className="p-4 border-t border-gray-100 flex gap-3">
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="flex-1 h-11 rounded-lg border border-gray-200 text-gray-700
-                           font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer"
-                >
-                  取消
-                </button>
-                <button
-                  onClick={handleConfirm}
-                  disabled={tempDate === null}
-                  className="flex-1 h-11 rounded-lg bg-blue-600 text-white font-medium text-sm
-                           hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer
-                           disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  确认
-                </button>
-              </div>
-            </div>
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              现在用车
+            </button>
           </div>
-        </>
-      )}
+        )}
+        disabledDate={(current) => {
+          // 禁用今天之前的日期
+          return current && current < dayjs().startOf('day');
+        }}
+      />
+
     </div>
   );
 }

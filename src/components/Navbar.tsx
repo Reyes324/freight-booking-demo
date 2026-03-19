@@ -33,7 +33,7 @@ export default function Navbar() {
         </button>
 
         {/* Logo */}
-        <div className="flex items-center">
+        <Link href="/" className="flex items-center cursor-pointer">
           <Image
             src="/logo-complete.png"
             alt="货拉拉 · 企业国际版"
@@ -42,7 +42,7 @@ export default function Navbar() {
             className="h-5 lg:h-5.5 w-auto"
             priority
           />
-        </div>
+        </Link>
 
         {/* Tabs (hidden on mobile) */}
         <div className="hidden lg:flex items-center gap-2">

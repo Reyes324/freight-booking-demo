@@ -44,6 +44,7 @@ export default function Navbar() {
             <Link
               key={tab.id}
               href={tab.path}
+              prefetch={true}
               className={`px-4 py-2.5 text-base font-medium rounded-lg
                          transition-all duration-200 cursor-pointer ${
                 activeTab === tab.id

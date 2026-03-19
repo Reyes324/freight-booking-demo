@@ -28,21 +28,10 @@ export default function MapView({ pickupAddress, dropoffAddress }: MapViewProps)
   const polylineRef = useRef<any>(null);
 
   useEffect(() => {
-    // 设置安全密钥（如果有）
-    if (GAODE_SECURITY_KEY) {
-      window._AMapSecurityConfig = {
-        securityJsCode: GAODE_SECURITY_KEY,
-      };
-    }
-
-    // 加载高德地图 JS API
-    const script = document.createElement('script');
-    script.src = `https://webapi.amap.com/maps?v=2.0&key=${GAODE_KEY}`;
-    script.async = true;
-
-    script.onload = () => {
+    // 等待高德地图 API 加载完成（全局已加载）
+    const initMap = () => {
       if (mapRef.current && window.AMap) {
-        // 初始化地图，中心点设为香港
+        // 初始化地图，中心点设为香港 - 默认就显示地图
         mapInstanceRef.current = new window.AMap.Map(mapRef.current, {
           zoom: 11,
           center: [114.1694, 22.3193], // 香港中心坐标
@@ -51,15 +40,31 @@ export default function MapView({ pickupAddress, dropoffAddress }: MapViewProps)
       }
     };
 
-    document.head.appendChild(script);
+    // 如果 AMap 已加载，直接初始化
+    if (window.AMap) {
+      initMap();
+    } else {
+      // 否则等待加载完成（100ms 轮询检查）
+      const checkInterval = setInterval(() => {
+        if (window.AMap) {
+          clearInterval(checkInterval);
+          initMap();
+        }
+      }, 100);
+
+      return () => {
+        clearInterval(checkInterval);
+        // 清理地图实例
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.destroy();
+        }
+      };
+    }
 
     return () => {
       // 清理地图实例
       if (mapInstanceRef.current) {
         mapInstanceRef.current.destroy();
-      }
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
       }
     };
   }, []);

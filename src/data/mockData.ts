@@ -541,12 +541,11 @@ export const vehicleServicesMap: Record<string, VehicleService[]> = {
 
 export const serviceOptions: ServiceOption[] = [
   {
-    id: "priority",
-    name: "优先订单",
-    description: "加快配对司机送货",
-    price: 117.0,
+    id: "economy",
+    name: "经济订单",
+    description: "正常配对司机送货",
+    price: 50.0,
     currency: "HK$",
-    icon: "⚡",
   },
   {
     id: "standard",
@@ -557,12 +556,11 @@ export const serviceOptions: ServiceOption[] = [
     recommended: true,
   },
   {
-    id: "discount",
+    id: "priority",
     name: "优先订单",
-    description: "加快配对司机送货",
+    description: "最快配对司机送货",
     price: 117.0,
     currency: "HK$",
-    icon: "🏷️",
   },
 ];
 
@@ -573,7 +571,7 @@ export interface OrderDraft {
   pickup: AddressDetail;
   dropoff: AddressDetail;
   vehicle: Vehicle;
-  pricingOption: 'priority' | 'standard';
+  pricingOption: 'economy' | 'standard' | 'priority';
   selectedServices: {
     itemIds: string[];
     groupSelections: Record<string, string[]>;

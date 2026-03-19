@@ -24,7 +24,7 @@ export default function OrderSummary({
     <div>
       <h2 className="text-sm font-semibold text-gray-900 mb-3">订单摘要</h2>
 
-      <div className="border border-gray-200/60 rounded-xl p-3.5 space-y-2.5 bg-white shadow-sm">
+      <div className="border border-gray-200/60 rounded-xl p-3.5 space-y-2.5 bg-white">
         {/* 路线信息 */}
         <div className="flex gap-2.5">
           {/* 左侧标记列 */}

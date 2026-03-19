@@ -66,9 +66,9 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
               onMouseLeave={() => setHoveredOption(null)}
               className={`flex-1 flex flex-col gap-6 items-start justify-center p-4 rounded-md border relative transition-all duration-200 cursor-pointer ${
                 isSelected
-                  ? "bg-blue-50 border-blue-600 shadow-sm"
+                  ? "bg-blue-50 border-blue-600"
                   : "bg-white border-gray-200"
-              } ${isHovered && !isSelected ? "border-gray-400 shadow-sm" : ""} ${
+              } ${isHovered && !isSelected ? "border-gray-400" : ""} ${
                 isSelected ? "scale-[1.02]" : "scale-100"
               }`}
             >

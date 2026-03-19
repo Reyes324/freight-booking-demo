@@ -16,9 +16,9 @@ export default function DriverNoteInput({ value, onChange }: DriverNoteInputProp
 
   return (
     <div>
-      <label className="block text-sm text-gray-700 mb-1.5">
+      <label className="block text-sm font-semibold text-gray-900 mb-3">
         向司机留言
-        <span className="text-xs text-gray-400 ml-2">(选填)</span>
+        <span className="text-xs text-gray-400 font-normal ml-2">(选填)</span>
       </label>
       <div className="relative">
         <textarea
@@ -26,7 +26,7 @@ export default function DriverNoteInput({ value, onChange }: DriverNoteInputProp
           onChange={handleChange}
           placeholder="如有特殊要求,可在此留言给司机"
           className={`w-full px-3.5 py-2.5 rounded-lg border resize-none
-                    text-base text-gray-900 placeholder:text-gray-400
+                    text-sm text-gray-900 placeholder:text-gray-400
                     transition-all
                     focus:outline-none focus:ring-4
                     ${

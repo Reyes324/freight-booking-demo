@@ -161,7 +161,7 @@ export default function RouteSection({
         装卸点
       </h2>
 
-      <div className="border border-gray-200/60 rounded-xl p-4 bg-white shadow-sm transition-shadow duration-200">
+      <div className="border border-gray-200/60 rounded-xl p-4 bg-white">
         {/* Each row: circle + input on the same line */}
         <div ref={listParent}>
           {addresses.map((address, index) => (

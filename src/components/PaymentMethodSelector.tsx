@@ -6,10 +6,10 @@ export default function PaymentMethodSelector() {
 
   return (
     <div>
-      <label className="block text-sm text-gray-700 mb-1.5">
+      <label className="block text-sm font-semibold text-gray-900 mb-3">
         支付方式
       </label>
-      <div className="border border-gray-200 rounded-lg p-4 bg-gray-50/50">
+      <div className="border border-gray-200/60 rounded-lg p-4 bg-gray-50/50">
         <div className="flex items-start gap-3 opacity-60">
           <div className="w-4 h-4 rounded-full border-2 border-gray-400 flex-shrink-0 mt-0.5
                         flex items-center justify-center">

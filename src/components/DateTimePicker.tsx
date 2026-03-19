@@ -44,7 +44,7 @@ export default function DateTimePicker({ value, onChange }: DateTimePickerProps)
 
   return (
     <div className="relative">
-      <label className="block text-sm text-gray-700 mb-1.5">用车时间</label>
+      <label className="block text-sm font-semibold text-gray-900 mb-3">用车时间</label>
 
       {/* 自定义触发按钮 */}
       <div

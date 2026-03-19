@@ -246,7 +246,7 @@ export default function AdditionalServices({
     <div>
       <h2 className="text-sm font-semibold text-gray-900 mb-3">附加服务</h2>
 
-      <div className="space-y-0 border border-gray-200/60 rounded-xl overflow-hidden bg-white shadow-sm">
+      <div className="space-y-0 border border-gray-200/60 rounded-xl overflow-hidden bg-white">
         {services.map((service: VehicleService, index: number) => {
           const isLast = index === services.length - 1;
 

@@ -178,7 +178,7 @@ export default function MapView({ pickupAddress, dropoffAddress }: MapViewProps)
   };
 
   return (
-    <div className="relative w-full h-full bg-gray-100 rounded-lg overflow-hidden">
+    <div className="relative w-full h-full bg-gray-100 overflow-hidden">
       {/* 高德地图容器 */}
       <div ref={mapRef} className="w-full h-full" />
 

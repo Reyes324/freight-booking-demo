@@ -46,6 +46,10 @@ export default function OrderPage() {
     return () => el.removeEventListener('scroll', handler);
   }, []);
 
+  // 保存/恢复配置面板滚动位置（返回时恢复）
+  const configScrollRef = useRef<HTMLDivElement>(null);
+  const savedScrollTop = useRef(0);
+
   // 页面加载时清除旧的草稿数据
   useEffect(() => {
     OrderStorage.clear();
@@ -100,12 +104,22 @@ export default function OrderPage() {
 
   const handleNext = useCallback(() => {
     if (!orderDraft) return;
+    // 保存配置面板滚动位置
+    if (configScrollRef.current) {
+      savedScrollTop.current = configScrollRef.current.scrollTop;
+    }
     OrderStorage.save(orderDraft);
     setCurrentStep("confirm");
   }, [orderDraft]);
 
   const handleBack = useCallback(() => {
     setCurrentStep("configure");
+    // 恢复配置面板滚动位置（等 DOM 渲染完成）
+    requestAnimationFrame(() => {
+      if (configScrollRef.current) {
+        configScrollRef.current.scrollTop = savedScrollTop.current;
+      }
+    });
   }, []);
 
   const handleConfirm = useCallback(async () => {
@@ -141,16 +155,17 @@ export default function OrderPage() {
   }, [orderDraft, scheduledTime, driverNote, router]);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen flex flex-col bg-slate-50">
       <Navbar />
 
       {/* Main Content: Left Panel + Right Map */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
         {/* Left Panel — Form */}
-        <div ref={leftColRef} className="relative overflow-hidden h-full">
+        <div ref={leftColRef} className="relative overflow-hidden h-full border-r border-slate-200/60">
           {/* 配置模式 */}
           {currentStep === "configure" && (
             <div
+              ref={configScrollRef}
               className="h-full overflow-y-scroll subtle-scroll p-4 lg:p-6 space-y-4 lg:space-y-6 bg-white
                          animate-in fade-in slide-in-from-left-8 duration-300"
               style={{ paddingBottom: showPricing ? '320px' : '24px' }}

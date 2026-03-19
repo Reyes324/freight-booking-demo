@@ -96,7 +96,7 @@ export default function AddressDetailsModal({
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
                 placeholder="请输入收货人姓名"
-                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder:text-gray-400
+                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            transition-all duration-200 ease-out
                            hover:border-gray-300
                            focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
@@ -113,7 +113,7 @@ export default function AddressDetailsModal({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="请输入电话号码"
-                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder:text-gray-400
+                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            transition-all duration-200 ease-out
                            hover:border-gray-300
                            focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
@@ -130,7 +130,7 @@ export default function AddressDetailsModal({
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
                 placeholder="例如：3楼A室"
-                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder:text-gray-400
+                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            transition-all duration-200 ease-out
                            hover:border-gray-300
                            focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"

@@ -155,7 +155,7 @@ export default function OrderPage() {
   }, [orderDraft, scheduledTime, driverNote, router]);
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-gray-100">
       <Navbar />
 
       {/* Main Content: Left Panel + Right Map */}
@@ -175,6 +175,16 @@ export default function OrderPage() {
                          animate-in fade-in slide-in-from-left-8 duration-300"
               style={{ paddingBottom: showPricing ? 'calc(320px + env(safe-area-inset-bottom))' : '24px' }}
             >
+              {/* 页面标题 */}
+              <div className="pb-4 border-b border-gray-100">
+                <h1 className="text-lg font-semibold text-gray-900">
+                  下单叫车
+                </h1>
+                <p className="text-sm text-gray-500 mt-1.5">
+                  填写装卸货信息，快速匹配司机
+                </p>
+              </div>
+
               <RouteSection
                 pickupAddress={pickupAddress}
                 dropoffAddress={dropoffAddress}
@@ -229,7 +239,7 @@ export default function OrderPage() {
                       />
                     </svg>
                   </button>
-                  <h1 className="text-base font-semibold text-gray-900">确认订单</h1>
+                  <h1 className="text-sm font-semibold text-gray-900">确认订单</h1>
                 </div>
               </div>
 

@@ -16,7 +16,13 @@ export default function Navbar() {
   const activeTab = tabs.find(tab => tab.path === pathname)?.id || "";
 
   return (
-    <nav className="h-14 lg:h-16 border-b border-gray-200 bg-white flex items-center justify-between px-4 lg:px-6">
+    <nav
+      className="h-14 lg:h-16 border-b border-gray-200 bg-white flex items-center justify-between px-4 lg:px-6 relative"
+      style={{
+        boxShadow: '0 1px 3px 0 rgba(0,0,0,0.08), 0 1px 2px 0 rgba(0,0,0,0.04)',
+        overflow: 'visible'
+      }}
+    >
       {/* Left: Hamburger (mobile) + Logo + Tabs */}
       <div className="flex items-center gap-4 lg:gap-8">
         {/* Hamburger button (mobile only) */}
@@ -33,7 +39,7 @@ export default function Navbar() {
             alt="货拉拉 · 企业国际版"
             width={569}
             height={73}
-            className="h-6 w-auto"
+            className="h-5 lg:h-5.5 w-auto"
             priority
           />
         </div>
@@ -45,30 +51,46 @@ export default function Navbar() {
               key={tab.id}
               href={tab.path}
               prefetch={true}
-              className={`px-4 py-2.5 text-base font-medium rounded-lg
+              className={`relative px-4 py-2.5 text-base font-medium
                          transition-all duration-200 cursor-pointer ${
                 activeTab === tab.id
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                  ? "text-blue-600"
+                  : "text-gray-500 hover:text-gray-900"
               }`}
             >
               {tab.label}
+              {/* 底部指示线 - 延伸到导航栏底部 */}
+              {activeTab === tab.id && (
+                <div className="absolute left-0 right-0 h-0.5 bg-blue-600 z-20"
+                     style={{ bottom: '-10px' }} />
+              )}
             </Link>
           ))}
         </div>
       </div>
 
-      {/* Right: Icons */}
-      <div className="flex items-center gap-4">
-        <Link
-          href="/settings"
-          className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
-        >
-          <SettingOutlined className="text-gray-500 text-lg" />
-        </Link>
-        <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer">
-          <QuestionCircleOutlined className="text-gray-500 text-lg" />
-        </button>
+      {/* Right: User Info + Icons */}
+      <div className="flex items-center gap-3">
+        {/* 企业名称（桌面端显示） */}
+        <div className="hidden md:flex items-center gap-2">
+          <span className="text-sm text-gray-600">菜鸟速运（香港）</span>
+        </div>
+
+        {/* 分隔线（桌面端） */}
+        <div className="hidden md:block w-px h-5 bg-gray-200" />
+
+        {/* 功能图标 */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/settings"
+            className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+          >
+            <SettingOutlined className="text-gray-500 text-lg" />
+          </Link>
+          <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer">
+            <QuestionCircleOutlined className="text-gray-500 text-lg" />
+          </button>
+        </div>
       </div>
     </nav>
   );

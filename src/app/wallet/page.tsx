@@ -111,7 +111,7 @@ export default function WalletPage() {
               </p>
             </div>
             <button
-              className="h-11 px-6 rounded-lg bg-blue-600 text-white font-medium text-sm
+              className="h-11 px-6 rounded-lg bg-blue-600 text-white font-medium text-base
                        hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
             >
               充值

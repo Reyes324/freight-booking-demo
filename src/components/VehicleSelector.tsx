@@ -52,7 +52,7 @@ export default function VehicleSelector({
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-gray-900">服务类型</h3>
+        <h2 className="text-sm font-semibold text-gray-900">服务类型</h2>
         <a
           href="https://www.lalamove.com/zh-hk/all-vehicle-pricing-detail"
           target="_blank"
@@ -100,10 +100,10 @@ export default function VehicleSelector({
                 onClick={() => onSelect(vehicle)}
                 onMouseEnter={() => setHoveredId(vehicle.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className={`flex-shrink-0 w-36 lg:w-40 min-h-[200px] lg:min-h-[180px] rounded-xl border p-3 lg:p-3.5 text-center transition-colors duration-200 relative overflow-hidden cursor-pointer ${
+                className={`flex-shrink-0 w-36 lg:w-40 min-h-[200px] lg:min-h-[180px] rounded-xl border p-3 lg:p-3.5 text-center transition-all duration-200 relative overflow-hidden cursor-pointer ${
                   isSelected
-                    ? "border-blue-600 bg-blue-50/50"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-blue-600 bg-blue-50/50 shadow-md"
+                    : "border-gray-200/60 hover:border-gray-300 shadow-sm hover:shadow-md"
                 }`}
               >
                 {/* Checkmark */}

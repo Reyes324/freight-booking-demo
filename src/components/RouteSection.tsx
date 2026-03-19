@@ -158,18 +158,18 @@ export default function RouteSection({
 
   return (
     <div>
-      <h3 className="text-sm font-medium text-gray-900 mb-3">
-        路线（最多40个目的地）
-      </h3>
+      <h2 className="text-sm font-semibold text-gray-900 mb-3">
+        路线
+      </h2>
 
-      <div className="border border-gray-200 rounded-xl p-4">
+      <div className="border border-gray-200/60 rounded-xl p-4 bg-white shadow-sm transition-shadow duration-200">
         <div className="flex gap-3">
           {/* Left: Marker column */}
           <div ref={markerParent} className="flex flex-col" style={{ width: '18px' }}>
             {addresses.map((address, index) => (
-              <div key={index}>
-                  {/* Circle marker */}
-                  <div className="min-h-[44px] flex items-center justify-center relative z-10">
+              <div key={index} className="flex flex-col">
+                  {/* Circle marker - aligned with first line of text */}
+                  <div className="pt-[13px] relative z-10">
                     <div
                       className={`w-[18px] h-[18px] rounded-full flex items-center justify-center flex-shrink-0 ${
                         index === 0
@@ -185,16 +185,10 @@ export default function RouteSection({
                     </div>
                   </div>
 
-                  {/* Connecting line (not for last item) */}
+                  {/* Connecting line (not for last item) - dynamic height */}
                   {index < addresses.length - 1 && (
-                    <div className="h-3 relative flex items-center justify-center">
-                      <div
-                        className="absolute left-1/2 -translate-x-1/2 w-px border-l border-dashed border-gray-300"
-                        style={{
-                          top: '-13px',
-                          bottom: '-13px'
-                        }}
-                      />
+                    <div className="flex-1 min-h-[12px] relative flex items-center justify-center">
+                      <div className="absolute left-1/2 -translate-x-1/2 w-px h-full border-l border-dashed border-gray-300" />
                     </div>
                   )}
                 </div>

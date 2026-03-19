@@ -49,8 +49,7 @@ export default function RouteSection({
 
   const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const [markerParent] = useAutoAnimate();
-  const [inputParent] = useAutoAnimate();
+  const [listParent] = useAutoAnimate();
 
   const isMobile = () => typeof window !== "undefined" && window.innerWidth < 1024;
 
@@ -163,168 +162,177 @@ export default function RouteSection({
       </h2>
 
       <div className="border border-gray-200/60 rounded-xl p-4 bg-white shadow-sm transition-shadow duration-200">
-        <div className="flex gap-3">
-          {/* Left: Marker column */}
-          <div ref={markerParent} className="flex flex-col" style={{ width: '18px' }}>
-            {addresses.map((address, index) => (
-              <div key={index} className="flex flex-col">
-                  {/* Circle marker - aligned with first line of text */}
-                  <div className="pt-[13px] relative z-10">
-                    <div
-                      className={`w-[18px] h-[18px] rounded-full flex items-center justify-center flex-shrink-0 ${
-                        index === 0
-                          ? 'bg-blue-600'
-                          : 'border-[1.5px] border-blue-600 bg-white'
-                      }`}
-                    >
-                      <span className={`text-[10px] font-medium leading-none ${
-                        index === 0 ? 'text-white' : 'text-blue-600'
-                      }`}>
-                        {index + 1}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Connecting line (not for last item) - dynamic height */}
-                  {index < addresses.length - 1 && (
-                    <div className="flex-1 min-h-[12px] relative flex items-center justify-center">
-                      <div className="absolute left-1/2 -translate-x-1/2 w-px h-full border-l border-dashed border-gray-300" />
-                    </div>
-                  )}
-                </div>
-            ))}
-          </div>
-
-          {/* Right: Input column */}
-          <div ref={inputParent} className="flex-1 space-y-3">
-            {addresses.map((address, index) => (
+        {/* Each row: circle + input on the same line */}
+        <div ref={listParent}>
+          {addresses.map((address, index) => (
+            <div key={index}>
+              {/* Row: marker + input */}
               <div
-                key={index}
-                className="relative"
+                className="flex gap-3"
                 ref={(el) => { containerRefs.current[index] = el; }}
               >
-                {address && !isEditingStates[index] ? (
-                  <div className="relative flex items-center gap-2">
-                    {/* Filled address display */}
-                    <div
-                      className="flex-1 min-h-[44px] px-3.5 py-2.5 rounded-lg border border-gray-200 bg-white
-                                 hover:border-gray-300 transition-colors duration-200 ease-out cursor-pointer
-                                 flex items-center"
-                      onClick={() => {
-                        if (isMobile()) {
-                          openMobileFlow(index);
-                          return;
-                        }
-                        const updated = [...isEditingStates];
-                        updated[index] = true;
-                        setIsEditingStates(updated);
-
-                        const updatedSearch = [...searchValues];
-                        updatedSearch[index] = address.address;
-                        setSearchValues(updatedSearch);
-                      }}
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-900 leading-snug">
-                          {address.address}
-                        </p>
-                        {(address.contactName || address.phone || address.unit) && (
-                          <p
-                            className="text-xs text-gray-400 mt-1.5 cursor-pointer hover:text-gray-700 leading-snug"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedAddressText(address.address);
-                              setSelectedCoords({ lat: address.lat, lng: address.lng });
-                              setCurrentEditIndex(index);
-                              const updated = [...showPopovers];
-                              updated[index] = true;
-                              setShowPopovers(updated);
-                            }}
-                          >
-                            {address.contactName} · {address.phone}
-                            {address.unit && ` · ${address.unit}`}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    {/* Delete button (show when > 2 addresses) */}
-                    {addresses.length > 2 && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeAddress(index);
-                        }}
-                        className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors duration-150"
-                        title="删除"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
+                {/* Left: marker column - stretches full row height */}
+                <div className="flex flex-col items-center flex-shrink-0" style={{ width: '18px' }}>
+                  {/* Top segment: line from row top to circle (non-first rows) */}
+                  <div className="flex-1">
+                    {index > 0 && (
+                      <div className="w-px h-full mx-auto border-l border-dashed border-gray-300" />
                     )}
                   </div>
-                ) : (
-                  <div className="relative flex items-center gap-2">
-                    <div className="flex-1">
-                      {/* Mobile: tap opens full-screen flow */}
+                  {/* Circle */}
+                  <div
+                    className={`w-[18px] h-[18px] rounded-full flex items-center justify-center flex-shrink-0 ${
+                      index === 0
+                        ? 'bg-blue-600'
+                        : 'border-[1.5px] border-blue-600 bg-white'
+                    }`}
+                  >
+                    <span className={`text-[10px] font-medium leading-none ${
+                      index === 0 ? 'text-white' : 'text-blue-600'
+                    }`}>
+                      {index + 1}
+                    </span>
+                  </div>
+                  {/* Bottom segment: line from circle to row bottom (non-last rows) */}
+                  <div className="flex-1">
+                    {index < addresses.length - 1 && (
+                      <div className="w-px h-full mx-auto border-l border-dashed border-gray-300" />
+                    )}
+                  </div>
+                </div>
+
+                {/* Input content */}
+                <div className="flex-1 min-w-0 relative">
+                  {address && !isEditingStates[index] ? (
+                    <div className="flex items-center gap-2">
+                      {/* Filled address display */}
                       <div
-                        className="lg:hidden"
-                        onClick={() => openMobileFlow(index)}
+                        className="flex-1 min-h-[44px] px-3.5 py-2.5 rounded-lg border border-gray-200 bg-white
+                                   hover:border-gray-300 transition-colors duration-200 ease-out cursor-pointer
+                                   flex items-center"
+                        onClick={() => {
+                          if (isMobile()) {
+                            openMobileFlow(index);
+                            return;
+                          }
+                          const updated = [...isEditingStates];
+                          updated[index] = true;
+                          setIsEditingStates(updated);
+
+                          const updatedSearch = [...searchValues];
+                          updatedSearch[index] = address.address;
+                          setSearchValues(updatedSearch);
+                        }}
                       >
-                        <div className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm text-gray-400 flex items-center cursor-pointer hover:border-gray-300 transition-colors">
-                          {getPlaceholder(index)}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-gray-900 leading-snug">
+                            {address.address}
+                          </p>
+                          {(address.contactName || address.phone || address.unit) && (
+                            <p
+                              className="text-xs text-gray-400 mt-1.5 cursor-pointer hover:text-gray-700 leading-snug"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedAddressText(address.address);
+                                setSelectedCoords({ lat: address.lat, lng: address.lng });
+                                setCurrentEditIndex(index);
+                                const updated = [...showPopovers];
+                                updated[index] = true;
+                                setShowPopovers(updated);
+                              }}
+                            >
+                              {address.contactName} · {address.phone}
+                              {address.unit && ` · ${address.unit}`}
+                            </p>
+                          )}
                         </div>
                       </div>
-                      {/* Desktop: inline search */}
-                      <div className="hidden lg:block">
-                        <AddressSearchInput
-                          value={searchValues[index]}
-                          onChange={(value) => {
-                            const updated = [...searchValues];
-                            updated[index] = value;
-                            setSearchValues(updated);
+                      {/* Delete button */}
+                      {addresses.length > 2 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeAddress(index);
                           }}
-                          onSelectAddress={handleAddressSelect(index)}
-                          onCancel={handleCancel(index)}
-                          placeholder={getPlaceholder(index)}
-                        />
-                      </div>
+                          className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors duration-150"
+                          title="删除"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
                     </div>
-                    {/* Delete button (show when > 2 addresses) */}
-                    {addresses.length > 2 && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeAddress(index);
-                        }}
-                        className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors duration-150"
-                        title="删除"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                )}
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1">
+                        {/* Mobile: tap opens full-screen flow */}
+                        <div
+                          className="lg:hidden"
+                          onClick={() => openMobileFlow(index)}
+                        >
+                          <div className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm text-gray-400 flex items-center cursor-pointer hover:border-gray-300 transition-colors">
+                            {getPlaceholder(index)}
+                          </div>
+                        </div>
+                        {/* Desktop: inline search */}
+                        <div className="hidden lg:block">
+                          <AddressSearchInput
+                            value={searchValues[index]}
+                            onChange={(value) => {
+                              const updated = [...searchValues];
+                              updated[index] = value;
+                              setSearchValues(updated);
+                            }}
+                            onSelectAddress={handleAddressSelect(index)}
+                            onCancel={handleCancel(index)}
+                            placeholder={getPlaceholder(index)}
+                          />
+                        </div>
+                      </div>
+                      {/* Delete button */}
+                      {addresses.length > 2 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeAddress(index);
+                          }}
+                          className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors duration-150"
+                          title="删除"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  )}
 
-                {/* Address Details Popover */}
-                <AddressDetailsPopover
-                  isOpen={showPopovers[index]}
-                  onClose={() => {
-                    const updated = [...showPopovers];
-                    updated[index] = false;
-                    setShowPopovers(updated);
-                  }}
-                  onConfirm={handleConfirm(index)}
-                  addressText={selectedAddressText}
-                  initialData={addresses[index] || undefined}
-                  coordinates={selectedCoords}
-                  anchorRef={containerRefs.current[index] ? { current: containerRefs.current[index] } : undefined}
-                />
+                  {/* Address Details Popover */}
+                  <AddressDetailsPopover
+                    isOpen={showPopovers[index]}
+                    onClose={() => {
+                      const updated = [...showPopovers];
+                      updated[index] = false;
+                      setShowPopovers(updated);
+                    }}
+                    onConfirm={handleConfirm(index)}
+                    addressText={selectedAddressText}
+                    initialData={addresses[index] || undefined}
+                    coordinates={selectedCoords}
+                    anchorRef={containerRefs.current[index] ? { current: containerRefs.current[index] } : undefined}
+                  />
+                </div>
               </div>
-            ))}
-          </div>
+
+              {/* Connecting line through the gap between rows */}
+              {index < addresses.length - 1 && (
+                <div className="h-3" style={{ width: '18px' }}>
+                  <div className="w-px h-full mx-auto border-l border-dashed border-gray-300" />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
         {/* Add Destination Button */}

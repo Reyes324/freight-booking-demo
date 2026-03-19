@@ -46,10 +46,11 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
 
   return (
     <div
-      className="bg-white flex flex-col gap-3 items-start justify-center p-4 z-50"
+      className="bg-white flex flex-col gap-3 items-start justify-center p-4 pb-safe z-50"
       style={{
         boxShadow:
           "0px -3px 6px 0px rgba(0,0,0,0.06), 0px -6px 16px 0px rgba(0,0,0,0.04), 0px -9px 28px 0px rgba(0,0,0,0.02)",
+        paddingBottom: `calc(1rem + env(safe-area-inset-bottom))`,
       }}
     >
       {/* 价格选项 */}

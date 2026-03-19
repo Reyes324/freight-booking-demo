@@ -168,7 +168,7 @@ export default function OrderPage() {
               ref={configScrollRef}
               className="h-full overflow-y-scroll subtle-scroll p-4 lg:p-6 space-y-4 lg:space-y-6 bg-white
                          animate-in fade-in slide-in-from-left-8 duration-300"
-              style={{ paddingBottom: showPricing ? '320px' : '24px' }}
+              style={{ paddingBottom: showPricing ? 'calc(320px + env(safe-area-inset-bottom))' : '24px' }}
             >
               <RouteSection
                 pickupAddress={pickupAddress}

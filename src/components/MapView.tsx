@@ -36,7 +36,7 @@ export default function MapView({ pickupAddress, dropoffAddress }: MapViewProps)
         mapInstanceRef.current = new window.AMap.Map(mapRef.current, {
           zoom: 11,
           center: [114.1694, 22.3193], // 香港中心坐标
-          mapStyle: 'amap://styles/normal',
+          mapStyle: 'amap://styles/macaron',
         });
       }
     };

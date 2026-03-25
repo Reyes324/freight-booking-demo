@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { CloseOutlined, PhoneOutlined, StarFilled, MessageOutlined, EnvironmentOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import type { Order } from "@/data/mockData";
+import { CloseOutlined, PhoneOutlined, StarFilled, MessageOutlined, EnvironmentOutlined, QuestionCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import type { Order, PriceAdjustment } from "@/data/mockData";
 import PickupProofModal from "./PickupProofModal";
 import PriceIncreaseView from "./PriceIncreaseView";
+import AdjustPriceView from "./AdjustPriceView";
 
 interface OrderDrawerProps {
   open: boolean;
@@ -64,7 +65,9 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [proofModalOpen, setProofModalOpen] = useState(false);
-  const [drawerView, setDrawerView] = useState<"detail" | "priceIncrease">("detail");
+  const [drawerView, setDrawerView] = useState<"detail" | "priceIncrease" | "adjustPrice">("detail");
+  const [priceAdjustment, setPriceAdjustment] = useState<PriceAdjustment | null>(null);
+  const [showAdjustTooltip, setShowAdjustTooltip] = useState(false);
 
   // 两阶段动画：先挂载，再触发动画
   useEffect(() => {
@@ -80,6 +83,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
       const timer = setTimeout(() => {
         setMounted(false);
         setDrawerView("detail");
+        setShowAdjustTooltip(false);
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -102,12 +106,15 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   const statusConfig = statusInfo[order.status];
   const hasDriver = order.driver && (order.status === "in_transit" || order.status === "delivering" || order.status === "completed");
 
+  // 判断是否已提交费用调整（来自 order 数据或本地状态）
+  const hasPriceAdjustment = order.priceAdjustment || priceAdjustment;
+
   // 按状态决定按钮
   const statusButtons: string[] = (() => {
     switch (order.status) {
       case "calling_driver": return ["加价"];
       case "in_transit": return ["更换司机", "追踪订单", "调整费用"];
-      case "delivering": return ["追踪订单"];
+      case "delivering": return ["追踪订单", "调整费用"];
       case "completed": return ["追踪订单"];
       default: return [];
     }
@@ -137,6 +144,18 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
             onConfirm={(amount) => {
               console.log("加价金额:", amount);
               setDrawerView("detail");
+            }}
+          />
+        ) : drawerView === "adjustPrice" ? (
+          <AdjustPriceView
+            order={order}
+            onBack={() => setDrawerView("detail")}
+            onSubmit={(adjustedPrice) => {
+              setPriceAdjustment({
+                adjustedPrice,
+                status: "pending",
+                submittedAt: new Date(),
+              });
             }}
           />
         ) : (
@@ -219,20 +238,52 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
 
               {/* 底部操作按钮区 — 按状态显示不同按钮 */}
               {statusButtons.length > 0 && (
-                <div className="flex gap-2 px-4 pb-4 pt-3 border-t border-gray-100">
-                  {statusButtons.map((btn, i) => (
-                    <button
-                      key={btn}
-                      onClick={btn === "加价" ? () => setDrawerView("priceIncrease") : undefined}
-                      className={`h-9 px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-                        i === 0
-                          ? "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
-                          : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
-                      }`}
-                    >
-                      {btn}
-                    </button>
-                  ))}
+                <div className="flex flex-col gap-2 px-4 pb-4 pt-3 border-t border-gray-100">
+                  <div className="flex gap-2">
+                    {statusButtons.map((btn, i) => {
+                      const isAdjustBtn = btn === "调整费用";
+                      const isAdjustDisabled = isAdjustBtn && !!hasPriceAdjustment;
+
+                      return (
+                        <div key={btn} className="relative">
+                          <button
+                            onClick={() => {
+                              if (btn === "加价") {
+                                setDrawerView("priceIncrease");
+                              } else if (isAdjustBtn) {
+                                if (isAdjustDisabled) {
+                                  setShowAdjustTooltip(true);
+                                  setTimeout(() => setShowAdjustTooltip(false), 2000);
+                                } else {
+                                  setDrawerView("adjustPrice");
+                                }
+                              }
+                            }}
+                            className={`h-9 px-4 rounded-lg text-sm font-medium transition-colors ${
+                              isAdjustDisabled
+                                ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
+                                : i === 0
+                                  ? "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 cursor-pointer"
+                                  : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 cursor-pointer"
+                            }`}
+                          >
+                            {btn}
+                          </button>
+                          {/* 审核中提示气泡 */}
+                          {isAdjustBtn && showAdjustTooltip && isAdjustDisabled && (
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-10
+                                          bg-gray-800 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap
+                                          shadow-lg animate-fade-in">
+                              费用调整审核中
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0
+                                            border-l-4 border-r-4 border-t-4
+                                            border-l-transparent border-r-transparent border-t-gray-800" />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
@@ -368,6 +419,17 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
             {/* 费用明细 */}
             <div className="pt-6 border-t border-gray-100 space-y-3 pb-24">
               <h4 className="text-sm font-medium text-gray-900">费用明细</h4>
+
+              {/* 费用调整审核中提示栏 */}
+              {hasPriceAdjustment && (
+                <div className="flex items-start gap-2 bg-orange-50 border border-orange-100 rounded-lg p-3">
+                  <InfoCircleOutlined className="text-orange-500 text-sm mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-orange-700 leading-relaxed">
+                    费用调整至 <span className="font-semibold">HK$ {(hasPriceAdjustment.adjustedPrice).toFixed(2)}</span>，正在审核中
+                  </p>
+                </div>
+              )}
+
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">基础运费</span>

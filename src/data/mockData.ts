@@ -602,6 +602,13 @@ export type OrderStatus =
   | 'cancelled'         // 订单已取消
   | 'completed'         // 订单已完成
 
+// ── Price Adjustment ──
+export interface PriceAdjustment {
+  adjustedPrice: number;       // 调整后的总价
+  status: 'pending';           // 审核状态（当前只有 pending）
+  submittedAt: Date;
+}
+
 // ── Order Interface ──
 export interface Order extends CompleteOrder {
   orderId: string;
@@ -617,6 +624,7 @@ export interface Order extends CompleteOrder {
     rating?: number;
   };
   pickupProofPhoto?: string;
+  priceAdjustment?: PriceAdjustment;
 }
 
 // ── Mock Orders Data ──

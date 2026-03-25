@@ -694,6 +694,47 @@ export const mockOrders: Order[] = [
     },
   },
   {
+    orderId: 'ORD-1710660000000',
+    status: 'delivering',
+    pickup: {
+      address: '荃湾西楼角路1号荃新天地',
+      contactName: '周先生',
+      phone: '+852 9111 2222',
+      unit: '地下B铺',
+      lat: 22.3700,
+      lng: 114.1140,
+    },
+    dropoff: {
+      address: '深水埗长沙湾道681号西九龙中心',
+      contactName: '何小姐',
+      phone: '+852 9333 4444',
+      lat: 22.3316,
+      lng: 114.1553,
+    },
+    vehicle: vehicles[0], // Van仔
+    pricingOption: 'standard',
+    selectedServices: {
+      itemIds: ['fold-seat'],
+      groupSelections: { passenger: ['p-2'] },
+    },
+    basePrice: 74.0,
+    totalPrice: 89.0,
+    scheduledTime: new Date(Date.now() - 1 * 60 * 60 * 1000),
+    actualPickupTime: new Date(Date.now() - 30 * 60 * 1000),
+    contactPhone: '+66 812345678',
+    driverNote: '有两箱易碎品，请轻拿轻放',
+    paymentMethod: 'credit',
+    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
+    driver: {
+      name: '陈师傅',
+      phone: '+852 6111 2233',
+      vehiclePlate: 'EF 9012',
+      avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
+      rating: 4.78,
+    },
+    pickupProofPhoto: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=300&fit=crop',
+  },
+  {
     orderId: 'ORD-1710654567890',
     status: 'completed',
     pickup: {

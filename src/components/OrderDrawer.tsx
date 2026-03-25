@@ -5,6 +5,7 @@ import Image from "next/image";
 import { CloseOutlined, PhoneOutlined, StarFilled, MessageOutlined, EnvironmentOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import type { Order } from "@/data/mockData";
 import PickupProofModal from "./PickupProofModal";
+import PriceIncreaseView from "./PriceIncreaseView";
 
 interface OrderDrawerProps {
   open: boolean;
@@ -63,6 +64,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [proofModalOpen, setProofModalOpen] = useState(false);
+  const [drawerView, setDrawerView] = useState<"detail" | "priceIncrease">("detail");
 
   // 两阶段动画：先挂载，再触发动画
   useEffect(() => {
@@ -77,6 +79,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
       setVisible(false);
       const timer = setTimeout(() => {
         setMounted(false);
+        setDrawerView("detail");
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -127,6 +130,17 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                      visible ? "translate-x-0" : "translate-x-full"
                    }`}
       >
+        {drawerView === "priceIncrease" ? (
+          <PriceIncreaseView
+            order={order}
+            onBack={() => setDrawerView("detail")}
+            onConfirm={(amount) => {
+              console.log("加价金额:", amount);
+              setDrawerView("detail");
+            }}
+          />
+        ) : (
+        <>
         {/* 头部 - 关闭按钮 */}
         <div className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6">
           <h2 className="text-base font-semibold text-gray-900">订单详情</h2>
@@ -209,6 +223,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                   {statusButtons.map((btn, i) => (
                     <button
                       key={btn}
+                      onClick={btn === "加价" ? () => setDrawerView("priceIncrease") : undefined}
                       className={`h-9 px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         i === 0
                           ? "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
@@ -251,21 +266,21 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                       </div>
                     )}
 
-                    {/* 装货证明（已完成订单） */}
-                    {order.status === "completed" && order.pickupProofPhoto && (
-                      <div className="mt-2 space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-medium text-green-600">已装货</span>
+                    {/* 装货证明（有证明照片时显示） */}
+                    {order.pickupProofPhoto && (order.status === "completed" || order.status === "delivering") && (
+                      <div className="mt-2 bg-gray-50 rounded-lg p-3 flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-green-600">已装货</p>
                           {order.actualPickupTime && (
-                            <span className="text-xs text-gray-400">
+                            <p className="text-xs text-gray-400 mt-0.5">
                               {formatPickupTime(order.actualPickupTime)}
-                            </span>
+                            </p>
                           )}
                         </div>
                         <img
                           src={order.pickupProofPhoto}
                           alt="装货证明"
-                          className="w-20 h-14 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                          className="w-14 h-14 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
                           onClick={() => setProofModalOpen(true)}
                         />
                       </div>
@@ -385,6 +400,8 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
               取消订单
             </button>
           </div>
+        )}
+        </>
         )}
       </div>
 

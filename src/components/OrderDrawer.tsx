@@ -17,48 +17,28 @@ const statusInfo = {
   calling_driver: {
     title: "呼叫司机中",
     description: "正在尽力呼叫附近司机，请稍后",
-    showAnimation: true,
+    dotColor: "bg-blue-500",
+    showPulse: true,
   },
   in_transit: {
     title: "运输中",
     description: "司机正在配送中，请耐心等待",
-    showAnimation: false,
+    dotColor: "bg-blue-500",
+    showPulse: false,
   },
   completed: {
     title: "订单已完成",
     description: "感谢使用，期待下次为您服务",
-    showAnimation: false,
+    dotColor: "bg-green-500",
+    showPulse: false,
   },
   cancelled: {
     title: "订单已取消",
     description: "订单已被取消",
-    showAnimation: false,
+    dotColor: "bg-gray-400",
+    showPulse: false,
   },
 };
-
-// 优雅的环形 Loading 动画
-function LoadingSpinner() {
-  return (
-    <svg className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none">
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="3"
-        className="opacity-25"
-      />
-      <path
-        d="M12 2a10 10 0 0 1 10 10"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-        className="animate-spin origin-center"
-        style={{ transformOrigin: "12px 12px" }}
-      />
-    </svg>
-  );
-}
 
 // 格式化时间为 "今天, HH:MM" 或 "昨天, HH:MM" 或完整日期
 function formatPickupTime(date: Date): string {
@@ -146,85 +126,68 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
         {/* 内容区域 */}
         <div className="h-[calc(100%-56px)] overflow-y-auto subtle-scroll">
           <div className="p-4 lg:p-6 space-y-6">
-            {/* 订单状态卡片 */}
-            <div className="border border-gray-200 rounded-xl p-4 bg-white">
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {statusConfig.title}
-                </h3>
-                {statusConfig.showAnimation && <LoadingSpinner />}
-              </div>
-              <p className="text-sm text-gray-500 mb-1">{statusConfig.description}</p>
-              <p className="text-xs text-gray-400">订单号：{order.orderId}</p>
-
-              {/* 操作按钮 - 仅呼叫司机和已取消状态显示在状态卡片内 */}
-              {(order.status === "calling_driver" || order.status === "cancelled") && (
-                <div className="flex gap-2 pt-3 mt-3 border-t border-gray-100">
-                  {order.status === "calling_driver" && (
-                    <button
-                      className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-medium
-                               hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
-                    >
-                      加价
-                    </button>
-                  )}
-                  <button
-                    className="h-9 px-4 rounded-lg border border-gray-200 bg-white
-                             text-sm font-medium text-gray-700 hover:bg-gray-50
-                             transition-colors cursor-pointer"
-                  >
-                    帮助
-                  </button>
+            {/* 统一状态卡片：状态 header → 司机信息 → 操作按钮 */}
+            <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
+              {/* 状态 header */}
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${statusConfig.dotColor} ${statusConfig.showPulse ? "animate-pulse" : ""}`} />
+                    <h3 className="text-base font-semibold text-gray-900">
+                      {statusConfig.title}
+                    </h3>
+                  </div>
+                  <span className="text-xs text-gray-400 flex-shrink-0">{order.orderId}</span>
                 </div>
-              )}
-            </div>
+                <p className="text-sm text-gray-500 ml-4">{statusConfig.description}</p>
+              </div>
 
-            {/* 司机信息卡片 */}
-            {hasDriver && order.driver && (
-              <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-                <div className="p-4">
-                  <div className="flex items-start justify-between">
-                    {/* 左侧信息 */}
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-base font-semibold text-gray-900 mb-2">
-                        {order.driver.name}
-                      </h4>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-gray-100 rounded px-2 py-0.5 text-xs font-medium text-gray-700">
-                          {order.driver.vehiclePlate}
-                        </span>
-                        <span className="text-sm text-gray-500">{order.vehicle.name}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-sm text-gray-500">
-                        <PhoneOutlined className="text-orange-500 text-xs" />
-                        <span>{order.driver.phone}</span>
-                      </div>
-                    </div>
-
-                    {/* 右侧头像 + 评分 */}
-                    <div className="flex flex-col items-center ml-4 flex-shrink-0">
-                      {order.driver.avatar ? (
-                        <img
-                          src={order.driver.avatar}
-                          alt={order.driver.name}
-                          className="w-14 h-14 rounded-full bg-gray-100 object-cover"
-                        />
-                      ) : (
-                        <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-medium">
-                          {order.driver.name.charAt(0)}
+              {/* 司机信息区（有司机时显示） */}
+              {hasDriver && order.driver && (
+                <div className="px-4 pb-4 pt-0">
+                  <div className="border-t border-gray-100 pt-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-base font-semibold text-gray-900 mb-2">
+                          {order.driver.name}
+                        </h4>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="bg-gray-100 rounded px-2 py-0.5 text-xs font-medium text-gray-700">
+                            {order.driver.vehiclePlate}
+                          </span>
+                          <span className="text-sm text-gray-500">{order.vehicle.name}</span>
                         </div>
-                      )}
-                      {order.driver.rating && (
-                        <div className="flex items-center gap-0.5 mt-1.5">
-                          <StarFilled className="text-orange-500 text-xs" />
-                          <span className="text-xs font-medium text-gray-700">{order.driver.rating}</span>
+                        <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                          <PhoneOutlined className="text-orange-500 text-xs" />
+                          <span>{order.driver.phone}</span>
                         </div>
-                      )}
+                      </div>
+                      <div className="flex flex-col items-center ml-4 flex-shrink-0">
+                        {order.driver.avatar ? (
+                          <img
+                            src={order.driver.avatar}
+                            alt={order.driver.name}
+                            className="w-14 h-14 rounded-full bg-gray-100 object-cover"
+                          />
+                        ) : (
+                          <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-medium">
+                            {order.driver.name.charAt(0)}
+                          </div>
+                        )}
+                        {order.driver.rating && (
+                          <div className="flex items-center gap-0.5 mt-1.5">
+                            <StarFilled className="text-orange-500 text-xs" />
+                            <span className="text-xs font-medium text-gray-700">{order.driver.rating}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
+              )}
 
-                {/* 底部操作按钮区 */}
+              {/* 底部操作按钮区 */}
+              {hasDriver ? (
                 <div className="flex border-t border-gray-100">
                   <button
                     className="flex-1 h-11 flex items-center justify-center gap-1.5 text-sm font-medium
@@ -250,8 +213,26 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                     帮助
                   </button>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="flex gap-2 px-4 pb-4 pt-0">
+                  {order.status === "calling_driver" && (
+                    <button
+                      className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-medium
+                               hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
+                    >
+                      加价
+                    </button>
+                  )}
+                  <button
+                    className="h-9 px-4 rounded-lg border border-gray-200 bg-white
+                             text-sm font-medium text-gray-700 hover:bg-gray-50
+                             transition-colors cursor-pointer"
+                  >
+                    帮助
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* 路线信息 */}
             <div>

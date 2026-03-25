@@ -76,6 +76,7 @@ export default function WalletPage() {
             <p className="text-sm text-gray-500 mb-2">余额</p>
             <p className="text-4xl font-bold text-gray-900">
               HK$ {mockWalletBalance.balance.toFixed(2)}
+              <span className="text-lg font-normal text-gray-400"> / HK$ {mockWalletBalance.creditLimit.toFixed(2)}</span>
             </p>
           </div>
         </div>

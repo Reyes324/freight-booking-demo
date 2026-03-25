@@ -828,12 +828,14 @@ export interface Transaction {
 
 export interface WalletBalance {
   balance: number;
+  creditLimit: number;
   currency: 'HKD';
 }
 
 // Mock 钱包余额
 export const mockWalletBalance: WalletBalance = {
   balance: 1250.50,
+  creditLimit: 5000.00,
   currency: 'HKD',
 };
 

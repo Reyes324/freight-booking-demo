@@ -186,52 +186,51 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                 </div>
               )}
 
-              {/* 底部操作按钮区 */}
-              {hasDriver ? (
-                <div className="flex border-t border-gray-100">
-                  <button
-                    className="flex-1 h-11 flex items-center justify-center gap-1.5 text-sm font-medium
-                             text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
-                  >
-                    <MessageOutlined className="text-sm" />
-                    在线联系
-                  </button>
-                  <div className="w-px bg-gray-100" />
-                  <button
-                    className="flex-1 h-11 flex items-center justify-center gap-1.5 text-sm font-medium
-                             text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
-                  >
-                    <EnvironmentOutlined className="text-sm" />
-                    订单追踪
-                  </button>
-                  <div className="w-px bg-gray-100" />
-                  <button
-                    className="flex-1 h-11 flex items-center justify-center gap-1.5 text-sm font-medium
-                             text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
-                  >
-                    <QuestionCircleOutlined className="text-sm" />
-                    帮助
-                  </button>
-                </div>
-              ) : (
-                <div className="flex gap-2 px-4 pb-4 pt-0">
-                  {order.status === "calling_driver" && (
+              {/* 底部操作按钮区 — 统一居左样式 */}
+              <div className="flex gap-2 px-4 pb-4 pt-3 border-t border-gray-100">
+                {hasDriver ? (
+                  <>
                     <button
                       className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-medium
                                hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
                     >
-                      加价
+                      在线联系
                     </button>
-                  )}
-                  <button
-                    className="h-9 px-4 rounded-lg border border-gray-200 bg-white
-                             text-sm font-medium text-gray-700 hover:bg-gray-50
-                             transition-colors cursor-pointer"
-                  >
-                    帮助
-                  </button>
-                </div>
-              )}
+                    <button
+                      className="h-9 px-4 rounded-lg border border-gray-200 bg-white
+                               text-sm font-medium text-gray-700 hover:bg-gray-50
+                               transition-colors cursor-pointer"
+                    >
+                      订单追踪
+                    </button>
+                    <button
+                      className="h-9 px-4 rounded-lg border border-gray-200 bg-white
+                               text-sm font-medium text-gray-700 hover:bg-gray-50
+                               transition-colors cursor-pointer"
+                    >
+                      帮助
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {order.status === "calling_driver" && (
+                      <button
+                        className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-medium
+                                 hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
+                      >
+                        加价
+                      </button>
+                    )}
+                    <button
+                      className="h-9 px-4 rounded-lg border border-gray-200 bg-white
+                               text-sm font-medium text-gray-700 hover:bg-gray-50
+                               transition-colors cursor-pointer"
+                    >
+                      帮助
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* 路线信息 */}

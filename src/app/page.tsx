@@ -13,6 +13,7 @@ import OrderSummary from "@/components/OrderSummary";
 import DateTimePicker from "@/components/DateTimePicker";
 import DriverNoteInput from "@/components/DriverNoteInput";
 import PaymentMethodSelector from "@/components/PaymentMethodSelector";
+import OrderContactPhone from "@/components/OrderContactPhone";
 import ConfirmationFooter from "@/components/ConfirmationFooter";
 import { OrderStorage } from "@/lib/orderStorage";
 import type { Vehicle, AddressDetail, OrderDraft, OrderConfirmation } from "@/data/mockData";
@@ -32,6 +33,7 @@ export default function OrderPage() {
   }>({ itemIds: [], groupSelections: {} });
 
   // 确认页状态
+  const [contactPhone, setContactPhone] = useState<string>("+66 812345678");
   const [scheduledTime, setScheduledTime] = useState<string>("");
   const [driverNote, setDriverNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -128,6 +130,7 @@ export default function OrderPage() {
     setIsSubmitting(true);
 
     const confirmation: OrderConfirmation = {
+      contactPhone,
       scheduledTime: scheduledTime ? new Date(scheduledTime) : undefined,
       driverNote,
       paymentMethod: "credit",
@@ -152,7 +155,7 @@ export default function OrderPage() {
 
     // 跳转到订单记录页面
     router.push('/orders');
-  }, [orderDraft, scheduledTime, driverNote, router]);
+  }, [orderDraft, contactPhone, scheduledTime, driverNote, router]);
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-gray-100">
@@ -250,6 +253,8 @@ export default function OrderPage() {
                 pricingOption={orderDraft.pricingOption}
                 totalPrice={orderDraft.totalPrice}
               />
+
+              <OrderContactPhone value={contactPhone} onChange={setContactPhone} />
 
               <DateTimePicker value={scheduledTime} onChange={setScheduledTime} />
 

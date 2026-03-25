@@ -582,6 +582,7 @@ export interface OrderDraft {
 
 // 订单确认信息（确认页用户填写）
 export interface OrderConfirmation {
+  contactPhone: string;    // 订单联系电话，默认 +66
   scheduledTime?: Date; // undefined = 现在用车
   driverNote: string;   // 最多 500 字
   paymentMethod: 'credit'; // 当前只支持账期支付
@@ -643,6 +644,7 @@ export const mockOrders: Order[] = [
     },
     basePrice: 74.0,
     totalPrice: 74.0,
+    contactPhone: '+66 812345678',
     scheduledTime: new Date(),
     driverNote: '',
     paymentMethod: 'credit',
@@ -675,6 +677,7 @@ export const mockOrders: Order[] = [
     totalPrice: 147.0,
     scheduledTime: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2小时前
     actualPickupTime: new Date(Date.now() - 1.5 * 60 * 60 * 1000),
+    contactPhone: '+66 812345678',
     driverNote: '请小心搬运',
     paymentMethod: 'credit',
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
@@ -712,6 +715,7 @@ export const mockOrders: Order[] = [
     scheduledTime: new Date(Date.now() - 24 * 60 * 60 * 1000), // 昨天
     actualPickupTime: new Date(Date.now() - 23.5 * 60 * 60 * 1000),
     completedTime: new Date(Date.now() - 23 * 60 * 60 * 1000),
+    contactPhone: '+66 812345678',
     driverNote: '',
     paymentMethod: 'credit',
     createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
@@ -746,6 +750,7 @@ export const mockOrders: Order[] = [
     },
     basePrice: 74.0,
     totalPrice: 74.0,
+    contactPhone: '+66 812345678',
     scheduledTime: new Date(Date.now() - 48 * 60 * 60 * 1000), // 2天前
     cancelledTime: new Date(Date.now() - 47.5 * 60 * 60 * 1000),
     driverNote: '',

@@ -16,7 +16,12 @@ const statusConfig: Record<OrderStatus, StatusConfig> = {
   in_transit: {
     color: '#1677FF',
     bgColor: '#E5EDFF',
-    text: '运输中',
+    text: '前往装货地',
+  },
+  delivering: {
+    color: '#1677FF',
+    bgColor: '#E5EDFF',
+    text: '配送中',
   },
   completed: {
     color: '#00A178',

@@ -21,7 +21,13 @@ const statusInfo = {
     showPulse: true,
   },
   in_transit: {
-    title: "运输中",
+    title: "前往装货地",
+    description: "司机正在前往装货地点",
+    dotColor: "bg-blue-500",
+    showPulse: false,
+  },
+  delivering: {
+    title: "配送中",
     description: "司机正在配送中，请耐心等待",
     dotColor: "bg-blue-500",
     showPulse: false,
@@ -91,7 +97,18 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   if (!order || !mounted) return null;
 
   const statusConfig = statusInfo[order.status];
-  const hasDriver = order.driver && (order.status === "in_transit" || order.status === "completed");
+  const hasDriver = order.driver && (order.status === "in_transit" || order.status === "delivering" || order.status === "completed");
+
+  // 按状态决定按钮
+  const statusButtons: string[] = (() => {
+    switch (order.status) {
+      case "calling_driver": return ["加价"];
+      case "in_transit": return ["更换司机", "追踪订单", "调整费用"];
+      case "delivering": return ["追踪订单"];
+      case "completed": return ["追踪订单"];
+      default: return [];
+    }
+  })();
 
   return (
     <>
@@ -132,14 +149,14 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
               <div className="p-4">
                 <div className="flex items-start justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${statusConfig.dotColor} ${statusConfig.showPulse ? "animate-pulse" : ""}`} />
                     <h3 className="text-base font-semibold text-gray-900">
                       {statusConfig.title}
                     </h3>
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${statusConfig.dotColor} ${statusConfig.showPulse ? "animate-pulse" : ""}`} />
                   </div>
                   <span className="text-xs text-gray-400 flex-shrink-0">{order.orderId}</span>
                 </div>
-                <p className="text-sm text-gray-500 ml-4">{statusConfig.description}</p>
+                <p className="text-sm text-gray-500">{statusConfig.description}</p>
               </div>
 
               {/* 司机信息区（有司机时显示） */}
@@ -186,51 +203,23 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                 </div>
               )}
 
-              {/* 底部操作按钮区 — 统一居左样式 */}
-              <div className="flex gap-2 px-4 pb-4 pt-3 border-t border-gray-100">
-                {hasDriver ? (
-                  <>
+              {/* 底部操作按钮区 — 按状态显示不同按钮 */}
+              {statusButtons.length > 0 && (
+                <div className="flex gap-2 px-4 pb-4 pt-3 border-t border-gray-100">
+                  {statusButtons.map((btn, i) => (
                     <button
-                      className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-medium
-                               hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
+                      key={btn}
+                      className={`h-9 px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                        i === 0
+                          ? "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
+                          : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                      }`}
                     >
-                      在线联系
+                      {btn}
                     </button>
-                    <button
-                      className="h-9 px-4 rounded-lg border border-gray-200 bg-white
-                               text-sm font-medium text-gray-700 hover:bg-gray-50
-                               transition-colors cursor-pointer"
-                    >
-                      订单追踪
-                    </button>
-                    <button
-                      className="h-9 px-4 rounded-lg border border-gray-200 bg-white
-                               text-sm font-medium text-gray-700 hover:bg-gray-50
-                               transition-colors cursor-pointer"
-                    >
-                      帮助
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    {order.status === "calling_driver" && (
-                      <button
-                        className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-medium
-                                 hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
-                      >
-                        加价
-                      </button>
-                    )}
-                    <button
-                      className="h-9 px-4 rounded-lg border border-gray-200 bg-white
-                               text-sm font-medium text-gray-700 hover:bg-gray-50
-                               transition-colors cursor-pointer"
-                    >
-                      帮助
-                    </button>
-                  </>
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* 路线信息 */}
@@ -383,7 +372,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
         </div>
 
         {/* 底部悬浮按钮 - 灰色边框 */}
-        {(order.status === "calling_driver" || order.status === "in_transit") && (
+        {(order.status === "calling_driver" || order.status === "in_transit" || order.status === "delivering") && (
           <div
             className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 bg-white border-t border-gray-200
                        flex justify-end"

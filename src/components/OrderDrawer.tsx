@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, PhoneOutlined, StarFilled, MessageOutlined, EnvironmentOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import type { Order } from "@/data/mockData";
+import PickupProofModal from "./PickupProofModal";
 
 interface OrderDrawerProps {
   open: boolean;
@@ -59,15 +60,28 @@ function LoadingSpinner() {
   );
 }
 
+// 格式化时间为 "今天, HH:MM" 或 "昨天, HH:MM" 或完整日期
+function formatPickupTime(date: Date): string {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+  const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const time = date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", hour12: false });
+
+  if (target.getTime() === today.getTime()) return `今天, ${time}`;
+  if (target.getTime() === yesterday.getTime()) return `昨天, ${time}`;
+  return date.toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" }) + `, ${time}`;
+}
+
 export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [proofModalOpen, setProofModalOpen] = useState(false);
 
   // 两阶段动画：先挂载，再触发动画
   useEffect(() => {
     if (open) {
       setMounted(true);
-      // 使用 requestAnimationFrame 确保 DOM 已渲染
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setVisible(true);
@@ -75,7 +89,6 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
       });
     } else {
       setVisible(false);
-      // 等动画结束后再卸载
       const timer = setTimeout(() => {
         setMounted(false);
       }, 300);
@@ -98,6 +111,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   if (!order || !mounted) return null;
 
   const statusConfig = statusInfo[order.status];
+  const hasDriver = order.driver && (order.status === "in_transit" || order.status === "completed");
 
   return (
     <>
@@ -132,46 +146,112 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
         {/* 内容区域 */}
         <div className="h-[calc(100%-56px)] overflow-y-auto subtle-scroll">
           <div className="p-4 lg:p-6 space-y-6">
-            {/* 订单状态卡片 - 白色背景，整体感强 */}
+            {/* 订单状态卡片 */}
             <div className="border border-gray-200 rounded-xl p-4 bg-white">
-              {/* 状态标题 + 动画 */}
               <div className="flex items-center gap-2 mb-2">
                 <h3 className="text-lg font-semibold text-gray-900">
                   {statusConfig.title}
                 </h3>
                 {statusConfig.showAnimation && <LoadingSpinner />}
               </div>
-
-              {/* 描述文字 */}
               <p className="text-sm text-gray-500 mb-1">{statusConfig.description}</p>
+              <p className="text-xs text-gray-400">订单号：{order.orderId}</p>
 
-              {/* 订单号 */}
-              <p className="text-xs text-gray-400 mb-3">订单号：{order.orderId}</p>
-
-              {/* 操作按钮区 - 居左，加价突出 */}
-              <div className="flex gap-2 pt-3 border-t border-gray-100">
-                <button
-                  className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-medium
-                           hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
-                >
-                  加价
-                </button>
-                <button
-                  className="h-9 px-4 rounded-lg border border-gray-200 bg-white
-                           text-sm font-medium text-gray-700 hover:bg-gray-50
-                           transition-colors cursor-pointer"
-                >
-                  订单追踪
-                </button>
-                <button
-                  className="h-9 px-4 rounded-lg border border-gray-200 bg-white
-                           text-sm font-medium text-gray-700 hover:bg-gray-50
-                           transition-colors cursor-pointer"
-                >
-                  帮助
-                </button>
-              </div>
+              {/* 操作按钮 - 仅呼叫司机和已取消状态显示在状态卡片内 */}
+              {(order.status === "calling_driver" || order.status === "cancelled") && (
+                <div className="flex gap-2 pt-3 mt-3 border-t border-gray-100">
+                  {order.status === "calling_driver" && (
+                    <button
+                      className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-medium
+                               hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
+                    >
+                      加价
+                    </button>
+                  )}
+                  <button
+                    className="h-9 px-4 rounded-lg border border-gray-200 bg-white
+                             text-sm font-medium text-gray-700 hover:bg-gray-50
+                             transition-colors cursor-pointer"
+                  >
+                    帮助
+                  </button>
+                </div>
+              )}
             </div>
+
+            {/* 司机信息卡片 */}
+            {hasDriver && order.driver && (
+              <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
+                <div className="p-4">
+                  <div className="flex items-start justify-between">
+                    {/* 左侧信息 */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-base font-semibold text-gray-900 mb-2">
+                        {order.driver.name}
+                      </h4>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="bg-gray-100 rounded px-2 py-0.5 text-xs font-medium text-gray-700">
+                          {order.driver.vehiclePlate}
+                        </span>
+                        <span className="text-sm text-gray-500">{order.vehicle.name}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                        <PhoneOutlined className="text-orange-500 text-xs" />
+                        <span>{order.driver.phone}</span>
+                      </div>
+                    </div>
+
+                    {/* 右侧头像 + 评分 */}
+                    <div className="flex flex-col items-center ml-4 flex-shrink-0">
+                      {order.driver.avatar ? (
+                        <img
+                          src={order.driver.avatar}
+                          alt={order.driver.name}
+                          className="w-14 h-14 rounded-full bg-gray-100 object-cover"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-medium">
+                          {order.driver.name.charAt(0)}
+                        </div>
+                      )}
+                      {order.driver.rating && (
+                        <div className="flex items-center gap-0.5 mt-1.5">
+                          <StarFilled className="text-orange-500 text-xs" />
+                          <span className="text-xs font-medium text-gray-700">{order.driver.rating}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 底部操作按钮区 */}
+                <div className="flex border-t border-gray-100">
+                  <button
+                    className="flex-1 h-11 flex items-center justify-center gap-1.5 text-sm font-medium
+                             text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
+                  >
+                    <MessageOutlined className="text-sm" />
+                    在线联系
+                  </button>
+                  <div className="w-px bg-gray-100" />
+                  <button
+                    className="flex-1 h-11 flex items-center justify-center gap-1.5 text-sm font-medium
+                             text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
+                    <EnvironmentOutlined className="text-sm" />
+                    订单追踪
+                  </button>
+                  <div className="w-px bg-gray-100" />
+                  <button
+                    className="flex-1 h-11 flex items-center justify-center gap-1.5 text-sm font-medium
+                             text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
+                    <QuestionCircleOutlined className="text-sm" />
+                    帮助
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* 路线信息 */}
             <div>
@@ -179,11 +259,8 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
               <div className="flex gap-2.5">
                 {/* 左侧标记列 */}
                 <div className="flex flex-col items-center" style={{ width: "12px" }}>
-                  {/* 起点圆圈 */}
                   <div className="w-3 h-3 rounded-full bg-blue-600 flex-shrink-0 mt-[3px]" />
-                  {/* 连接线 */}
                   <div className="w-px flex-1 min-h-[24px] border-l border-dashed border-gray-300 my-2" />
-                  {/* 终点圆圈 */}
                   <div className="w-3 h-3 rounded-full border border-gray-400 bg-white flex-shrink-0 mb-[3px]" />
                 </div>
 
@@ -202,6 +279,26 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                           </p>
                         )}
                         {order.pickup.unit && <p>{order.pickup.unit}</p>}
+                      </div>
+                    )}
+
+                    {/* 装货证明（已完成订单） */}
+                    {order.status === "completed" && order.pickupProofPhoto && (
+                      <div className="mt-2 space-y-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium text-green-600">已装货</span>
+                          {order.actualPickupTime && (
+                            <span className="text-xs text-gray-400">
+                              {formatPickupTime(order.actualPickupTime)}
+                            </span>
+                          )}
+                        </div>
+                        <img
+                          src={order.pickupProofPhoto}
+                          alt="装货证明"
+                          className="w-20 h-14 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => setProofModalOpen(true)}
+                        />
                       </div>
                     )}
                   </div>
@@ -246,27 +343,6 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                 </div>
               </div>
             </div>
-
-            {/* 司机信息（如果有） */}
-            {order.driver && (
-              <div className="pt-6 border-t border-gray-100 space-y-3">
-                <h4 className="text-sm font-medium text-gray-900">司机信息</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">姓名</span>
-                    <span className="text-sm text-gray-900">{order.driver.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">电话</span>
-                    <span className="text-sm text-gray-900">{order.driver.phone}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">车牌号</span>
-                    <span className="text-sm text-gray-900">{order.driver.vehiclePlate}</span>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* 订单信息 */}
             <div className="pt-6 border-t border-gray-100 space-y-3">
@@ -342,6 +418,15 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
           </div>
         )}
       </div>
+
+      {/* 装货证明图片弹窗 */}
+      {order.pickupProofPhoto && (
+        <PickupProofModal
+          open={proofModalOpen}
+          imageUrl={order.pickupProofPhoto}
+          onClose={() => setProofModalOpen(false)}
+        />
+      )}
     </>
   );
 }

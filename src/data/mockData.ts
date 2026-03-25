@@ -612,7 +612,10 @@ export interface Order extends CompleteOrder {
     name: string;
     phone: string;
     vehiclePlate: string;
+    avatar?: string;
+    rating?: number;
   };
+  pickupProofPhoto?: string;
 }
 
 // ── Mock Orders Data ──
@@ -685,6 +688,8 @@ export const mockOrders: Order[] = [
       name: '张师傅',
       phone: '+852 6789 0123',
       vehiclePlate: 'AB 1234',
+      avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=driver1',
+      rating: 4.85,
     },
   },
   {
@@ -723,7 +728,10 @@ export const mockOrders: Order[] = [
       name: '李师傅',
       phone: '+852 6890 1234',
       vehiclePlate: 'CD 5678',
+      avatar: 'https://api.dicebear.com/9.x/notionists/svg?seed=driver2',
+      rating: 4.92,
     },
+    pickupProofPhoto: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=300&fit=crop',
   },
   {
     orderId: 'ORD-1710641234567',

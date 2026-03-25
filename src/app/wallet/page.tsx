@@ -1,33 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Table, DatePicker, Tag, Empty } from 'antd';
-import { CalendarOutlined, LeftOutlined, RightOutlined, PlusCircleOutlined, MinusCircleOutlined, RollbackOutlined } from '@ant-design/icons';
+import { Table, DatePicker, Empty } from 'antd';
+import { CalendarOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs, { Dayjs } from 'dayjs';
 import Navbar from '@/components/Navbar';
-import { mockWalletBalance, mockTransactions, type Transaction, type TransactionType } from '@/data/mockData';
+import { mockWalletBalance, mockTransactions, type Transaction } from '@/data/mockData';
 
 const { RangePicker } = DatePicker;
-
-// 交易类型配置
-const transactionTypeConfig: Record<TransactionType, { label: string; color: string; icon: React.ReactNode }> = {
-  topup: {
-    label: '充值',
-    color: 'blue',
-    icon: <PlusCircleOutlined />,
-  },
-  payment: {
-    label: '支付',
-    color: 'orange',
-    icon: <MinusCircleOutlined />,
-  },
-  refund: {
-    label: '退款',
-    color: 'green',
-    icon: <RollbackOutlined />,
-  },
-};
 
 export default function WalletPage() {
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs]>([
@@ -43,20 +24,6 @@ export default function WalletPage() {
 
   // 表格列定义
   const columns: ColumnsType<Transaction> = [
-    {
-      title: '交易类型',
-      dataIndex: 'type',
-      key: 'type',
-      width: 150,
-      render: (type: TransactionType) => {
-        const config = transactionTypeConfig[type];
-        return (
-          <Tag color={config.color} icon={config.icon}>
-            {config.label}
-          </Tag>
-        );
-      },
-    },
     {
       title: '日期',
       dataIndex: 'date',
@@ -76,6 +43,12 @@ export default function WalletPage() {
       ),
     },
     {
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
+      width: 150,
+    },
+    {
       title: '金额',
       dataIndex: 'amount',
       key: 'amount',
@@ -83,12 +56,8 @@ export default function WalletPage() {
       align: 'right',
       render: (amount: number) => (
         <div className="text-right">
-          <span
-            className={`text-sm font-medium ${
-              amount > 0 ? 'text-green-600' : 'text-red-600'
-            }`}
-          >
-            {amount > 0 ? '+' : ''}HK$ {Math.abs(amount).toFixed(2)}
+          <span className="text-sm font-medium text-gray-900">
+            {amount > 0 ? '+' : '-'}HK$ {Math.abs(amount).toFixed(2)}
           </span>
         </div>
       ),
@@ -103,19 +72,11 @@ export default function WalletPage() {
         {/* 账期余额 */}
         <h1 className="text-lg font-semibold text-gray-900 mb-4">账期余额</h1>
         <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 mb-2">余额</p>
-              <p className="text-4xl font-bold text-gray-900">
-                HK$ {mockWalletBalance.balance.toFixed(2)}
-              </p>
-            </div>
-            <button
-              className="h-11 px-6 rounded-lg bg-blue-600 text-white font-medium text-base
-                       hover:bg-blue-700 active:bg-blue-800 transition-colors cursor-pointer"
-            >
-              充值
-            </button>
+          <div>
+            <p className="text-sm text-gray-500 mb-2">余额</p>
+            <p className="text-4xl font-bold text-gray-900">
+              HK$ {mockWalletBalance.balance.toFixed(2)}
+            </p>
           </div>
         </div>
 

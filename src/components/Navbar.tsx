@@ -8,7 +8,7 @@ import { SettingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 const tabs = [
   { id: "order", label: "下单叫车", path: "/" },
   { id: "history", label: "订单记录", path: "/orders" },
-  { id: "wallet", label: "我的钱包", path: "/wallet" },
+  { id: "wallet", label: "账期余额", path: "/wallet" },
 ];
 
 export default function Navbar() {

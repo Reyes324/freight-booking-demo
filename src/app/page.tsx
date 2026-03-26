@@ -16,6 +16,7 @@ import PaymentMethodSelector from "@/components/PaymentMethodSelector";
 import OrderContactPhone from "@/components/OrderContactPhone";
 import ConfirmationFooter from "@/components/ConfirmationFooter";
 import { OrderStorage } from "@/lib/orderStorage";
+import { vehicles as vehicleList } from "@/data/mockData";
 import type { Vehicle, AddressDetail, OrderDraft, OrderConfirmation } from "@/data/mockData";
 
 type ViewMode = "configure" | "confirm";
@@ -25,7 +26,7 @@ export default function OrderPage() {
   const [currentStep, setCurrentStep] = useState<ViewMode>("configure");
   const [pickupAddress, setPickupAddress] = useState<AddressDetail | null>(null);
   const [dropoffAddress, setDropoffAddress] = useState<AddressDetail | null>(null);
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(vehicleList[0]);
   const [isPricingLoading, setIsPricingLoading] = useState(false);
   const [selectedServices, setSelectedServices] = useState<{
     itemIds: string[];
@@ -188,16 +189,16 @@ export default function OrderPage() {
                 </p>
               </div>
 
+              <VehicleSelector
+                selectedVehicle={selectedVehicle}
+                onSelect={handleVehicleSelect}
+              />
+
               <RouteSection
                 pickupAddress={pickupAddress}
                 dropoffAddress={dropoffAddress}
                 onPickupChange={setPickupAddress}
                 onDropoffChange={setDropoffAddress}
-              />
-
-              <VehicleSelector
-                selectedVehicle={selectedVehicle}
-                onSelect={handleVehicleSelect}
               />
 
               <AdditionalServices

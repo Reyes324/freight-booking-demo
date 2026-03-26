@@ -81,11 +81,11 @@ export default function WalletPage() {
           </div>
         </div>
 
-        {/* 交易历史 */}
+        {/* 交易明细 */}
         <div className="space-y-4">
           {/* 标题栏 */}
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">交易历史</h2>
+            <h2 className="text-lg font-semibold text-gray-900">交易明细</h2>
 
             {/* 日期范围选择器 */}
             <div className="flex items-center gap-4">

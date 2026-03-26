@@ -254,7 +254,14 @@ export default function MobileAddressFlow({
 
           {/* Results list — floats on map, below search input */}
           <div className="relative z-10 flex-1 overflow-y-auto bg-white">
-            {suggestions.length > 0 ? (
+            {isLoading ? (
+              <div className="py-12 px-4 text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 mb-3">
+                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                </div>
+                <p className="text-sm text-gray-600">搜索中...</p>
+              </div>
+            ) : suggestions.length > 0 ? (
               <div className="py-1">
                 {suggestions.map((suggestion) => (
                   <button
@@ -390,7 +397,7 @@ export default function MobileAddressFlow({
           </div>
 
           {/* Footer buttons */}
-          <div className="flex-shrink-0 flex gap-3 px-4 py-4 border-t border-gray-100 bg-white pb-safe">
+          <div className="flex-shrink-0 flex gap-3 px-4 pt-4 pb-8 border-t border-gray-100 bg-white">
             <button
               onClick={handleBack}
               className="flex-1 h-12 rounded-lg border border-gray-200 text-base font-medium text-gray-700

@@ -27,6 +27,7 @@ export default function AddressDetailsPopover({
   const [unit, setUnit] = useState(initialData?.unit || "");
   const popoverRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [arrowTop, setArrowTop] = useState(24);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -38,15 +39,48 @@ export default function AddressDetailsPopover({
     }
   }, [isOpen, initialData]);
 
-  // Calculate position based on anchor element
+  // Continuously track anchor position with RAF loop + boundary detection
   useEffect(() => {
-    if (isOpen && anchorRef?.current) {
-      const rect = anchorRef.current.getBoundingClientRect();
-      setPosition({
-        top: rect.top,
-        left: rect.right + 16, // 16px margin from the anchor
-      });
-    }
+    if (!isOpen || !anchorRef?.current) return;
+
+    let rafId: number;
+    const update = () => {
+      const anchor = anchorRef.current;
+      const popover = popoverRef.current;
+      if (!anchor || !popover) {
+        rafId = requestAnimationFrame(update);
+        return;
+      }
+
+      const anchorRect = anchor.getBoundingClientRect();
+      const popoverHeight = popover.offsetHeight;
+      const viewportHeight = window.innerHeight;
+
+      // Ideal position: align with anchor top
+      let top = anchorRect.top;
+
+      // Boundary detection: push up if bottom overflows viewport
+      if (top + popoverHeight > viewportHeight - 16) {
+        top = viewportHeight - popoverHeight - 16;
+      }
+      // Don't overflow top
+      if (top < 16) top = 16;
+
+      const left = anchorRect.right + 16;
+
+      // Arrow offset: always point to anchor center
+      const rawArrowTop = anchorRect.top + anchorRect.height / 2 - top;
+      // Clamp arrow within popover bounds (12px from edges)
+      const clampedArrowTop = Math.max(12, Math.min(rawArrowTop, popoverHeight - 12));
+
+      setPosition({ top, left });
+      setArrowTop(clampedArrowTop);
+
+      rafId = requestAnimationFrame(update);
+    };
+
+    rafId = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(rafId);
   }, [isOpen, anchorRef]);
 
   // Control fade-in animation
@@ -106,7 +140,7 @@ export default function AddressDetailsPopover({
                     transition-opacity duration-200 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
       >
         {/* Pointer arrow */}
-        <div className="absolute left-0 top-6 -ml-2 w-4 h-4 bg-white border-l border-t border-gray-200 rotate-[-45deg]" />
+        <div className="absolute left-0 -ml-2 w-4 h-4 bg-white border-l border-t border-gray-200 rotate-[-45deg]" style={{ top: `${arrowTop}px` }} />
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100">

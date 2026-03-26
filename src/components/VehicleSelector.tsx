@@ -43,7 +43,7 @@ export default function VehicleSelector({
       </div>
 
       {/* Tag buttons */}
-      <div className="flex flex-wrap gap-x-4 gap-y-2.5 mb-5">
+      <div className="flex flex-wrap gap-x-4 gap-y-2.5 mb-2">
         {vehicles.map((vehicle) => {
           const isSelected = vehicle.id === current.id;
           return (
@@ -63,7 +63,7 @@ export default function VehicleSelector({
       </div>
 
       {/* Vehicle display area */}
-      <div className="relative flex items-center justify-center py-2">
+      <div className="relative flex items-center justify-center">
         {/* Left arrow — pinned to left edge */}
         <button
           onClick={goToPrev}

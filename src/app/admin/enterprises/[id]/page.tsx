@@ -3,13 +3,15 @@
 import { useMemo } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Tabs, Table, Input, Button, Card, DatePicker, Tag, Tooltip } from 'antd';
-import { ArrowLeftOutlined, SearchOutlined, DownloadOutlined } from '@ant-design/icons';
+import { Tabs, Table, Input, Button, Card, DatePicker, Tag, Tooltip, Progress } from 'antd';
+import { ArrowLeftOutlined, SearchOutlined, DownloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import {
   enterprises,
   creditTransactions,
   adminOrders,
+  getMonthlyRate,
+  getCurrentMonth,
   type CreditTransaction,
   type AdminOrder,
   type FeeBreakdown,
@@ -57,6 +59,12 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
 
   const remaining = (enterprise?.creditLimit ?? 0) - (enterprise?.usedCredit ?? 0);
 
+  // 获取当月汇率
+  const currentMonth = getCurrentMonth();
+  const monthlyRate = getMonthlyRate(currentMonth);
+  const localCurrency = enterprise?.localCurrency || 'HKD';
+  const exchangeRate = monthlyRate?.rates[`CNY/${localCurrency}` as keyof typeof monthlyRate.rates];
+
   const columns: ColumnsType<CreditTransaction> = [
     { title: '日期', dataIndex: 'date', key: 'date', width: 180 },
     {
@@ -68,13 +76,38 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
     },
     { title: '描述', dataIndex: 'description', key: 'description', width: 120 },
     {
-      title: '金额',
-      dataIndex: 'amount',
-      key: 'amount',
-      width: 160,
-      render: (v: number) => {
+      title: '订单币种',
+      key: 'localCurrency',
+      width: 140,
+      render: (_, record) => {
+        if (!record.localCurrency) return '-';
+        return (
+          <span className="font-mono text-gray-600">
+            {record.localCurrency} {record.localAmount?.toFixed(2)}
+          </span>
+        );
+      },
+    },
+    {
+      title: '账期变动 (CNY)',
+      dataIndex: 'cnyAmount',
+      key: 'cnyAmount',
+      width: 180,
+      render: (v: number, r) => {
         const prefix = v > 0 ? '+' : '';
-        return `${prefix}${currency} ${Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+        const color = v > 0 ? 'text-green-600' : 'text-gray-900';
+        return (
+          <div className="flex items-center gap-2">
+            <span className={`${color} font-medium`}>
+              {prefix}¥ {Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </span>
+            {r.exchangeRate && (
+              <Tooltip title={`${r.rateDate} 汇率: 1 CNY = ${r.exchangeRate} ${r.localCurrency}`}>
+                <InfoCircleOutlined className="text-gray-400 text-xs cursor-help" />
+              </Tooltip>
+            )}
+          </div>
+        );
       },
     },
   ];
@@ -84,15 +117,47 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
       {/* Balance card */}
       <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
         <div className="text-sm text-gray-500 mb-2">当前余额</div>
-        <div className="flex items-baseline gap-2">
+
+        {/* 人民币余额 */}
+        <div className="flex items-baseline gap-2 mb-4">
           <span className="text-3xl font-bold text-gray-900">
-            {currency} {remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            ¥ {remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </span>
           <span className="text-gray-400">/</span>
           <span className="text-gray-400">
-            {currency} {enterprise?.creditLimit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            ¥ {enterprise?.creditLimit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </span>
         </div>
+
+        {/* 使用百分比 */}
+        <div className="mb-4">
+          <div className="flex justify-between text-sm text-gray-500 mb-1">
+            <span>已使用 {((enterprise?.usedCredit ?? 0) / (enterprise?.creditLimit ?? 1) * 100).toFixed(1)}%</span>
+          </div>
+          <Progress
+            percent={((enterprise?.usedCredit ?? 0) / (enterprise?.creditLimit ?? 1) * 100)}
+            showInfo={false}
+            strokeColor="#1890ff"
+          />
+        </div>
+
+        {/* 汇率信息 */}
+        {monthlyRate && exchangeRate && (
+          <div className="pt-4 border-t border-gray-100">
+            <div className="text-xs text-gray-500 mb-1">本月汇率</div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-mono text-gray-900">
+                1 CNY = {exchangeRate} {localCurrency}
+              </span>
+              <Tooltip title={`${monthlyRate.rateDate} 汇率`}>
+                <InfoCircleOutlined className="text-gray-400 cursor-help" />
+              </Tooltip>
+            </div>
+            <div className="text-xs text-gray-400 mt-1">
+              当地货币等值约 {localCurrency} {(remaining * exchangeRate).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Transactions */}

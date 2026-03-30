@@ -19,14 +19,14 @@ const pricingOptions: PricingOption[] = [
     id: "priority",
     title: "优先订单",
     subtitle: "加快配对司机送货",
-    price: 117.0,
+    price: 350.0,
     badge: true,
   },
   {
     id: "standard",
     title: "标准订单",
     subtitle: "加快配对司机送货",
-    price: 74.0,
+    price: 220.0,
   },
 ];
 
@@ -96,7 +96,7 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
               {/* 价格区域 */}
               <div className="flex gap-2 items-end">
                 <p className="font-price text-gray-900 text-2xl leading-[22px] font-bold tracking-tight transition-transform">
-                  HK$ {option.price.toFixed(2)}
+                  ฿{option.price.toFixed(0)}
                 </p>
                 {/* Info icon（仅选中时显示） */}
                 {isSelected && (

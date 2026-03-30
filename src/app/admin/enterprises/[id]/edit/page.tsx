@@ -1,26 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Form, Input, InputNumber, Select, Button, message } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { enterprises } from '@/data/adminMockData';
-
-const countryCodes = [
-  { value: '+852', label: '+852 香港' },
-  { value: '+66', label: '+66 泰国' },
-  { value: '+86', label: '+86 中国' },
-  { value: '+65', label: '+65 新加坡' },
-  { value: '+60', label: '+60 马来西亚' },
-];
-
-const currencyOptions = [
-  { value: 'HK$', label: 'HK$ 港币' },
-  { value: 'THB', label: 'THB 泰铢' },
-  { value: 'CNY', label: 'CNY 人民币' },
-  { value: 'SGD', label: 'SGD 新加坡元' },
-  { value: 'MYR', label: 'MYR 马来西亚林吉特' },
-];
+import { countryCodes, currencyOptions, regionMap } from '@/data/enterpriseConstants';
+import { PREMIUM_RATE_MAX, CREDIT_LIMIT_MAX } from '@/data/enterpriseConstants';
+import {
+  getEnterpriseNameRules,
+  getPhoneRules,
+  passwordRules,
+  premiumRateRules,
+  creditLimitRules,
+} from '@/lib/enterpriseUtils';
 
 export default function EditEnterprisePage() {
   const router = useRouter();
@@ -30,9 +24,20 @@ export default function EditEnterprisePage() {
 
   const enterprise = enterprises.find((e) => e.id === params.id);
 
+  const [countryCode, setCountryCode] = useState(enterprise?.countryCode || '+852');
+
   if (!enterprise) {
     return <div className="text-gray-500">企业不存在</div>;
   }
+
+  const onCountryCodeChange = (value: string) => {
+    setCountryCode(value);
+    // 账期额度统一使用人民币，不随地区变化
+    const phone = form.getFieldValue('phone');
+    if (phone) {
+      form.validateFields(['phone']);
+    }
+  };
 
   const onFinish = () => {
     messageApi.success('企业信息已更新');
@@ -69,23 +74,32 @@ export default function EditEnterprisePage() {
             creditLimit: enterprise.creditLimit,
           }}
         >
+          {/* 企业ID只读展示 */}
+          <Form.Item label="企业ID">
+            <Input value={enterprise.id} disabled className="font-mono" />
+          </Form.Item>
+
           <Form.Item
             label="企业名称"
             name="name"
-            rules={[{ required: true, message: '请输入企业名称' }]}
+            rules={getEnterpriseNameRules(enterprise.id)}
           >
-            <Input placeholder="请输入企业名称" />
+            <Input placeholder="请输入企业名称" maxLength={50} />
           </Form.Item>
 
           <Form.Item label="登录手机号" required>
             <div className="flex gap-2">
               <Form.Item name="countryCode" noStyle>
-                <Select options={countryCodes} style={{ width: 160 }} />
+                <Select
+                  options={countryCodes}
+                  style={{ width: 160 }}
+                  onChange={onCountryCodeChange}
+                />
               </Form.Item>
               <Form.Item
                 name="phone"
                 noStyle
-                rules={[{ required: true, message: '请输入手机号' }]}
+                rules={getPhoneRules(countryCode, enterprise.id)}
               >
                 <Input placeholder="请输入手机号" className="flex-1" />
               </Form.Item>
@@ -95,33 +109,35 @@ export default function EditEnterprisePage() {
           <Form.Item
             label="登录密码"
             name="password"
-            rules={[{ required: true, message: '请输入登录密码' }]}
+            rules={passwordRules}
           >
-            <Input placeholder="请输入登录密码" />
+            <Input.Password placeholder="8-20位，须包含字母和数字" />
           </Form.Item>
 
           <Form.Item
             label="订单溢价系数"
             name="premiumRate"
             extra="订单实际收费 = 基础运费 × 溢价系数"
-            rules={[{ required: true, message: '请输入溢价系数' }]}
+            rules={premiumRateRules}
           >
-            <InputNumber min={1} step={0.01} precision={2} style={{ width: '100%' }} />
+            <InputNumber min={1} max={PREMIUM_RATE_MAX} step={0.01} precision={2} style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item label="每月账期额度" required>
             <div className="flex gap-2">
               <Form.Item name="currency" noStyle>
-                <Select options={currencyOptions} style={{ width: 160 }} />
+                <Select options={currencyOptions} style={{ width: 160 }} disabled />
               </Form.Item>
               <Form.Item
                 name="creditLimit"
                 noStyle
-                rules={[{ required: true, message: '请输入额度' }]}
+                rules={creditLimitRules}
               >
                 <InputNumber
                   min={0}
+                  max={CREDIT_LIMIT_MAX}
                   step={1000}
+                  precision={0}
                   placeholder="50000"
                   style={{ width: '100%' }}
                 />

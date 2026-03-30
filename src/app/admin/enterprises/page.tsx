@@ -3,23 +3,35 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Table, Input, Button, Card } from 'antd';
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { enterprises, type Enterprise } from '@/data/adminMockData';
 
 export default function EnterprisesPage() {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
+
+  const togglePassword = (id: string) => {
+    setVisiblePasswords((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const filtered = useMemo(() => {
     if (!search.trim()) return enterprises;
     const q = search.toLowerCase();
     return enterprises.filter(
-      (e) => e.name.toLowerCase().includes(q) || e.phone.includes(q)
+      (e) => e.name.toLowerCase().includes(q) || e.phone.includes(q) || e.id.toLowerCase().includes(q)
     );
   }, [search]);
 
   const columns: ColumnsType<Enterprise> = [
+    {
+      title: '企业ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: 180,
+      render: (id: string) => <span className="font-mono text-xs">{id}</span>,
+    },
     {
       title: '企业名称',
       dataIndex: 'name',
@@ -35,8 +47,20 @@ export default function EnterprisesPage() {
     {
       title: '登录密码',
       key: 'password',
-      width: 120,
-      render: (_, r) => r.password,
+      width: 160,
+      render: (_, r) => (
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-sm">
+            {visiblePasswords[r.id] ? r.password : '••••••••'}
+          </span>
+          <span
+            className="cursor-pointer text-gray-400 hover:text-gray-600"
+            onClick={() => togglePassword(r.id)}
+          >
+            {visiblePasswords[r.id] ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+          </span>
+        </div>
+      ),
     },
     {
       title: '国家',
@@ -53,15 +77,41 @@ export default function EnterprisesPage() {
     },
     {
       title: '月账期额度',
+      dataIndex: 'creditLimit',
       key: 'creditLimit',
-      width: 160,
-      render: (_, r) => `${r.currency} ${r.creditLimit.toLocaleString()}`,
+      width: 140,
+      render: (v: number) => (
+        <span>¥ {v.toLocaleString()}</span>
+      ),
     },
     {
       title: '已用额度',
+      dataIndex: 'usedCredit',
       key: 'usedCredit',
       width: 160,
-      render: (_, r) => `${r.currency} ${r.usedCredit.toLocaleString()}`,
+      render: (v: number, r: Enterprise) => {
+        const percent = (v / r.creditLimit * 100).toFixed(1);
+        return (
+          <span>¥ {v.toLocaleString()} ({percent}%)</span>
+        );
+      },
+    },
+    {
+      title: '剩余额度',
+      key: 'remaining',
+      width: 140,
+      render: (_: any, r: Enterprise) => {
+        const remaining = r.creditLimit - r.usedCredit;
+        return (
+          <span>¥ {remaining.toLocaleString()}</span>
+        );
+      },
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 120,
     },
     {
       title: '操作',
@@ -109,7 +159,7 @@ export default function EnterprisesPage() {
       {/* Search */}
       <div className="mb-4">
         <Input
-          placeholder="搜索企业名称或手机号"
+          placeholder="搜索企业ID、名称或手机号"
           prefix={<SearchOutlined className="text-gray-400" />}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -128,7 +178,7 @@ export default function EnterprisesPage() {
             pageSize: 10,
             showTotal: (total) => `共 ${total} 家企业`,
           }}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1600 }}
         />
       </Card>
     </div>

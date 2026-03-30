@@ -52,15 +52,36 @@ export default function WalletPage() {
       title: '金额',
       dataIndex: 'amount',
       key: 'amount',
-      width: 150,
+      width: 220,
       align: 'right',
-      render: (amount: number) => (
-        <div className="text-right">
-          <span className="text-sm font-medium text-gray-900">
-            {amount > 0 ? '+' : '-'}HK$ {Math.abs(amount).toFixed(2)}
-          </span>
-        </div>
-      ),
+      render: (amount: number, record: Transaction) => {
+        // 泰铢金额
+        const thbAmount = Math.abs(amount);
+        // 汇率（1 CNY = 5 THB）
+        const exchangeRate = 5.0;
+        // 换算成人民币
+        const cnyAmount = thbAmount / exchangeRate;
+
+        // 根据日期模拟不同的汇率波动
+        const date = dayjs(record.date);
+        const dayOfMonth = date.date();
+        // 汇率在 4.95-5.05 之间波动
+        const dailyRate = 4.95 + (dayOfMonth % 10) * 0.01;
+
+        return (
+          <div className="text-right">
+            <div className="text-sm font-medium text-gray-900">
+              {amount > 0 ? '+' : '-'}฿{thbAmount.toFixed(0)}
+            </div>
+            <div className="text-xs text-gray-400">
+              ≈ CNY {(thbAmount / dailyRate).toFixed(2)}
+            </div>
+            <div className="text-xs text-gray-400">
+              汇率 {dailyRate.toFixed(2)}
+            </div>
+          </div>
+        );
+      },
     },
   ];
 
@@ -73,10 +94,13 @@ export default function WalletPage() {
         <h1 className="text-lg font-semibold text-gray-900 mb-4">账期余额</h1>
         <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
           <div>
-            <p className="text-sm text-gray-500 mb-2">余额</p>
+            <p className="text-sm text-gray-500 mb-2">余额（人民币）</p>
             <p className="text-4xl font-bold text-gray-900">
-              HK$ {mockWalletBalance.balance.toFixed(2)}
-              <span className="text-lg font-normal text-gray-400"> / HK$ {mockWalletBalance.creditLimit.toFixed(2)}</span>
+              CNY {mockWalletBalance.balance.toLocaleString('zh-CN')}
+              <span className="text-lg font-normal text-gray-400"> / CNY {mockWalletBalance.creditLimit.toLocaleString('zh-CN')}</span>
+            </p>
+            <p className="text-xs text-gray-500 mt-3 leading-relaxed">
+              当月订单按每日参考汇率估算扣减，实际金额以月末挂牌汇率结算为准
             </p>
           </div>
         </div>

@@ -24,7 +24,7 @@ export default function ConfirmationFooter({
         <div className="flex-1">
           <p className="text-xs text-gray-500">总价</p>
           <p className="font-price text-2xl font-bold text-gray-900">
-            HK$ {totalPrice.toFixed(2)}
+            ฿{totalPrice.toFixed(0)}
           </p>
         </div>
 

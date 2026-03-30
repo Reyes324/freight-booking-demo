@@ -425,7 +425,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                 <div className="flex items-start gap-2 bg-orange-50 border border-orange-100 rounded-lg p-3">
                   <InfoCircleOutlined className="text-orange-500 text-sm mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-orange-700 leading-relaxed">
-                    费用调整至 <span className="font-semibold">HK$ {(hasPriceAdjustment.adjustedPrice).toFixed(2)}</span>，正在审核中
+                    费用调整至 <span className="font-semibold">฿{(hasPriceAdjustment.adjustedPrice).toFixed(0)}</span>，正在审核中
                   </p>
                 </div>
               )}
@@ -434,13 +434,13 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">基础运费</span>
                   <span className="font-price text-sm text-gray-900">
-                    HK$ {(order.basePrice || order.totalPrice).toFixed(2)}
+                    ฿{(order.basePrice || order.totalPrice).toFixed(0)}
                   </span>
                 </div>
                 <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-900">总计</span>
                   <span className="font-price text-lg font-bold text-gray-900">
-                    HK$ {order.totalPrice.toFixed(2)}
+                    ฿{order.totalPrice.toFixed(0)}
                   </span>
                 </div>
               </div>

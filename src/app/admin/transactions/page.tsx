@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Table, Input, Button, Card, Select, DatePicker } from 'antd';
-import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
+import { Table, Input, Button, Card, Select, DatePicker, Tooltip } from 'antd';
+import { SearchOutlined, DownloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { enterprises, creditTransactions, type CreditTransaction } from '@/data/adminMockData';
 
@@ -51,11 +51,11 @@ export default function TransactionsPage() {
   }, [search, enterpriseFilter, typeFilter, allTransactions]);
 
   const totalIncome = useMemo(
-    () => filtered.filter((t) => t.amount > 0).reduce((sum, t) => sum + t.amount, 0),
+    () => filtered.filter((t) => t.cnyAmount > 0).reduce((sum, t) => sum + t.cnyAmount, 0),
     [filtered]
   );
   const totalExpense = useMemo(
-    () => filtered.filter((t) => t.amount < 0).reduce((sum, t) => sum + t.amount, 0),
+    () => filtered.filter((t) => t.cnyAmount < 0).reduce((sum, t) => sum + t.cnyAmount, 0),
     [filtered]
   );
 
@@ -66,20 +66,13 @@ export default function TransactionsPage() {
       title: '日期',
       dataIndex: 'date',
       key: 'date',
-      width: 180,
+      width: 160,
     },
     {
       title: '企业',
       dataIndex: 'enterpriseName',
       key: 'enterpriseName',
-      width: 130,
-    },
-    {
-      title: '订单编号',
-      dataIndex: 'orderId',
-      key: 'orderId',
-      width: 200,
-      render: (v: string | null) => v || '-',
+      width: 120,
     },
     {
       title: '类型',
@@ -88,25 +81,46 @@ export default function TransactionsPage() {
       width: 120,
     },
     {
-      title: '金额',
-      dataIndex: 'amount',
-      key: 'amount',
-      width: 160,
-      render: (v: number, r) => {
-        const prefix = v > 0 ? '+' : '';
-        const color = v > 0 ? 'text-green-600' : 'text-gray-900';
+      title: '订单币种',
+      key: 'localCurrency',
+      width: 140,
+      render: (_, record) => {
+        if (!record.localCurrency) return '-';
         return (
-          <span className={color}>
-            {prefix}{r.currency} {Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          <span className="font-mono text-gray-600">
+            {record.localCurrency} {record.localAmount?.toFixed(2)}
           </span>
         );
       },
     },
     {
-      title: '币种',
-      dataIndex: 'currency',
-      key: 'currency',
-      width: 80,
+      title: '账期变动 (CNY)',
+      dataIndex: 'cnyAmount',
+      key: 'cnyAmount',
+      width: 180,
+      render: (v: number, r) => {
+        const prefix = v > 0 ? '+' : '';
+        const color = v > 0 ? 'text-green-600' : 'text-gray-900';
+        return (
+          <div className="flex items-center gap-2">
+            <span className={`${color} font-medium`}>
+              {prefix}¥ {Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </span>
+            {r.exchangeRate && (
+              <Tooltip title={`${r.rateDate} 汇率: 1 CNY = ${r.exchangeRate} ${r.localCurrency}`}>
+                <InfoCircleOutlined className="text-gray-400 text-xs cursor-help" />
+              </Tooltip>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      title: '订单编号',
+      dataIndex: 'orderId',
+      key: 'orderId',
+      width: 160,
+      render: (v: string | null) => v || '-',
     },
   ];
 
@@ -124,9 +138,9 @@ export default function TransactionsPage() {
           <div className="text-2xl font-bold text-gray-900 mt-1">{filtered.length}</div>
         </div>
         <div className="border border-gray-200 rounded-xl p-4 bg-white">
-          <div className="text-sm text-gray-500">总支出</div>
+          <div className="text-sm text-gray-500">总支出 (CNY)</div>
           <div className="text-2xl font-bold text-gray-900 mt-1">
-            {totalExpense.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            ¥ {Math.abs(totalExpense).toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </div>
         </div>
       </div>

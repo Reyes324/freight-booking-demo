@@ -110,7 +110,7 @@ export default function OrdersPage() {
       render: (price) => (
         <div className="text-right">
           <span className="text-sm font-medium text-gray-900">
-            HK$ {price.toFixed(2)}
+            ฿{price.toFixed(0)}
           </span>
         </div>
       ),

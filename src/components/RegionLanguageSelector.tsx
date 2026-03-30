@@ -15,11 +15,11 @@ interface Language {
 }
 
 const REGIONS: Region[] = [
-  { id: "hk", name: "香港", flag: "🇭🇰" },
   { id: "th", name: "泰国", flag: "🇹🇭" },
   { id: "vn", name: "越南", flag: "🇻🇳" },
   { id: "my", name: "马来西亚", flag: "🇲🇾" },
-  { id: "cn", name: "中国", flag: "🇨🇳" },
+  { id: "id", name: "印尼", flag: "🇮🇩" },
+  { id: "hk", name: "香港", flag: "🇭🇰" },
 ];
 
 const LANGUAGES: Language[] = [
@@ -29,7 +29,7 @@ const LANGUAGES: Language[] = [
 
 export default function RegionLanguageSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState<string>("hk");
+  const [selectedRegion, setSelectedRegion] = useState<string>("th");
   const [selectedLanguage, setSelectedLanguage] = useState<string>("zh");
   const containerRef = useRef<HTMLDivElement>(null);
 

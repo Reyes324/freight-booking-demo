@@ -54,19 +54,13 @@ export default function WalletPage() {
       key: 'amount',
       width: 220,
       align: 'right',
-      render: (amount: number, record: Transaction) => {
+      render: (amount: number) => {
         // 泰铢金额
         const thbAmount = Math.abs(amount);
-        // 汇率（1 CNY = 5 THB）
+        // 统一汇率（1 CNY = 5 THB）
         const exchangeRate = 5.0;
         // 换算成人民币
         const cnyAmount = thbAmount / exchangeRate;
-
-        // 根据日期模拟不同的汇率波动
-        const date = dayjs(record.date);
-        const dayOfMonth = date.date();
-        // 汇率在 4.95-5.05 之间波动
-        const dailyRate = 4.95 + (dayOfMonth % 10) * 0.01;
 
         return (
           <div className="text-right">
@@ -74,10 +68,7 @@ export default function WalletPage() {
               {amount > 0 ? '+' : '-'}฿{thbAmount.toFixed(0)}
             </div>
             <div className="text-xs text-gray-400">
-              ≈ CNY {(thbAmount / dailyRate).toFixed(2)}
-            </div>
-            <div className="text-xs text-gray-400">
-              汇率 {dailyRate.toFixed(2)}
+              ≈ CNY {cnyAmount.toFixed(2)}
             </div>
           </div>
         );
@@ -100,7 +91,7 @@ export default function WalletPage() {
               <span className="text-lg font-normal text-gray-400"> / CNY {mockWalletBalance.creditLimit.toLocaleString('zh-CN')}</span>
             </p>
             <p className="text-xs text-gray-500 mt-3 leading-relaxed">
-              当月订单按每日参考汇率估算扣减，实际金额以月末挂牌汇率结算为准
+              当月订单按每日参考汇率估算扣减，实际金额以月末挂牌汇率结算为准 · 当日参考汇率：1 CNY = 5.00 THB
             </p>
           </div>
         </div>

@@ -105,15 +105,24 @@ export default function OrdersPage() {
       title: '价格',
       dataIndex: 'totalPrice',
       key: 'totalPrice',
-      width: 120,
+      width: 150,
       align: 'right',
-      render: (price) => (
-        <div className="text-right">
-          <span className="text-sm font-medium text-gray-900">
-            ฿{price.toFixed(0)}
-          </span>
-        </div>
-      ),
+      render: (price) => {
+        // 汇率（1 CNY = 5 THB）
+        const exchangeRate = 5.0;
+        const cnyAmount = price / exchangeRate;
+
+        return (
+          <div className="text-right">
+            <div className="text-sm font-medium text-gray-900">
+              ฿{price.toFixed(0)}
+            </div>
+            <div className="text-xs text-gray-400">
+              ≈ CNY {cnyAmount.toFixed(0)}
+            </div>
+          </div>
+        );
+      },
     },
   ];
 

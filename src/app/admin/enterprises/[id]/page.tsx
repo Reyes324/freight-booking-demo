@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Tabs, Table, Input, Button, Card, DatePicker, Tag } from 'antd';
+import { Tabs, Table, Input, Button, Card, DatePicker, Tag, Tooltip } from 'antd';
 import { ArrowLeftOutlined, SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import {
@@ -12,8 +12,39 @@ import {
   adminOrders,
   type CreditTransaction,
   type AdminOrder,
+  type FeeBreakdown,
 } from '@/data/adminMockData';
 import * as XLSX from 'xlsx';
+
+function FeeTooltip({ breakdown, currency }: { breakdown: FeeBreakdown; currency: string }) {
+  const items = [
+    { label: '基础运费', value: breakdown.baseFare },
+    { label: '里程费', value: breakdown.distanceFee },
+    { label: '服务费', value: breakdown.serviceFee },
+    { label: '附加费', value: breakdown.surcharge },
+    { label: '税费', value: breakdown.tax },
+  ];
+  if (breakdown.discount > 0) {
+    items.push({ label: '优惠减免', value: -breakdown.discount });
+  }
+
+  return (
+    <div className="text-xs min-w-[160px]">
+      {items.map((item) => (
+        item.value !== 0 && (
+          <div key={item.label} className="flex justify-between gap-4 py-0.5">
+            <span className="text-gray-300">{item.label}</span>
+            <span>{currency} {item.value.toFixed(2)}</span>
+          </div>
+        )
+      ))}
+      <div className="border-t border-gray-500 mt-1 pt-1 flex justify-between gap-4 font-medium">
+        <span>合计</span>
+        <span>{currency} {breakdown.total.toFixed(2)}</span>
+      </div>
+    </div>
+  );
+}
 
 const { RangePicker } = DatePicker;
 
@@ -90,18 +121,21 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
   const handleExport = () => {
     const data = orders.map((o) => ({
       '下单日期': o.orderDate,
-      '客户': enterpriseName,
+      '企业客户': enterpriseName,
+      '供应商': o.supplierCode,
       '国家': o.country,
       '车型': o.vehicleType,
       '起始地址': o.pickupAddress,
       '起始联系人': o.pickupContact,
       '目的地址': o.dropoffAddress,
       '目的联系人': o.dropoffContact,
-      'LLM单号': o.llmOrderId,
+      'LLI单号': o.orderId,
+      '供应商单号': o.supplierOrderId,
       '司机信息': o.driverInfo,
       '订单状态': o.status,
-      [`LLI账单金额(${o.currency})`]: o.lliAmount,
-      [`LLM账单金额(${o.currency})`]: o.llmAmount,
+      '币种': o.currency,
+      'LLI账单金额': o.lliAmount,
+      'LLM账单金额': o.llmAmount,
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -109,10 +143,13 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
     XLSX.writeFile(wb, `${enterpriseName}_订单记录.xlsx`);
   };
 
-  const statusColor: Record<string, string> = {
-    '已完成': 'green',
-    '进行中': 'blue',
-    '已取消': 'red',
+  const statusConfig: Record<string, { color: string }> = {
+    '正在呼叫司机': { color: 'orange' },
+    '前往装货地': { color: 'cyan' },
+    '配送中': { color: 'blue' },
+    '已完成': { color: 'green' },
+    '已取消': { color: 'red' },
+    '已过期': { color: 'default' },
   };
 
   const columns: ColumnsType<AdminOrder> = [
@@ -123,23 +160,61 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
       width: 110,
       render: (v: string) => v.slice(5, 16),
     },
-    { title: '国家', dataIndex: 'country', key: 'country', width: 60 },
+    {
+      title: '供应商',
+      dataIndex: 'supplierCode',
+      key: 'supplierCode',
+      width: 100,
+      render: (v: string, r) => (
+        <Tooltip title={r.supplierName}>
+          <span className="cursor-default">{v}</span>
+        </Tooltip>
+      ),
+    },
+    { title: '国家', dataIndex: 'country', key: 'country', width: 80 },
     { title: '车型', dataIndex: 'vehicleType', key: 'vehicleType', width: 110 },
     {
       title: '起始地址',
-      dataIndex: 'pickupAddress',
-      key: 'pickupAddress',
-      width: 180,
+      key: 'pickup',
+      width: 200,
       ellipsis: true,
+      render: (_, r) => (
+        <Tooltip title={`${r.pickupAddress}\n${r.pickupContact}`}>
+          <div>
+            <div className="truncate text-sm">{r.pickupAddress}</div>
+            <div className="truncate text-xs text-gray-400">{r.pickupContact}</div>
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '目的地址',
-      dataIndex: 'dropoffAddress',
-      key: 'dropoffAddress',
-      width: 180,
+      key: 'dropoff',
+      width: 200,
       ellipsis: true,
+      render: (_, r) => (
+        <Tooltip title={`${r.dropoffAddress}\n${r.dropoffContact}`}>
+          <div>
+            <div className="truncate text-sm">{r.dropoffAddress}</div>
+            <div className="truncate text-xs text-gray-400">{r.dropoffContact}</div>
+          </div>
+        </Tooltip>
+      ),
     },
-    { title: 'LLM单号', dataIndex: 'llmOrderId', key: 'llmOrderId', width: 150 },
+    {
+      title: 'LLI单号',
+      dataIndex: 'orderId',
+      key: 'orderId',
+      width: 160,
+      render: (v: string) => <span className="text-xs font-mono">{v}</span>,
+    },
+    {
+      title: '供应商单号',
+      dataIndex: 'supplierOrderId',
+      key: 'supplierOrderId',
+      width: 160,
+      render: (v: string) => <span className="text-xs font-mono">{v}</span>,
+    },
     {
       title: '司机',
       dataIndex: 'driverInfo',
@@ -151,22 +226,38 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 80,
-      render: (v: string) => <Tag color={statusColor[v] || 'default'}>{v}</Tag>,
+      width: 110,
+      render: (v: string) => <Tag color={statusConfig[v]?.color || 'default'}>{v}</Tag>,
     },
     {
-      title: 'LLI金额',
-      dataIndex: 'lliAmount',
+      title: 'LLI账单金额',
       key: 'lliAmount',
-      width: 100,
-      render: (v: number) => v.toFixed(2),
+      width: 130,
+      render: (_, r) => (
+        <Tooltip
+          title={<FeeTooltip breakdown={r.lliFeeBreakdown} currency={r.currency} />}
+          placement="left"
+        >
+          <span className="cursor-default font-medium">
+            {r.currency} {r.lliAmount.toFixed(2)}
+          </span>
+        </Tooltip>
+      ),
     },
     {
-      title: 'LLM金额',
-      dataIndex: 'llmAmount',
+      title: 'LLM账单金额',
       key: 'llmAmount',
-      width: 100,
-      render: (v: number) => v.toFixed(2),
+      width: 130,
+      render: (_, r) => (
+        <Tooltip
+          title={<FeeTooltip breakdown={r.llmFeeBreakdown} currency={r.currency} />}
+          placement="left"
+        >
+          <span className="cursor-default font-medium">
+            {r.currency} {r.llmAmount.toFixed(2)}
+          </span>
+        </Tooltip>
+      ),
     },
   ];
 
@@ -190,7 +281,8 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
           dataSource={orders}
           rowKey="orderId"
           pagination={{ pageSize: 10 }}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1900 }}
+          size="small"
         />
       </Card>
     </div>

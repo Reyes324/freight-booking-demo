@@ -1,17 +1,48 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Table, Input, Button, Card, Tag, Select } from 'antd';
+import { Table, Input, Button, Card, Tag, Select, Tooltip } from 'antd';
 import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { enterprises, adminOrders, type AdminOrder } from '@/data/adminMockData';
+import { enterprises, adminOrders, type AdminOrder, type FeeBreakdown } from '@/data/adminMockData';
 import * as XLSX from 'xlsx';
+
+function FeeTooltip({ breakdown, currency }: { breakdown: FeeBreakdown; currency: string }) {
+  const items = [
+    { label: '基础运费', value: breakdown.baseFare },
+    { label: '里程费', value: breakdown.distanceFee },
+    { label: '服务费', value: breakdown.serviceFee },
+    { label: '附加费', value: breakdown.surcharge },
+    { label: '税费', value: breakdown.tax },
+  ];
+  if (breakdown.discount > 0) {
+    items.push({ label: '优惠减免', value: -breakdown.discount });
+  }
+
+  return (
+    <div className="text-xs min-w-[160px]">
+      {items.map((item) => (
+        item.value !== 0 && (
+          <div key={item.label} className="flex justify-between gap-4 py-0.5">
+            <span className="text-gray-300">{item.label}</span>
+            <span>{currency} {item.value.toFixed(2)}</span>
+          </div>
+        )
+      ))}
+      <div className="border-t border-gray-500 mt-1 pt-1 flex justify-between gap-4 font-medium">
+        <span>合计</span>
+        <span>{currency} {breakdown.total.toFixed(2)}</span>
+      </div>
+    </div>
+  );
+}
 
 export default function AdminOrdersPage() {
   const [search, setSearch] = useState('');
   const [enterpriseFilter, setEnterpriseFilter] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [countryFilter, setCountryFilter] = useState<string | null>(null);
+  const [supplierFilter, setSupplierFilter] = useState<string | null>(null);
 
   const enterpriseMap = useMemo(() => {
     const map: Record<string, string> = {};
@@ -31,12 +62,16 @@ export default function AdminOrdersPage() {
     if (countryFilter) {
       result = result.filter((o) => o.country === countryFilter);
     }
+    if (supplierFilter) {
+      result = result.filter((o) => o.supplierCode === supplierFilter);
+    }
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(
         (o) =>
           o.orderId.toLowerCase().includes(q) ||
-          o.llmOrderId.toLowerCase().includes(q) ||
+          o.supplierOrderId.toLowerCase().includes(q) ||
+          o.supplierCode.toLowerCase().includes(q) ||
           o.pickupAddress.toLowerCase().includes(q) ||
           o.dropoffAddress.toLowerCase().includes(q) ||
           o.driverInfo.toLowerCase().includes(q) ||
@@ -45,23 +80,38 @@ export default function AdminOrdersPage() {
     }
 
     return result;
-  }, [search, enterpriseFilter, statusFilter, countryFilter, enterpriseMap]);
+  }, [search, enterpriseFilter, statusFilter, countryFilter, supplierFilter, enterpriseMap]);
 
   const handleExport = () => {
     const data = filtered.map((o) => ({
       '下单日期': o.orderDate,
-      '客户': enterpriseMap[o.enterpriseId] || '',
+      '企业客户': enterpriseMap[o.enterpriseId] || '',
+      '供应商': o.supplierCode,
       '国家': o.country,
       '车型': o.vehicleType,
       '起始地址': o.pickupAddress,
       '起始联系人': o.pickupContact,
       '目的地址': o.dropoffAddress,
       '目的联系人': o.dropoffContact,
-      'LLM单号': o.llmOrderId,
+      'LLI单号': o.orderId,
+      '供应商单号': o.supplierOrderId,
       '司机信息': o.driverInfo,
       '订单状态': o.status,
-      [`LLI账单金额(${o.currency})`]: o.lliAmount,
-      [`LLM账单金额(${o.currency})`]: o.llmAmount,
+      '币种': o.currency,
+      'LLI账单金额': o.lliAmount,
+      'LLI-基础运费': o.lliFeeBreakdown.baseFare,
+      'LLI-里程费': o.lliFeeBreakdown.distanceFee,
+      'LLI-服务费': o.lliFeeBreakdown.serviceFee,
+      'LLI-附加费': o.lliFeeBreakdown.surcharge,
+      'LLI-税费': o.lliFeeBreakdown.tax,
+      'LLI-优惠减免': o.lliFeeBreakdown.discount,
+      'LLM账单金额': o.llmAmount,
+      'LLM-基础运费': o.llmFeeBreakdown.baseFare,
+      'LLM-里程费': o.llmFeeBreakdown.distanceFee,
+      'LLM-服务费': o.llmFeeBreakdown.serviceFee,
+      'LLM-附加费': o.llmFeeBreakdown.surcharge,
+      'LLM-税费': o.llmFeeBreakdown.tax,
+      'LLM-优惠减免': o.llmFeeBreakdown.discount,
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -69,10 +119,13 @@ export default function AdminOrdersPage() {
     XLSX.writeFile(wb, `全部企业订单记录.xlsx`);
   };
 
-  const statusColor: Record<string, string> = {
-    '已完成': 'green',
-    '进行中': 'blue',
-    '已取消': 'red',
+  const statusConfig: Record<string, { color: string }> = {
+    '正在呼叫司机': { color: 'orange' },
+    '前往装货地': { color: 'cyan' },
+    '配送中': { color: 'blue' },
+    '已完成': { color: 'green' },
+    '已取消': { color: 'red' },
+    '已过期': { color: 'default' },
   };
 
   const columns: ColumnsType<AdminOrder> = [
@@ -81,31 +134,70 @@ export default function AdminOrdersPage() {
       dataIndex: 'orderDate',
       key: 'orderDate',
       width: 110,
+      sorter: (a, b) => a.orderDate.localeCompare(b.orderDate),
       render: (v: string) => v.slice(5, 16),
     },
     {
-      title: '客户',
+      title: '企业客户',
       key: 'enterprise',
-      width: 120,
+      width: 110,
       render: (_, r) => enterpriseMap[r.enterpriseId] || '-',
     },
-    { title: '国家', dataIndex: 'country', key: 'country', width: 60 },
+    {
+      title: '供应商',
+      dataIndex: 'supplierCode',
+      key: 'supplierCode',
+      width: 100,
+      render: (v: string, r) => (
+        <Tooltip title={r.supplierName}>
+          <span className="cursor-default">{v}</span>
+        </Tooltip>
+      ),
+    },
+    { title: '国家', dataIndex: 'country', key: 'country', width: 80 },
     { title: '车型', dataIndex: 'vehicleType', key: 'vehicleType', width: 110 },
     {
       title: '起始地址',
-      dataIndex: 'pickupAddress',
-      key: 'pickupAddress',
-      width: 180,
+      key: 'pickup',
+      width: 200,
       ellipsis: true,
+      render: (_, r) => (
+        <Tooltip title={`${r.pickupAddress}\n${r.pickupContact}`}>
+          <div>
+            <div className="truncate text-sm">{r.pickupAddress}</div>
+            <div className="truncate text-xs text-gray-400">{r.pickupContact}</div>
+          </div>
+        </Tooltip>
+      ),
     },
     {
       title: '目的地址',
-      dataIndex: 'dropoffAddress',
-      key: 'dropoffAddress',
-      width: 180,
+      key: 'dropoff',
+      width: 200,
       ellipsis: true,
+      render: (_, r) => (
+        <Tooltip title={`${r.dropoffAddress}\n${r.dropoffContact}`}>
+          <div>
+            <div className="truncate text-sm">{r.dropoffAddress}</div>
+            <div className="truncate text-xs text-gray-400">{r.dropoffContact}</div>
+          </div>
+        </Tooltip>
+      ),
     },
-    { title: 'LLM单号', dataIndex: 'llmOrderId', key: 'llmOrderId', width: 150 },
+    {
+      title: 'LLI单号',
+      dataIndex: 'orderId',
+      key: 'orderId',
+      width: 160,
+      render: (v: string) => <span className="text-xs font-mono">{v}</span>,
+    },
+    {
+      title: '供应商单号',
+      dataIndex: 'supplierOrderId',
+      key: 'supplierOrderId',
+      width: 160,
+      render: (v: string) => <span className="text-xs font-mono">{v}</span>,
+    },
     {
       title: '司机',
       dataIndex: 'driverInfo',
@@ -117,27 +209,48 @@ export default function AdminOrdersPage() {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 80,
-      render: (v: string) => <Tag color={statusColor[v] || 'default'}>{v}</Tag>,
+      width: 110,
+      render: (v: string) => (
+        <Tag color={statusConfig[v]?.color || 'default'}>{v}</Tag>
+      ),
     },
     {
-      title: 'LLI金额',
-      dataIndex: 'lliAmount',
+      title: 'LLI账单金额',
       key: 'lliAmount',
-      width: 100,
-      render: (v: number) => v.toFixed(2),
+      width: 130,
+      sorter: (a, b) => a.lliAmount - b.lliAmount,
+      render: (_, r) => (
+        <Tooltip
+          title={<FeeTooltip breakdown={r.lliFeeBreakdown} currency={r.currency} />}
+          placement="left"
+        >
+          <span className="cursor-default font-medium">
+            {r.currency} {r.lliAmount.toFixed(2)}
+          </span>
+        </Tooltip>
+      ),
     },
     {
-      title: 'LLM金额',
-      dataIndex: 'llmAmount',
+      title: 'LLM账单金额',
       key: 'llmAmount',
-      width: 100,
-      render: (v: number) => v.toFixed(2),
+      width: 130,
+      sorter: (a, b) => a.llmAmount - b.llmAmount,
+      render: (_, r) => (
+        <Tooltip
+          title={<FeeTooltip breakdown={r.llmFeeBreakdown} currency={r.currency} />}
+          placement="left"
+        >
+          <span className="cursor-default font-medium">
+            {r.currency} {r.llmAmount.toFixed(2)}
+          </span>
+        </Tooltip>
+      ),
     },
   ];
 
   const countries = [...new Set(adminOrders.map((o) => o.country))];
   const statuses = [...new Set(adminOrders.map((o) => o.status))];
+  const suppliers = [...new Set(adminOrders.map((o) => o.supplierCode))];
 
   return (
     <div>
@@ -151,23 +264,31 @@ export default function AdminOrdersPage() {
       {/* Filters */}
       <div className="flex items-center gap-3 mb-4 flex-wrap">
         <Input
-          placeholder="搜索订单号、地址、司机、客户"
+          placeholder="搜索单号、地址、司机、客户、供应商"
           prefix={<SearchOutlined className="text-gray-400" />}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           allowClear
-          className="max-w-[320px]"
+          className="max-w-[360px]"
         />
         <Select
-          placeholder="筛选企业"
+          placeholder="企业客户"
           allowClear
           value={enterpriseFilter}
           onChange={setEnterpriseFilter}
-          style={{ width: 160 }}
+          style={{ width: 140 }}
           options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
         />
         <Select
-          placeholder="筛选国家"
+          placeholder="供应商"
+          allowClear
+          value={supplierFilter}
+          onChange={setSupplierFilter}
+          style={{ width: 130 }}
+          options={suppliers.map((s) => ({ value: s, label: s }))}
+        />
+        <Select
+          placeholder="国家"
           allowClear
           value={countryFilter}
           onChange={setCountryFilter}
@@ -175,11 +296,11 @@ export default function AdminOrdersPage() {
           options={countries.map((c) => ({ value: c, label: c }))}
         />
         <Select
-          placeholder="筛选状态"
+          placeholder="状态"
           allowClear
           value={statusFilter}
           onChange={setStatusFilter}
-          style={{ width: 120 }}
+          style={{ width: 130 }}
           options={statuses.map((s) => ({ value: s, label: s }))}
         />
       </div>
@@ -194,7 +315,8 @@ export default function AdminOrdersPage() {
             pageSize: 15,
             showTotal: (total) => `共 ${total} 条订单`,
           }}
-          scroll={{ x: 1400 }}
+          scroll={{ x: 1900 }}
+          size="small"
         />
       </Card>
     </div>

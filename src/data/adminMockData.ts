@@ -22,9 +22,21 @@ export interface CreditTransaction {
   currency: string;
 }
 
+export interface FeeBreakdown {
+  baseFare: number;
+  distanceFee: number;
+  serviceFee: number;
+  surcharge: number;
+  tax: number;
+  discount: number;
+  total: number;
+}
+
 export interface AdminOrder {
   orderId: string;
-  llmOrderId: string;
+  supplierOrderId: string;
+  supplierCode: string;
+  supplierName: string;
   enterpriseId: string;
   orderDate: string;
   country: string;
@@ -36,7 +48,9 @@ export interface AdminOrder {
   driverInfo: string;
   status: string;
   lliAmount: number;
+  lliFeeBreakdown: FeeBreakdown;
   llmAmount: number;
+  llmFeeBreakdown: FeeBreakdown;
   currency: string;
 }
 
@@ -73,12 +87,12 @@ export const enterprises: Enterprise[] = [
     name: '极兔快递',
     phone: '13800138000',
     password: 'JT@express2025',
-    countryCode: '+86',
-    country: '中国',
-    currency: 'CNY',
+    countryCode: '+60',
+    country: '马来西亚',
+    currency: 'MYR',
     premiumRate: 1.10,
-    creditLimit: 100000,
-    usedCredit: 78200,
+    creditLimit: 30000,
+    usedCredit: 12800,
     createdAt: '2026-01-08',
   },
   {
@@ -99,54 +113,243 @@ export const enterprises: Enterprise[] = [
 // ========== Credit Transactions ==========
 export const creditTransactions: CreditTransaction[] = [
   // 菜鸟速递
-  { id: 'tx-001', enterpriseId: 'ent-001', date: '2026-03-20 14:30', orderId: 'ORD-20260320-001', description: '订单支付', amount: -74, currency: 'HK$' },
+  { id: 'tx-001', enterpriseId: 'ent-001', date: '2026-03-20 14:30', orderId: 'LLI-20260320-001', description: '订单支付', amount: -74, currency: 'HK$' },
   { id: 'tx-002', enterpriseId: 'ent-001', date: '2026-03-19 10:15', orderId: null, description: '额度调整', amount: 500, currency: 'HK$' },
-  { id: 'tx-003', enterpriseId: 'ent-001', date: '2026-03-18 09:45', orderId: 'ORD-20260318-003', description: '订单支付', amount: -128, currency: 'HK$' },
-  { id: 'tx-004', enterpriseId: 'ent-001', date: '2026-03-15 16:20', orderId: 'ORD-20260315-002', description: '订单支付', amount: -256, currency: 'HK$' },
-  { id: 'tx-005', enterpriseId: 'ent-001', date: '2026-03-12 11:00', orderId: 'ORD-20260312-001', description: '订单支付', amount: -185, currency: 'HK$' },
+  { id: 'tx-003', enterpriseId: 'ent-001', date: '2026-03-18 09:45', orderId: 'LLI-20260318-003', description: '订单支付', amount: -128, currency: 'HK$' },
+  { id: 'tx-004', enterpriseId: 'ent-001', date: '2026-03-15 16:20', orderId: 'LLI-20260315-002', description: '订单支付', amount: -256, currency: 'HK$' },
+  { id: 'tx-005', enterpriseId: 'ent-001', date: '2026-03-12 11:00', orderId: 'LLI-20260312-001', description: '订单支付', amount: -185, currency: 'HK$' },
   { id: 'tx-006', enterpriseId: 'ent-001', date: '2026-03-01 00:00', orderId: null, description: '月度额度重置', amount: 50000, currency: 'HK$' },
   // 顺丰国际
-  { id: 'tx-101', enterpriseId: 'ent-002', date: '2026-03-21 09:30', orderId: 'ORD-20260321-101', description: '订单支付', amount: -1250, currency: 'THB' },
-  { id: 'tx-102', enterpriseId: 'ent-002', date: '2026-03-20 15:45', orderId: 'ORD-20260320-102', description: '订单支付', amount: -890, currency: 'THB' },
+  { id: 'tx-101', enterpriseId: 'ent-002', date: '2026-03-21 09:30', orderId: 'LLI-20260321-101', description: '订单支付', amount: -1250, currency: 'THB' },
+  { id: 'tx-102', enterpriseId: 'ent-002', date: '2026-03-20 15:45', orderId: 'LLI-20260320-102', description: '订单支付', amount: -890, currency: 'THB' },
   { id: 'tx-103', enterpriseId: 'ent-002', date: '2026-03-18 08:20', orderId: null, description: '额度调整', amount: 5000, currency: 'THB' },
-  { id: 'tx-104', enterpriseId: 'ent-002', date: '2026-03-15 14:10', orderId: 'ORD-20260315-103', description: '订单支付', amount: -2100, currency: 'THB' },
+  { id: 'tx-104', enterpriseId: 'ent-002', date: '2026-03-15 14:10', orderId: 'LLI-20260315-103', description: '订单支付', amount: -2100, currency: 'THB' },
   { id: 'tx-105', enterpriseId: 'ent-002', date: '2026-03-01 00:00', orderId: null, description: '月度额度重置', amount: 200000, currency: 'THB' },
   // 极兔快递
-  { id: 'tx-201', enterpriseId: 'ent-003', date: '2026-03-22 10:00', orderId: 'ORD-20260322-201', description: '订单支付', amount: -320, currency: 'CNY' },
-  { id: 'tx-202', enterpriseId: 'ent-003', date: '2026-03-21 14:30', orderId: 'ORD-20260321-202', description: '订单支付', amount: -580, currency: 'CNY' },
-  { id: 'tx-203', enterpriseId: 'ent-003', date: '2026-03-19 09:00', orderId: 'ORD-20260319-203', description: '订单支付', amount: -450, currency: 'CNY' },
-  { id: 'tx-204', enterpriseId: 'ent-003', date: '2026-03-01 00:00', orderId: null, description: '月度额度重置', amount: 100000, currency: 'CNY' },
+  { id: 'tx-201', enterpriseId: 'ent-003', date: '2026-03-22 10:00', orderId: 'LLI-20260322-201', description: '订单支付', amount: -320, currency: 'MYR' },
+  { id: 'tx-202', enterpriseId: 'ent-003', date: '2026-03-21 14:30', orderId: 'LLI-20260321-202', description: '订单支付', amount: -580, currency: 'MYR' },
+  { id: 'tx-203', enterpriseId: 'ent-003', date: '2026-03-19 09:00', orderId: 'LLI-20260319-203', description: '订单支付', amount: -450, currency: 'MYR' },
+  { id: 'tx-204', enterpriseId: 'ent-003', date: '2026-03-01 00:00', orderId: null, description: '月度额度重置', amount: 30000, currency: 'MYR' },
   // Flash Express
-  { id: 'tx-301', enterpriseId: 'ent-004', date: '2026-03-23 11:15', orderId: 'ORD-20260323-301', description: '订单支付', amount: -1800, currency: 'THB' },
-  { id: 'tx-302', enterpriseId: 'ent-004', date: '2026-03-22 08:45', orderId: 'ORD-20260322-302', description: '订单支付', amount: -950, currency: 'THB' },
+  { id: 'tx-301', enterpriseId: 'ent-004', date: '2026-03-23 11:15', orderId: 'LLI-20260323-301', description: '订单支付', amount: -1800, currency: 'THB' },
+  { id: 'tx-302', enterpriseId: 'ent-004', date: '2026-03-22 08:45', orderId: 'LLI-20260322-302', description: '订单支付', amount: -950, currency: 'THB' },
   { id: 'tx-303', enterpriseId: 'ent-004', date: '2026-03-01 00:00', orderId: null, description: '月度额度重置', amount: 150000, currency: 'THB' },
 ];
 
 // ========== Orders ==========
 export const adminOrders: AdminOrder[] = [
-  // 菜鸟速递 orders
-  { orderId: 'ORD-20260320-001', llmOrderId: 'LLM-HK-88001', enterpriseId: 'ent-001', orderDate: '2026-03-20 14:30', country: '香港', vehicleType: 'Van', pickupAddress: '中环皇后大道中 99 号', pickupContact: '李明 +852 6312 3456', dropoffAddress: '尖沙咀广东道 28 号', dropoffContact: '王芳 +852 9876 5432', driverInfo: 'AB 1234 / +852 5111 2222', status: '已完成', lliAmount: 64.35, llmAmount: 74.00, currency: 'HK$' },
-  { orderId: 'ORD-20260318-003', llmOrderId: 'LLM-HK-88002', enterpriseId: 'ent-001', orderDate: '2026-03-18 09:45', country: '香港', vehicleType: 'Pickup Truck', pickupAddress: '葵涌工业区 12 号', pickupContact: '陈生 +852 6312 3456', dropoffAddress: '观塘开源道 50 号', dropoffContact: '张太 +852 6234 5678', driverInfo: 'CD 5678 / +852 5222 3333', status: '已完成', lliAmount: 111.30, llmAmount: 128.00, currency: 'HK$' },
-  { orderId: 'ORD-20260315-002', llmOrderId: 'LLM-HK-88003', enterpriseId: 'ent-001', orderDate: '2026-03-15 16:20', country: '香港', vehicleType: 'Small Truck', pickupAddress: '新蒲岗大有街 1 号', pickupContact: '刘先生 +852 6312 3456', dropoffAddress: '荃湾德士古道 200 号', dropoffContact: '何小姐 +852 9345 6789', driverInfo: 'EF 9012 / +852 5333 4444', status: '已完成', lliAmount: 222.61, llmAmount: 256.00, currency: 'HK$' },
-  { orderId: 'ORD-20260312-001', llmOrderId: 'LLM-HK-88004', enterpriseId: 'ent-001', orderDate: '2026-03-12 11:00', country: '香港', vehicleType: 'Van', pickupAddress: '铜锣湾轩尼诗道 500 号', pickupContact: '赵明 +852 6312 3456', dropoffAddress: '北角英皇道 600 号', dropoffContact: '孙丽 +852 9456 7890', driverInfo: 'GH 3456 / +852 5444 5555', status: '已完成', lliAmount: 160.87, llmAmount: 185.00, currency: 'HK$' },
-  { orderId: 'ORD-20260324-005', llmOrderId: 'LLM-HK-88005', enterpriseId: 'ent-001', orderDate: '2026-03-24 08:30', country: '香港', vehicleType: 'Van', pickupAddress: '湾仔港湾道 25 号', pickupContact: '周敏 +852 6312 3456', dropoffAddress: '深水埗长沙湾道 888 号', dropoffContact: '吴刚 +852 9567 8901', driverInfo: 'IJ 7890 / +852 5555 6666', status: '进行中', lliAmount: 82.61, llmAmount: 95.00, currency: 'HK$' },
-  // 顺丰国际 orders
-  { orderId: 'ORD-20260321-101', llmOrderId: 'LLM-TH-99001', enterpriseId: 'ent-002', orderDate: '2026-03-21 09:30', country: '泰国', vehicleType: 'Van', pickupAddress: 'Sukhumvit Rd, Khlong Toei', pickupContact: 'Somchai +66 812 345 67', dropoffAddress: 'Silom Rd, Bang Rak', dropoffContact: 'Nattaya +66 823 456 78', driverInfo: 'กข 1234 / +66 891 234 567', status: '已完成', lliAmount: 1041.67, llmAmount: 1250.00, currency: 'THB' },
-  { orderId: 'ORD-20260320-102', llmOrderId: 'LLM-TH-99002', enterpriseId: 'ent-002', orderDate: '2026-03-20 15:45', country: '泰国', vehicleType: 'Motorcycle', pickupAddress: 'Ratchadaphisek Rd, Din Daeng', pickupContact: 'Pradit +66 812 345 67', dropoffAddress: 'Phahonyothin Rd, Chatuchak', dropoffContact: 'Wanida +66 834 567 89', driverInfo: 'คง 5678 / +66 892 345 678', status: '已完成', lliAmount: 741.67, llmAmount: 890.00, currency: 'THB' },
-  { orderId: 'ORD-20260315-103', llmOrderId: 'LLM-TH-99003', enterpriseId: 'ent-002', orderDate: '2026-03-15 14:10', country: '泰国', vehicleType: 'Pickup Truck', pickupAddress: 'Rama IV Rd, Pathum Wan', pickupContact: 'Kittisak +66 812 345 67', dropoffAddress: 'Lat Phrao Rd, Wang Thonglang', dropoffContact: 'Siriporn +66 845 678 90', driverInfo: 'จฉ 9012 / +66 893 456 789', status: '已完成', lliAmount: 1750.00, llmAmount: 2100.00, currency: 'THB' },
-  { orderId: 'ORD-20260324-104', llmOrderId: 'LLM-TH-99004', enterpriseId: 'ent-002', orderDate: '2026-03-24 10:00', country: '泰国', vehicleType: 'Van', pickupAddress: 'Charoen Krung Rd, Samphanthawong', pickupContact: 'Apinya +66 812 345 67', dropoffAddress: 'Petchaburi Rd, Ratchathewi', dropoffContact: 'Chalerm +66 856 789 01', driverInfo: 'ชซ 3456 / +66 894 567 890', status: '进行中', lliAmount: 916.67, llmAmount: 1100.00, currency: 'THB' },
-  { orderId: 'ORD-20260323-105', llmOrderId: 'LLM-TH-99005', enterpriseId: 'ent-002', orderDate: '2026-03-23 16:30', country: '泰国', vehicleType: '4-Door Car', pickupAddress: 'Wireless Rd, Lumphini', pickupContact: 'Tanawat +66 812 345 67', dropoffAddress: 'Thonglor Soi 13', dropoffContact: 'Parichat +66 867 890 12', driverInfo: 'ฌญ 7890 / +66 895 678 901', status: '已完成', lliAmount: 625.00, llmAmount: 750.00, currency: 'THB' },
-  // 极兔快递 orders
-  { orderId: 'ORD-20260322-201', llmOrderId: 'LLM-CN-77001', enterpriseId: 'ent-003', orderDate: '2026-03-22 10:00', country: '中国', vehicleType: 'Van', pickupAddress: '深圳市南山区科技园南路 1 号', pickupContact: '张伟 138 0013 8000', dropoffAddress: '深圳市福田区华强北路 88 号', dropoffContact: '李娜 139 0013 9000', driverInfo: '粤B 12345 / 135 1234 5678', status: '已完成', lliAmount: 290.91, llmAmount: 320.00, currency: 'CNY' },
-  { orderId: 'ORD-20260321-202', llmOrderId: 'LLM-CN-77002', enterpriseId: 'ent-003', orderDate: '2026-03-21 14:30', country: '中国', vehicleType: 'Pickup Truck', pickupAddress: '广州市天河区体育西路 191 号', pickupContact: '王强 138 0013 8000', dropoffAddress: '广州市番禺区大石街 108 号', dropoffContact: '刘洋 136 0013 6000', driverInfo: '粤A 67890 / 136 5678 9012', status: '已完成', lliAmount: 527.27, llmAmount: 580.00, currency: 'CNY' },
-  { orderId: 'ORD-20260319-203', llmOrderId: 'LLM-CN-77003', enterpriseId: 'ent-003', orderDate: '2026-03-19 09:00', country: '中国', vehicleType: 'Small Truck', pickupAddress: '东莞市虎门镇连升路 55 号', pickupContact: '赵磊 138 0013 8000', dropoffAddress: '东莞市厚街镇家具大道 200 号', dropoffContact: '陈芳 137 0013 7000', driverInfo: '粤S 11111 / 137 1111 2222', status: '已完成', lliAmount: 409.09, llmAmount: 450.00, currency: 'CNY' },
-  { orderId: 'ORD-20260324-204', llmOrderId: 'LLM-CN-77004', enterpriseId: 'ent-003', orderDate: '2026-03-24 15:00', country: '中国', vehicleType: 'Van', pickupAddress: '深圳市宝安区西乡街道 66 号', pickupContact: '孙涛 138 0013 8000', dropoffAddress: '深圳市龙华区民治街道 100 号', dropoffContact: '周静 138 0013 8001', driverInfo: '粤B 22222 / 138 2222 3333', status: '进行中', lliAmount: 254.55, llmAmount: 280.00, currency: 'CNY' },
-  { orderId: 'ORD-20260317-205', llmOrderId: 'LLM-CN-77005', enterpriseId: 'ent-003', orderDate: '2026-03-17 11:30', country: '中国', vehicleType: 'Motorcycle', pickupAddress: '深圳市罗湖区东门步行街 1 号', pickupContact: '吴明 138 0013 8000', dropoffAddress: '深圳市罗湖区国贸大厦', dropoffContact: '郑华 135 0013 5000', driverInfo: '粤B 33333 / 139 3333 4444', status: '已完成', lliAmount: 45.45, llmAmount: 50.00, currency: 'CNY' },
-  { orderId: 'ORD-20260314-206', llmOrderId: 'LLM-CN-77006', enterpriseId: 'ent-003', orderDate: '2026-03-14 08:00', country: '中国', vehicleType: 'Van', pickupAddress: '佛山市顺德区大良街道 300 号', pickupContact: '黄鑫 138 0013 8000', dropoffAddress: '佛山市禅城区祖庙路 99 号', dropoffContact: '许丽 134 0013 4000', driverInfo: '粤E 44444 / 134 4444 5555', status: '已完成', lliAmount: 181.82, llmAmount: 200.00, currency: 'CNY' },
-  // Flash Express orders
-  { orderId: 'ORD-20260323-301', llmOrderId: 'LLM-TH-66001', enterpriseId: 'ent-004', orderDate: '2026-03-23 11:15', country: '泰国', vehicleType: 'Pickup Truck', pickupAddress: 'Bang Na-Trat Rd, Bang Na', pickupContact: 'Anurak +66 912 345 67', dropoffAddress: 'Samut Prakan Industrial Estate', dropoffContact: 'Suwanna +66 923 456 78', driverInfo: 'ฎฏ 1111 / +66 896 789 012', status: '已完成', lliAmount: 1525.42, llmAmount: 1800.00, currency: 'THB' },
-  { orderId: 'ORD-20260322-302', llmOrderId: 'LLM-TH-66002', enterpriseId: 'ent-004', orderDate: '2026-03-22 08:45', country: '泰国', vehicleType: 'Van', pickupAddress: 'Ngamwongwan Rd, Nonthaburi', pickupContact: 'Piyapong +66 912 345 67', dropoffAddress: 'Muang Thong Thani, Pak Kret', dropoffContact: 'Ratana +66 934 567 89', driverInfo: 'ฐฑ 2222 / +66 897 890 123', status: '已完成', lliAmount: 805.08, llmAmount: 950.00, currency: 'THB' },
-  { orderId: 'ORD-20260324-303', llmOrderId: 'LLM-TH-66003', enterpriseId: 'ent-004', orderDate: '2026-03-24 14:00', country: '泰国', vehicleType: 'Small Truck', pickupAddress: 'Rama II Rd, Samae Dam', pickupContact: 'Worapat +66 912 345 67', dropoffAddress: 'Bangpakong Industrial Park', dropoffContact: 'Jintana +66 945 678 90', driverInfo: 'ฒณ 3333 / +66 898 901 234', status: '进行中', lliAmount: 2118.64, llmAmount: 2500.00, currency: 'THB' },
-  { orderId: 'ORD-20260319-304', llmOrderId: 'LLM-TH-66004', enterpriseId: 'ent-004', orderDate: '2026-03-19 13:20', country: '泰国', vehicleType: 'Motorcycle', pickupAddress: 'Siam Square Soi 7', pickupContact: 'Chanin +66 912 345 67', dropoffAddress: 'Ekamai Soi 5', dropoffContact: 'Naruemon +66 956 789 01', driverInfo: 'ดต 4444 / +66 899 012 345', status: '已完成', lliAmount: 423.73, llmAmount: 500.00, currency: 'THB' },
-  { orderId: 'ORD-20260316-305', llmOrderId: 'LLM-TH-66005', enterpriseId: 'ent-004', orderDate: '2026-03-16 10:00', country: '泰国', vehicleType: 'Van', pickupAddress: 'Ratchayothin, Chatuchak', pickupContact: 'Boonmee +66 912 345 67', dropoffAddress: 'Don Mueang, Lak Si', dropoffContact: 'Araya +66 967 890 12', driverInfo: 'ถท 5555 / +66 890 123 456', status: '已完成', lliAmount: 677.97, llmAmount: 800.00, currency: 'THB' },
+  // 菜鸟速递 orders (香港 → LLM-HK)
+  {
+    orderId: 'LLI-20260320-001', supplierOrderId: 'LLM-HK-88001', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
+    enterpriseId: 'ent-001', orderDate: '2026-03-20 14:30', country: '香港', vehicleType: 'Van',
+    pickupAddress: '中环皇后大道中 99 号', pickupContact: '李明 +852 6312 3456',
+    dropoffAddress: '尖沙咀广东道 28 号', dropoffContact: '王芳 +852 9876 5432',
+    driverInfo: 'AB 1234 / +852 5111 2222', status: '已完成',
+    lliAmount: 85.10, lliFeeBreakdown: { baseFare: 40, distanceFee: 28, serviceFee: 0, surcharge: 10, tax: 7.10, discount: 0, total: 85.10 },
+    llmAmount: 74.00, llmFeeBreakdown: { baseFare: 35, distanceFee: 24, serviceFee: 0, surcharge: 9, tax: 6.00, discount: 0, total: 74.00 },
+    currency: 'HKD',
+  },
+  {
+    orderId: 'LLI-20260318-003', supplierOrderId: 'LLM-HK-88002', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
+    enterpriseId: 'ent-001', orderDate: '2026-03-18 09:45', country: '香港', vehicleType: 'Pickup Truck',
+    pickupAddress: '葵涌工业区 12 号', pickupContact: '陈生 +852 6312 3456',
+    dropoffAddress: '观塘开源道 50 号', dropoffContact: '张太 +852 6234 5678',
+    driverInfo: 'CD 5678 / +852 5222 3333', status: '已完成',
+    lliAmount: 147.20, lliFeeBreakdown: { baseFare: 65, distanceFee: 48, serviceFee: 15, surcharge: 8, tax: 11.20, discount: 0, total: 147.20 },
+    llmAmount: 128.00, llmFeeBreakdown: { baseFare: 56, distanceFee: 42, serviceFee: 13, surcharge: 7, tax: 10.00, discount: 0, total: 128.00 },
+    currency: 'HKD',
+  },
+  {
+    orderId: 'LLI-20260315-002', supplierOrderId: 'LLM-HK-88003', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
+    enterpriseId: 'ent-001', orderDate: '2026-03-15 16:20', country: '香港', vehicleType: 'Small Truck',
+    pickupAddress: '新蒲岗大有街 1 号', pickupContact: '刘先生 +852 6312 3456',
+    dropoffAddress: '荃湾德士古道 200 号', dropoffContact: '何小姐 +852 9345 6789',
+    driverInfo: 'EF 9012 / +852 5333 4444', status: '已完成',
+    lliAmount: 294.40, lliFeeBreakdown: { baseFare: 130, distanceFee: 95, serviceFee: 30, surcharge: 15, tax: 24.40, discount: 0, total: 294.40 },
+    llmAmount: 256.00, llmFeeBreakdown: { baseFare: 113, distanceFee: 83, serviceFee: 26, surcharge: 13, tax: 21.00, discount: 0, total: 256.00 },
+    currency: 'HKD',
+  },
+  {
+    orderId: 'LLI-20260312-001', supplierOrderId: 'LLM-HK-88004', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
+    enterpriseId: 'ent-001', orderDate: '2026-03-12 11:00', country: '香港', vehicleType: 'Van',
+    pickupAddress: '铜锣湾轩尼诗道 500 号', pickupContact: '赵明 +852 6312 3456',
+    dropoffAddress: '北角英皇道 600 号', dropoffContact: '孙丽 +852 9456 7890',
+    driverInfo: 'GH 3456 / +852 5444 5555', status: '已完成',
+    lliAmount: 212.75, lliFeeBreakdown: { baseFare: 40, distanceFee: 120, serviceFee: 20, surcharge: 15, tax: 17.75, discount: 0, total: 212.75 },
+    llmAmount: 185.00, llmFeeBreakdown: { baseFare: 35, distanceFee: 104, serviceFee: 17, surcharge: 13, tax: 16.00, discount: 0, total: 185.00 },
+    currency: 'HKD',
+  },
+  {
+    orderId: 'LLI-20260324-005', supplierOrderId: 'LLM-HK-88005', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
+    enterpriseId: 'ent-001', orderDate: '2026-03-24 08:30', country: '香港', vehicleType: 'Van',
+    pickupAddress: '湾仔港湾道 25 号', pickupContact: '周敏 +852 6312 3456',
+    dropoffAddress: '深水埗长沙湾道 888 号', dropoffContact: '吴刚 +852 9567 8901',
+    driverInfo: 'IJ 7890 / +852 5555 6666', status: '配送中',
+    lliAmount: 109.25, lliFeeBreakdown: { baseFare: 40, distanceFee: 45, serviceFee: 0, surcharge: 12, tax: 12.25, discount: 0, total: 109.25 },
+    llmAmount: 95.00, llmFeeBreakdown: { baseFare: 35, distanceFee: 39, serviceFee: 0, surcharge: 10, tax: 11.00, discount: 0, total: 95.00 },
+    currency: 'HKD',
+  },
+  // 顺丰国际 orders (泰国 → LLM-TH)
+  {
+    orderId: 'LLI-20260321-101', supplierOrderId: 'LLM-TH-99001', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    enterpriseId: 'ent-002', orderDate: '2026-03-21 09:30', country: '泰国', vehicleType: 'Van',
+    pickupAddress: 'Sukhumvit Rd, Khlong Toei', pickupContact: 'Somchai +66 812 345 67',
+    dropoffAddress: 'Silom Rd, Bang Rak', dropoffContact: 'Nattaya +66 823 456 78',
+    driverInfo: 'กข 1234 / +66 891 234 567', status: '已完成',
+    lliAmount: 1437.50, lliFeeBreakdown: { baseFare: 600, distanceFee: 450, serviceFee: 150, surcharge: 100, tax: 137.50, discount: 0, total: 1437.50 },
+    llmAmount: 1250.00, llmFeeBreakdown: { baseFare: 520, distanceFee: 390, serviceFee: 130, surcharge: 87, tax: 123.00, discount: 0, total: 1250.00 },
+    currency: 'THB',
+  },
+  {
+    orderId: 'LLI-20260320-102', supplierOrderId: 'LLM-TH-99002', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    enterpriseId: 'ent-002', orderDate: '2026-03-20 15:45', country: '泰国', vehicleType: 'Motorcycle',
+    pickupAddress: 'Ratchadaphisek Rd, Din Daeng', pickupContact: 'Pradit +66 812 345 67',
+    dropoffAddress: 'Phahonyothin Rd, Chatuchak', dropoffContact: 'Wanida +66 834 567 89',
+    driverInfo: 'คง 5678 / +66 892 345 678', status: '已完成',
+    lliAmount: 1023.50, lliFeeBreakdown: { baseFare: 300, distanceFee: 420, serviceFee: 100, surcharge: 80, tax: 123.50, discount: 0, total: 1023.50 },
+    llmAmount: 890.00, llmFeeBreakdown: { baseFare: 260, distanceFee: 365, serviceFee: 87, surcharge: 70, tax: 108.00, discount: 0, total: 890.00 },
+    currency: 'THB',
+  },
+  {
+    orderId: 'LLI-20260315-103', supplierOrderId: 'LLM-TH-99003', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    enterpriseId: 'ent-002', orderDate: '2026-03-15 14:10', country: '泰国', vehicleType: 'Pickup Truck',
+    pickupAddress: 'Rama IV Rd, Pathum Wan', pickupContact: 'Kittisak +66 812 345 67',
+    dropoffAddress: 'Lat Phrao Rd, Wang Thonglang', dropoffContact: 'Siriporn +66 845 678 90',
+    driverInfo: 'จฉ 9012 / +66 893 456 789', status: '已完成',
+    lliAmount: 2415.00, lliFeeBreakdown: { baseFare: 1000, distanceFee: 800, serviceFee: 200, surcharge: 150, tax: 265.00, discount: 0, total: 2415.00 },
+    llmAmount: 2100.00, llmFeeBreakdown: { baseFare: 870, distanceFee: 695, serviceFee: 174, surcharge: 130, tax: 231.00, discount: 0, total: 2100.00 },
+    currency: 'THB',
+  },
+  {
+    orderId: 'LLI-20260324-104', supplierOrderId: 'LLM-TH-99004', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    enterpriseId: 'ent-002', orderDate: '2026-03-24 10:00', country: '泰国', vehicleType: 'Van',
+    pickupAddress: 'Charoen Krung Rd, Samphanthawong', pickupContact: 'Apinya +66 812 345 67',
+    dropoffAddress: 'Petchaburi Rd, Ratchathewi', dropoffContact: 'Chalerm +66 856 789 01',
+    driverInfo: 'ชซ 3456 / +66 894 567 890', status: '前往装货地',
+    lliAmount: 1265.00, lliFeeBreakdown: { baseFare: 600, distanceFee: 350, serviceFee: 100, surcharge: 80, tax: 135.00, discount: 0, total: 1265.00 },
+    llmAmount: 1100.00, llmFeeBreakdown: { baseFare: 520, distanceFee: 304, serviceFee: 87, surcharge: 70, tax: 119.00, discount: 0, total: 1100.00 },
+    currency: 'THB',
+  },
+  {
+    orderId: 'LLI-20260323-105', supplierOrderId: 'GRAB-TH-55001', supplierCode: 'GRAB-TH', supplierName: 'Grab Thailand',
+    enterpriseId: 'ent-002', orderDate: '2026-03-23 16:30', country: '泰国', vehicleType: '4-Door Car',
+    pickupAddress: 'Wireless Rd, Lumphini', pickupContact: 'Tanawat +66 812 345 67',
+    dropoffAddress: 'Thonglor Soi 13', dropoffContact: 'Parichat +66 867 890 12',
+    driverInfo: 'ฌญ 7890 / +66 895 678 901', status: '已完成',
+    lliAmount: 862.50, lliFeeBreakdown: { baseFare: 350, distanceFee: 280, serviceFee: 50, surcharge: 60, tax: 122.50, discount: 0, total: 862.50 },
+    llmAmount: 750.00, llmFeeBreakdown: { baseFare: 300, distanceFee: 245, serviceFee: 44, surcharge: 52, tax: 109.00, discount: 0, total: 750.00 },
+    currency: 'THB',
+  },
+  // 极兔快递 orders (马来西亚 → LLM-MY)
+  {
+    orderId: 'LLI-20260322-201', supplierOrderId: 'LLM-MY-77001', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    enterpriseId: 'ent-003', orderDate: '2026-03-22 10:00', country: '马来西亚', vehicleType: 'Van',
+    pickupAddress: 'Jalan Bukit Bintang, KL', pickupContact: 'Ahmad +60 12 345 6789',
+    dropoffAddress: 'Jalan Ampang, KL', dropoffContact: 'Mei Ling +60 13 456 7890',
+    driverInfo: 'WKL 1234 / +60 17 123 4567', status: '已完成',
+    lliAmount: 52.80, lliFeeBreakdown: { baseFare: 20, distanceFee: 18, serviceFee: 5, surcharge: 3, tax: 6.80, discount: 0, total: 52.80 },
+    llmAmount: 45.00, llmFeeBreakdown: { baseFare: 17, distanceFee: 15, serviceFee: 4, surcharge: 3, tax: 6.00, discount: 0, total: 45.00 },
+    currency: 'MYR',
+  },
+  {
+    orderId: 'LLI-20260321-202', supplierOrderId: 'LLM-MY-77002', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    enterpriseId: 'ent-003', orderDate: '2026-03-21 14:30', country: '马来西亚', vehicleType: 'Pickup Truck',
+    pickupAddress: 'Petaling Jaya, Selangor', pickupContact: 'Raj +60 12 345 6789',
+    dropoffAddress: 'Shah Alam, Selangor', dropoffContact: 'Siti +60 14 567 8901',
+    driverInfo: 'BJK 5678 / +60 18 234 5678', status: '已完成',
+    lliAmount: 95.70, lliFeeBreakdown: { baseFare: 35, distanceFee: 32, serviceFee: 10, surcharge: 6, tax: 12.70, discount: 0, total: 95.70 },
+    llmAmount: 82.00, llmFeeBreakdown: { baseFare: 30, distanceFee: 28, serviceFee: 8, surcharge: 5, tax: 11.00, discount: 0, total: 82.00 },
+    currency: 'MYR',
+  },
+  {
+    orderId: 'LLI-20260319-203', supplierOrderId: 'LLM-MY-77003', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    enterpriseId: 'ent-003', orderDate: '2026-03-19 09:00', country: '马来西亚', vehicleType: 'Small Truck',
+    pickupAddress: 'Subang Jaya, Selangor', pickupContact: 'Wei +60 12 345 6789',
+    dropoffAddress: 'Klang, Selangor', dropoffContact: 'Hafiz +60 15 678 9012',
+    driverInfo: 'BDG 9012 / +60 19 345 6789', status: '已完成',
+    lliAmount: 74.50, lliFeeBreakdown: { baseFare: 28, distanceFee: 25, serviceFee: 8, surcharge: 4, tax: 9.50, discount: 0, total: 74.50 },
+    llmAmount: 63.00, llmFeeBreakdown: { baseFare: 24, distanceFee: 21, serviceFee: 7, surcharge: 3, tax: 8.00, discount: 0, total: 63.00 },
+    currency: 'MYR',
+  },
+  {
+    orderId: 'LLI-20260324-204', supplierOrderId: 'LLM-MY-77004', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    enterpriseId: 'ent-003', orderDate: '2026-03-24 15:00', country: '马来西亚', vehicleType: 'Van',
+    pickupAddress: 'Bangsar South, KL', pickupContact: 'Tan +60 12 345 6789',
+    dropoffAddress: 'Mont Kiara, KL', dropoffContact: 'Aisha +60 16 789 0123',
+    driverInfo: 'WPJ 3456 / +60 11 456 7890', status: '正在呼叫司机',
+    lliAmount: 41.30, lliFeeBreakdown: { baseFare: 20, distanceFee: 10, serviceFee: 0, surcharge: 5, tax: 6.30, discount: 0, total: 41.30 },
+    llmAmount: 35.00, llmFeeBreakdown: { baseFare: 17, distanceFee: 9, serviceFee: 0, surcharge: 4, tax: 5.00, discount: 0, total: 35.00 },
+    currency: 'MYR',
+  },
+  {
+    orderId: 'LLI-20260317-205', supplierOrderId: 'LLM-MY-77005', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    enterpriseId: 'ent-003', orderDate: '2026-03-17 11:30', country: '马来西亚', vehicleType: 'Motorcycle',
+    pickupAddress: 'KLCC, KL', pickupContact: 'Danny +60 12 345 6789',
+    dropoffAddress: 'Mid Valley, KL', dropoffContact: 'Priya +60 17 890 1234',
+    driverInfo: 'WA 7777 / +60 12 567 8901', status: '已完成',
+    lliAmount: 18.60, lliFeeBreakdown: { baseFare: 8, distanceFee: 5, serviceFee: 0, surcharge: 2, tax: 3.60, discount: 0, total: 18.60 },
+    llmAmount: 15.00, llmFeeBreakdown: { baseFare: 7, distanceFee: 4, serviceFee: 0, surcharge: 2, tax: 2.00, discount: 0, total: 15.00 },
+    currency: 'MYR',
+  },
+  {
+    orderId: 'LLI-20260314-206', supplierOrderId: 'GRAB-MY-66001', supplierCode: 'GRAB-MY', supplierName: 'Grab Malaysia',
+    enterpriseId: 'ent-003', orderDate: '2026-03-14 08:00', country: '马来西亚', vehicleType: 'Van',
+    pickupAddress: 'Sunway Pyramid, Selangor', pickupContact: 'Jason +60 12 345 6789',
+    dropoffAddress: 'Puchong, Selangor', dropoffContact: 'Nurul +60 18 901 2345',
+    driverInfo: 'BHP 8888 / +60 13 678 9012', status: '已完成',
+    lliAmount: 38.40, lliFeeBreakdown: { baseFare: 15, distanceFee: 12, serviceFee: 3, surcharge: 2, tax: 6.40, discount: 0, total: 38.40 },
+    llmAmount: 32.00, llmFeeBreakdown: { baseFare: 13, distanceFee: 10, serviceFee: 2, surcharge: 2, tax: 5.00, discount: 0, total: 32.00 },
+    currency: 'MYR',
+  },
+  // Flash Express orders (泰国 → LLM-TH)
+  {
+    orderId: 'LLI-20260323-301', supplierOrderId: 'LLM-TH-66001', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    enterpriseId: 'ent-004', orderDate: '2026-03-23 11:15', country: '泰国', vehicleType: 'Pickup Truck',
+    pickupAddress: 'Bang Na-Trat Rd, Bang Na', pickupContact: 'Anurak +66 912 345 67',
+    dropoffAddress: 'Samut Prakan Industrial Estate', dropoffContact: 'Suwanna +66 923 456 78',
+    driverInfo: 'ฎฏ 1111 / +66 896 789 012', status: '已完成',
+    lliAmount: 2070.00, lliFeeBreakdown: { baseFare: 900, distanceFee: 650, serviceFee: 180, surcharge: 120, tax: 220.00, discount: 0, total: 2070.00 },
+    llmAmount: 1800.00, llmFeeBreakdown: { baseFare: 780, distanceFee: 565, serviceFee: 157, surcharge: 104, tax: 194.00, discount: 0, total: 1800.00 },
+    currency: 'THB',
+  },
+  {
+    orderId: 'LLI-20260322-302', supplierOrderId: 'LLM-TH-66002', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    enterpriseId: 'ent-004', orderDate: '2026-03-22 08:45', country: '泰国', vehicleType: 'Van',
+    pickupAddress: 'Ngamwongwan Rd, Nonthaburi', pickupContact: 'Piyapong +66 912 345 67',
+    dropoffAddress: 'Muang Thong Thani, Pak Kret', dropoffContact: 'Ratana +66 934 567 89',
+    driverInfo: 'ฐฑ 2222 / +66 897 890 123', status: '已完成',
+    lliAmount: 1092.50, lliFeeBreakdown: { baseFare: 500, distanceFee: 310, serviceFee: 80, surcharge: 60, tax: 142.50, discount: 0, total: 1092.50 },
+    llmAmount: 950.00, llmFeeBreakdown: { baseFare: 435, distanceFee: 270, serviceFee: 70, surcharge: 52, tax: 123.00, discount: 0, total: 950.00 },
+    currency: 'THB',
+  },
+  {
+    orderId: 'LLI-20260324-303', supplierOrderId: 'LLM-TH-66003', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    enterpriseId: 'ent-004', orderDate: '2026-03-24 14:00', country: '泰国', vehicleType: 'Small Truck',
+    pickupAddress: 'Rama II Rd, Samae Dam', pickupContact: 'Worapat +66 912 345 67',
+    dropoffAddress: 'Bangpakong Industrial Park', dropoffContact: 'Jintana +66 945 678 90',
+    driverInfo: 'ฒณ 3333 / +66 898 901 234', status: '配送中',
+    lliAmount: 2875.00, lliFeeBreakdown: { baseFare: 1200, distanceFee: 950, serviceFee: 250, surcharge: 150, tax: 325.00, discount: 0, total: 2875.00 },
+    llmAmount: 2500.00, llmFeeBreakdown: { baseFare: 1043, distanceFee: 826, serviceFee: 217, surcharge: 130, tax: 284.00, discount: 0, total: 2500.00 },
+    currency: 'THB',
+  },
+  {
+    orderId: 'LLI-20260319-304', supplierOrderId: 'GRAB-TH-55002', supplierCode: 'GRAB-TH', supplierName: 'Grab Thailand',
+    enterpriseId: 'ent-004', orderDate: '2026-03-19 13:20', country: '泰国', vehicleType: 'Motorcycle',
+    pickupAddress: 'Siam Square Soi 7', pickupContact: 'Chanin +66 912 345 67',
+    dropoffAddress: 'Ekamai Soi 5', dropoffContact: 'Naruemon +66 956 789 01',
+    driverInfo: 'ดต 4444 / +66 899 012 345', status: '已完成',
+    lliAmount: 575.00, lliFeeBreakdown: { baseFare: 200, distanceFee: 180, serviceFee: 50, surcharge: 30, tax: 115.00, discount: 0, total: 575.00 },
+    llmAmount: 500.00, llmFeeBreakdown: { baseFare: 174, distanceFee: 157, serviceFee: 43, surcharge: 26, tax: 100.00, discount: 0, total: 500.00 },
+    currency: 'THB',
+  },
+  {
+    orderId: 'LLI-20260316-305', supplierOrderId: 'LLM-TH-66004', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    enterpriseId: 'ent-004', orderDate: '2026-03-16 10:00', country: '泰国', vehicleType: 'Van',
+    pickupAddress: 'Ratchayothin, Chatuchak', pickupContact: 'Boonmee +66 912 345 67',
+    dropoffAddress: 'Don Mueang, Lak Si', dropoffContact: 'Araya +66 967 890 12',
+    driverInfo: 'ถท 5555 / +66 890 123 456', status: '已过期',
+    lliAmount: 920.00, lliFeeBreakdown: { baseFare: 400, distanceFee: 280, serviceFee: 70, surcharge: 50, tax: 120.00, discount: 0, total: 920.00 },
+    llmAmount: 800.00, llmFeeBreakdown: { baseFare: 348, distanceFee: 243, serviceFee: 61, surcharge: 43, tax: 105.00, discount: 0, total: 800.00 },
+    currency: 'THB',
+  },
 ];

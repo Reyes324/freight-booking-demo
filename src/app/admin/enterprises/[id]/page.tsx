@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Tabs, Table, Input, Button, Card, DatePicker, Tag, Tooltip, Progress } from 'antd';
+import { Tabs, Table, Input, Button, Card, DatePicker, Tag, Tooltip, Progress, Alert } from 'antd';
 import { ArrowLeftOutlined, SearchOutlined, DownloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import {
@@ -17,6 +17,20 @@ import {
   type FeeBreakdown,
 } from '@/data/adminMockData';
 import * as XLSX from 'xlsx';
+
+// 参考汇率（日常运营使用，月末按官方挂牌汇率结算）
+const REFERENCE_RATES: Record<string, number> = {
+  'THB': 5.00,  // 1 CNY = 5.00 THB
+  'HKD': 1.10,  // 1 CNY = 1.10 HKD
+  'MYR': 0.65,  // 1 CNY = 0.65 MYR
+  'SGD': 0.19,  // 1 CNY = 0.19 SGD
+};
+
+// 转换为CNY（仅供参考）
+function toCNY(amount: number, currency: string): number {
+  const rate = REFERENCE_RATES[currency] || 1;
+  return amount / rate;
+}
 
 function FeeTooltip({ breakdown, currency }: { breakdown: FeeBreakdown; currency: string }) {
   const items = [
@@ -53,7 +67,7 @@ const { RangePicker } = DatePicker;
 function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency: string }) {
   const enterprise = enterprises.find((e) => e.id === enterpriseId);
   const transactions = useMemo(
-    () => creditTransactions.filter((t) => t.enterpriseId === enterpriseId),
+    () => creditTransactions.filter((t) => t.enterpriseId === enterpriseId && t.orderId !== null), // 只显示订单交易
     [enterpriseId]
   );
 
@@ -67,48 +81,31 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
 
   const columns: ColumnsType<CreditTransaction> = [
     { title: '日期', dataIndex: 'date', key: 'date', width: 180 },
+    { title: '类型', dataIndex: 'description', key: 'description', width: 120 },
+    {
+      title: '订单金额',
+      key: 'localCurrency',
+      width: 150,
+      render: (_, record) => {
+        if (!record.localCurrency || !record.localAmount) return '-';
+        return (
+          <div>
+            <div className="font-medium">
+              {record.localCurrency} {record.localAmount.toFixed(2)}
+            </div>
+            <div className="text-xs text-gray-400">
+              ≈ CNY {Math.abs(record.cnyAmount).toFixed(2)}
+            </div>
+          </div>
+        );
+      },
+    },
     {
       title: '订单编号',
       dataIndex: 'orderId',
       key: 'orderId',
-      width: 200,
+      width: 160,
       render: (v: string | null) => v || '-',
-    },
-    { title: '描述', dataIndex: 'description', key: 'description', width: 120 },
-    {
-      title: '订单币种',
-      key: 'localCurrency',
-      width: 140,
-      render: (_, record) => {
-        if (!record.localCurrency) return '-';
-        return (
-          <span className="font-mono text-gray-600">
-            {record.localCurrency} {record.localAmount?.toFixed(2)}
-          </span>
-        );
-      },
-    },
-    {
-      title: '账期变动 (CNY)',
-      dataIndex: 'cnyAmount',
-      key: 'cnyAmount',
-      width: 180,
-      render: (v: number, r) => {
-        const prefix = v > 0 ? '+' : '';
-        const color = v > 0 ? 'text-green-600' : 'text-gray-900';
-        return (
-          <div className="flex items-center gap-2">
-            <span className={`${color} font-medium`}>
-              {prefix}¥ {Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-            </span>
-            {r.exchangeRate && (
-              <Tooltip title={`${r.rateDate} 汇率: 1 CNY = ${r.exchangeRate} ${r.localCurrency}`}>
-                <InfoCircleOutlined className="text-gray-400 text-xs cursor-help" />
-              </Tooltip>
-            )}
-          </div>
-        );
-      },
     },
   ];
 
@@ -144,27 +141,36 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
         {/* 汇率信息 */}
         {monthlyRate && exchangeRate && (
           <div className="pt-4 border-t border-gray-100">
-            <div className="text-xs text-gray-500 mb-1">本月汇率</div>
+            <div className="text-xs text-gray-500 mb-1">参考汇率（实际结算以月末挂牌汇率为准）</div>
             <div className="flex items-center gap-2">
               <span className="text-sm font-mono text-gray-900">
                 1 CNY = {exchangeRate} {localCurrency}
               </span>
-              <Tooltip title={`${monthlyRate.rateDate} 汇率`}>
+              <Tooltip title={`${monthlyRate.rateDate} 参考汇率`}>
                 <InfoCircleOutlined className="text-gray-400 cursor-help" />
               </Tooltip>
             </div>
             <div className="text-xs text-gray-400 mt-1">
-              当地货币等值约 {localCurrency} {(remaining * exchangeRate).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              剩余额度约 {localCurrency} {(remaining * exchangeRate).toLocaleString(undefined, { maximumFractionDigits: 0 })}（参考）
             </div>
           </div>
         )}
       </div>
 
       {/* Transactions */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <h3 className="text-base font-medium text-gray-900">交易明细</h3>
-        <RangePicker />
+        <RangePicker size="large" />
       </div>
+
+      {/* Alert提示 */}
+      <Alert
+        title="人民币换算金额仅供参考，实际账期结算以每月末挂牌汇率为准"
+        type="info"
+        showIcon
+        className="mb-4"
+      />
+
       <Card>
         <Table
           columns={columns}
@@ -199,8 +205,11 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
       '司机信息': o.driverInfo,
       '订单状态': o.status,
       '币种': o.currency,
+      '参考汇率': `1 CNY = ${REFERENCE_RATES[o.currency] || '-'} ${o.currency}`,
       'LLI账单金额': o.lliAmount,
+      'LLI账单-CNY换算': toCNY(o.lliAmount, o.currency).toFixed(2),
       'LLM账单金额': o.llmAmount,
+      'LLM账单-CNY换算': toCNY(o.llmAmount, o.currency).toFixed(2),
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -297,30 +306,40 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
     {
       title: 'LLI账单金额',
       key: 'lliAmount',
-      width: 130,
+      width: 150,
       render: (_, r) => (
         <Tooltip
           title={<FeeTooltip breakdown={r.lliFeeBreakdown} currency={r.currency} />}
           placement="left"
         >
-          <span className="cursor-default font-medium">
-            {r.currency} {r.lliAmount.toFixed(2)}
-          </span>
+          <div className="cursor-default">
+            <div className="font-medium">
+              {r.currency} {r.lliAmount.toFixed(2)}
+            </div>
+            <div className="text-xs text-gray-400">
+              ≈ CNY {toCNY(r.lliAmount, r.currency).toFixed(2)}
+            </div>
+          </div>
         </Tooltip>
       ),
     },
     {
       title: 'LLM账单金额',
       key: 'llmAmount',
-      width: 130,
+      width: 150,
       render: (_, r) => (
         <Tooltip
           title={<FeeTooltip breakdown={r.llmFeeBreakdown} currency={r.currency} />}
           placement="left"
         >
-          <span className="cursor-default font-medium">
-            {r.currency} {r.llmAmount.toFixed(2)}
-          </span>
+          <div className="cursor-default">
+            <div className="font-medium">
+              {r.currency} {r.llmAmount.toFixed(2)}
+            </div>
+            <div className="text-xs text-gray-400">
+              ≈ CNY {toCNY(r.llmAmount, r.currency).toFixed(2)}
+            </div>
+          </div>
         </Tooltip>
       ),
     },
@@ -328,17 +347,26 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <Input
+          size="large"
           placeholder="搜索订单"
           prefix={<SearchOutlined className="text-gray-400" />}
           allowClear
-          className="max-w-[300px]"
+          style={{ width: 300 }}
         />
         <Button icon={<DownloadOutlined />} onClick={handleExport}>
           导出 Excel
         </Button>
       </div>
+
+      {/* Alert提示 */}
+      <Alert
+        title="人民币换算金额仅供参考，实际账期结算以每月末挂牌汇率为准"
+        type="info"
+        showIcon
+        className="mb-4"
+      />
 
       <Card>
         <Table

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Table, Input, Button, Card, Select, DatePicker, Tooltip } from 'antd';
+import { Table, Input, Button, Card, Select, DatePicker, Tooltip, Alert } from 'antd';
 import { SearchOutlined, DownloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { enterprises, creditTransactions, type CreditTransaction } from '@/data/adminMockData';
@@ -21,6 +21,7 @@ export default function TransactionsPage() {
 
   const allTransactions = useMemo(() => {
     return creditTransactions
+      .filter((t) => t.orderId !== null) // 只显示订单交易
       .map((t) => ({
         ...t,
         enterpriseName: enterpriseMap[t.enterpriseId]?.name || '-',
@@ -81,36 +82,19 @@ export default function TransactionsPage() {
       width: 120,
     },
     {
-      title: '订单币种',
+      title: '订单金额',
       key: 'localCurrency',
-      width: 140,
+      width: 150,
       render: (_, record) => {
-        if (!record.localCurrency) return '-';
+        if (!record.localCurrency || !record.localAmount) return '-';
         return (
-          <span className="font-mono text-gray-600">
-            {record.localCurrency} {record.localAmount?.toFixed(2)}
-          </span>
-        );
-      },
-    },
-    {
-      title: '账期变动 (CNY)',
-      dataIndex: 'cnyAmount',
-      key: 'cnyAmount',
-      width: 180,
-      render: (v: number, r) => {
-        const prefix = v > 0 ? '+' : '';
-        const color = v > 0 ? 'text-green-600' : 'text-gray-900';
-        return (
-          <div className="flex items-center gap-2">
-            <span className={`${color} font-medium`}>
-              {prefix}¥ {Math.abs(v).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-            </span>
-            {r.exchangeRate && (
-              <Tooltip title={`${r.rateDate} 汇率: 1 CNY = ${r.exchangeRate} ${r.localCurrency}`}>
-                <InfoCircleOutlined className="text-gray-400 text-xs cursor-help" />
-              </Tooltip>
-            )}
+          <div>
+            <div className="font-medium">
+              {record.localCurrency} {record.localAmount.toFixed(2)}
+            </div>
+            <div className="text-xs text-gray-400">
+              ≈ CNY {Math.abs(record.cnyAmount).toFixed(2)}
+            </div>
           </div>
         );
       },
@@ -131,31 +115,19 @@ export default function TransactionsPage() {
         <Button icon={<DownloadOutlined />}>导出 Excel</Button>
       </div>
 
-      {/* Summary cards */}
-      <div className="grid grid-cols-2 gap-4 mb-6 max-w-lg">
-        <div className="border border-gray-200 rounded-xl p-4 bg-white">
-          <div className="text-sm text-gray-500">总笔数</div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">{filtered.length}</div>
-        </div>
-        <div className="border border-gray-200 rounded-xl p-4 bg-white">
-          <div className="text-sm text-gray-500">总支出 (CNY)</div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">
-            ¥ {Math.abs(totalExpense).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-          </div>
-        </div>
-      </div>
-
       {/* Filters */}
-      <div className="flex items-center gap-3 mb-4 flex-wrap">
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
         <Input
+          size="large"
           placeholder="搜索企业、订单号"
           prefix={<SearchOutlined className="text-gray-400" />}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           allowClear
-          className="max-w-[280px]"
+          style={{ width: 280 }}
         />
         <Select
+          size="large"
           placeholder="筛选企业"
           allowClear
           value={enterpriseFilter}
@@ -164,6 +136,7 @@ export default function TransactionsPage() {
           options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
         />
         <Select
+          size="large"
           placeholder="筛选类型"
           allowClear
           value={typeFilter}
@@ -171,8 +144,16 @@ export default function TransactionsPage() {
           style={{ width: 140 }}
           options={transactionTypes.map((t) => ({ value: t, label: t }))}
         />
-        <RangePicker />
+        <RangePicker size="large" />
       </div>
+
+      {/* Alert提示 */}
+      <Alert
+        title="人民币换算金额仅供参考，实际账期结算以每月末挂牌汇率为准"
+        type="info"
+        showIcon
+        className="mb-4"
+      />
 
       {/* Table */}
       <Card>

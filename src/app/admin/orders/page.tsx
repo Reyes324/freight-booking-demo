@@ -1,11 +1,25 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Table, Input, Button, Card, Tag, Select, Tooltip } from 'antd';
+import { Table, Input, Button, Card, Tag, Select, Tooltip, Alert } from 'antd';
 import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { enterprises, adminOrders, type AdminOrder, type FeeBreakdown } from '@/data/adminMockData';
 import * as XLSX from 'xlsx';
+
+// 参考汇率（日常运营使用，月末按官方挂牌汇率结算）
+const REFERENCE_RATES: Record<string, number> = {
+  'THB': 5.00,  // 1 CNY = 5.00 THB
+  'HKD': 1.10,  // 1 CNY = 1.10 HKD
+  'MYR': 0.65,  // 1 CNY = 0.65 MYR
+  'SGD': 0.19,  // 1 CNY = 0.19 SGD
+};
+
+// 转换为CNY（仅供参考）
+function toCNY(amount: number, currency: string): number {
+  const rate = REFERENCE_RATES[currency] || 1;
+  return amount / rate;
+}
 
 function FeeTooltip({ breakdown, currency }: { breakdown: FeeBreakdown; currency: string }) {
   const items = [
@@ -98,7 +112,9 @@ export default function AdminOrdersPage() {
       '司机信息': o.driverInfo,
       '订单状态': o.status,
       '币种': o.currency,
+      '参考汇率': `1 CNY = ${REFERENCE_RATES[o.currency] || '-'} ${o.currency}`,
       'LLI账单金额': o.lliAmount,
+      'LLI账单-CNY换算': toCNY(o.lliAmount, o.currency).toFixed(2),
       'LLI-基础运费': o.lliFeeBreakdown.baseFare,
       'LLI-里程费': o.lliFeeBreakdown.distanceFee,
       'LLI-服务费': o.lliFeeBreakdown.serviceFee,
@@ -106,6 +122,7 @@ export default function AdminOrdersPage() {
       'LLI-税费': o.lliFeeBreakdown.tax,
       'LLI-优惠减免': o.lliFeeBreakdown.discount,
       'LLM账单金额': o.llmAmount,
+      'LLM账单-CNY换算': toCNY(o.llmAmount, o.currency).toFixed(2),
       'LLM-基础运费': o.llmFeeBreakdown.baseFare,
       'LLM-里程费': o.llmFeeBreakdown.distanceFee,
       'LLM-服务费': o.llmFeeBreakdown.serviceFee,
@@ -217,32 +234,42 @@ export default function AdminOrdersPage() {
     {
       title: 'LLI账单金额',
       key: 'lliAmount',
-      width: 130,
+      width: 150,
       sorter: (a, b) => a.lliAmount - b.lliAmount,
       render: (_, r) => (
         <Tooltip
           title={<FeeTooltip breakdown={r.lliFeeBreakdown} currency={r.currency} />}
           placement="left"
         >
-          <span className="cursor-default font-medium">
-            {r.currency} {r.lliAmount.toFixed(2)}
-          </span>
+          <div className="cursor-default">
+            <div className="font-medium">
+              {r.currency} {r.lliAmount.toFixed(2)}
+            </div>
+            <div className="text-xs text-gray-400">
+              ≈ CNY {toCNY(r.lliAmount, r.currency).toFixed(2)}
+            </div>
+          </div>
         </Tooltip>
       ),
     },
     {
       title: 'LLM账单金额',
       key: 'llmAmount',
-      width: 130,
+      width: 150,
       sorter: (a, b) => a.llmAmount - b.llmAmount,
       render: (_, r) => (
         <Tooltip
           title={<FeeTooltip breakdown={r.llmFeeBreakdown} currency={r.currency} />}
           placement="left"
         >
-          <span className="cursor-default font-medium">
-            {r.currency} {r.llmAmount.toFixed(2)}
-          </span>
+          <div className="cursor-default">
+            <div className="font-medium">
+              {r.currency} {r.llmAmount.toFixed(2)}
+            </div>
+            <div className="text-xs text-gray-400">
+              ≈ CNY {toCNY(r.llmAmount, r.currency).toFixed(2)}
+            </div>
+          </div>
         </Tooltip>
       ),
     },
@@ -262,16 +289,18 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-3 mb-4 flex-wrap">
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
         <Input
+          size="large"
           placeholder="搜索单号、地址、司机、客户、供应商"
           prefix={<SearchOutlined className="text-gray-400" />}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           allowClear
-          className="max-w-[360px]"
+          style={{ width: 360 }}
         />
         <Select
+          size="large"
           placeholder="企业客户"
           allowClear
           value={enterpriseFilter}
@@ -280,6 +309,7 @@ export default function AdminOrdersPage() {
           options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
         />
         <Select
+          size="large"
           placeholder="供应商"
           allowClear
           value={supplierFilter}
@@ -288,6 +318,7 @@ export default function AdminOrdersPage() {
           options={suppliers.map((s) => ({ value: s, label: s }))}
         />
         <Select
+          size="large"
           placeholder="国家"
           allowClear
           value={countryFilter}
@@ -296,6 +327,7 @@ export default function AdminOrdersPage() {
           options={countries.map((c) => ({ value: c, label: c }))}
         />
         <Select
+          size="large"
           placeholder="状态"
           allowClear
           value={statusFilter}
@@ -304,6 +336,14 @@ export default function AdminOrdersPage() {
           options={statuses.map((s) => ({ value: s, label: s }))}
         />
       </div>
+
+      {/* Alert提示 */}
+      <Alert
+        title="人民币换算金额仅供参考，实际账期结算以每月末挂牌汇率为准"
+        type="info"
+        showIcon
+        className="mb-4"
+      />
 
       {/* Table */}
       <Card>

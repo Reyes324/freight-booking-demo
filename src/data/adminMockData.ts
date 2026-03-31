@@ -116,7 +116,7 @@ export function getCurrentMonth(): string {
 // ========== Enterprises ==========
 export const enterprises: Enterprise[] = [
   {
-    id: 'ENT-20251101-001',
+    id: 'E001',
     name: '菜鸟速递',
     phone: '63123456',
     password: 'Cainiao@2025',
@@ -130,7 +130,7 @@ export const enterprises: Enterprise[] = [
     createdAt: '2025-11-01',
   },
   {
-    id: 'ENT-20251215-001',
+    id: 'E002',
     name: '顺丰国际',
     phone: '81234567',
     password: 'SF@2025intl',
@@ -144,7 +144,7 @@ export const enterprises: Enterprise[] = [
     createdAt: '2025-12-15',
   },
   {
-    id: 'ENT-20260108-001',
+    id: 'E003',
     name: '极兔快递',
     phone: '13800138000',
     password: 'JT@express2025',
@@ -158,7 +158,7 @@ export const enterprises: Enterprise[] = [
     createdAt: '2026-01-08',
   },
   {
-    id: 'ENT-20260220-001',
+    id: 'E004',
     name: 'Flash Express',
     phone: '91234567',
     password: 'Flash@2026',
@@ -182,37 +182,37 @@ export const enterprises: Enterprise[] = [
 export const creditTransactions: CreditTransaction[] = [
   // 菜鸟速递（香港）
   {
-    id: 'tx-006', enterpriseId: 'ENT-20251101-001', date: '2026-03-01 00:00',
+    id: 'tx-006', enterpriseId: 'E001', date: '2026-03-01 00:00',
     orderId: null, description: '月度额度重置',
     localCurrency: null, localAmount: null, cnyAmount: 50000,
     exchangeRate: null, rateDate: null
   },
   {
-    id: 'tx-005', enterpriseId: 'ENT-20251101-001', date: '2026-03-12 11:00',
+    id: 'tx-005', enterpriseId: 'E001', date: '2026-03-12 11:00',
     orderId: 'LLI-20260312-001', description: '订单支付',
     localCurrency: 'HKD', localAmount: 185.00, cnyAmount: -169.41,
     exchangeRate: 1.092, rateDate: '2026-02-28'
   },
   {
-    id: 'tx-004', enterpriseId: 'ENT-20251101-001', date: '2026-03-15 16:20',
+    id: 'tx-004', enterpriseId: 'E001', date: '2026-03-15 16:20',
     orderId: 'LLI-20260315-002', description: '订单支付',
     localCurrency: 'HKD', localAmount: 256.00, cnyAmount: -234.43,
     exchangeRate: 1.092, rateDate: '2026-02-28'
   },
   {
-    id: 'tx-003', enterpriseId: 'ENT-20251101-001', date: '2026-03-18 09:45',
+    id: 'tx-003', enterpriseId: 'E001', date: '2026-03-18 09:45',
     orderId: 'LLI-20260318-003', description: '订单支付',
     localCurrency: 'HKD', localAmount: 128.00, cnyAmount: -117.22,
     exchangeRate: 1.092, rateDate: '2026-02-28'
   },
   {
-    id: 'tx-002', enterpriseId: 'ENT-20251101-001', date: '2026-03-19 10:15',
+    id: 'tx-002', enterpriseId: 'E001', date: '2026-03-19 10:15',
     orderId: null, description: '额度调整',
     localCurrency: null, localAmount: null, cnyAmount: 5000,
     exchangeRate: null, rateDate: null
   },
   {
-    id: 'tx-001', enterpriseId: 'ENT-20251101-001', date: '2026-03-20 14:30',
+    id: 'tx-001', enterpriseId: 'E001', date: '2026-03-20 14:30',
     orderId: 'LLI-20260320-001', description: '订单支付',
     localCurrency: 'HKD', localAmount: 74.00, cnyAmount: -67.77,
     exchangeRate: 1.092, rateDate: '2026-02-28'
@@ -220,31 +220,31 @@ export const creditTransactions: CreditTransaction[] = [
 
   // 顺丰国际（泰国）
   {
-    id: 'tx-105', enterpriseId: 'ENT-20251215-001', date: '2026-03-01 00:00',
+    id: 'tx-105', enterpriseId: 'E002', date: '2026-03-01 00:00',
     orderId: null, description: '月度额度重置',
     localCurrency: null, localAmount: null, cnyAmount: 200000,
     exchangeRate: null, rateDate: null
   },
   {
-    id: 'tx-104', enterpriseId: 'ENT-20251215-001', date: '2026-03-15 14:10',
+    id: 'tx-104', enterpriseId: 'E002', date: '2026-03-15 14:10',
     orderId: 'LLI-20260315-103', description: '订单支付',
     localCurrency: 'THB', localAmount: 2100.00, cnyAmount: -432.99,
     exchangeRate: 4.85, rateDate: '2026-02-28'
   },
   {
-    id: 'tx-103', enterpriseId: 'ENT-20251215-001', date: '2026-03-18 08:20',
+    id: 'tx-103', enterpriseId: 'E002', date: '2026-03-18 08:20',
     orderId: null, description: '额度调整',
     localCurrency: null, localAmount: null, cnyAmount: 5000,
     exchangeRate: null, rateDate: null
   },
   {
-    id: 'tx-102', enterpriseId: 'ENT-20251215-001', date: '2026-03-20 15:45',
+    id: 'tx-102', enterpriseId: 'E002', date: '2026-03-20 15:45',
     orderId: 'LLI-20260320-102', description: '订单支付',
     localCurrency: 'THB', localAmount: 890.00, cnyAmount: -183.51,
     exchangeRate: 4.85, rateDate: '2026-02-28'
   },
   {
-    id: 'tx-101', enterpriseId: 'ENT-20251215-001', date: '2026-03-21 09:30',
+    id: 'tx-101', enterpriseId: 'E002', date: '2026-03-21 09:30',
     orderId: 'LLI-20260321-101', description: '订单支付',
     localCurrency: 'THB', localAmount: 1250.00, cnyAmount: -257.73,
     exchangeRate: 4.85, rateDate: '2026-02-28'
@@ -252,25 +252,25 @@ export const creditTransactions: CreditTransaction[] = [
 
   // 极兔快递（马来西亚）
   {
-    id: 'tx-204', enterpriseId: 'ENT-20260108-001', date: '2026-03-01 00:00',
+    id: 'tx-204', enterpriseId: 'E003', date: '2026-03-01 00:00',
     orderId: null, description: '月度额度重置',
     localCurrency: null, localAmount: null, cnyAmount: 30000,
     exchangeRate: null, rateDate: null
   },
   {
-    id: 'tx-203', enterpriseId: 'ENT-20260108-001', date: '2026-03-19 09:00',
+    id: 'tx-203', enterpriseId: 'E003', date: '2026-03-19 09:00',
     orderId: 'LLI-20260319-203', description: '订单支付',
     localCurrency: 'MYR', localAmount: 63.00, cnyAmount: -101.61,
     exchangeRate: 0.62, rateDate: '2026-02-28'
   },
   {
-    id: 'tx-202', enterpriseId: 'ENT-20260108-001', date: '2026-03-21 14:30',
+    id: 'tx-202', enterpriseId: 'E003', date: '2026-03-21 14:30',
     orderId: 'LLI-20260321-202', description: '订单支付',
     localCurrency: 'MYR', localAmount: 82.00, cnyAmount: -132.26,
     exchangeRate: 0.62, rateDate: '2026-02-28'
   },
   {
-    id: 'tx-201', enterpriseId: 'ENT-20260108-001', date: '2026-03-22 10:00',
+    id: 'tx-201', enterpriseId: 'E003', date: '2026-03-22 10:00',
     orderId: 'LLI-20260322-201', description: '订单支付',
     localCurrency: 'MYR', localAmount: 45.00, cnyAmount: -72.58,
     exchangeRate: 0.62, rateDate: '2026-02-28'
@@ -278,19 +278,19 @@ export const creditTransactions: CreditTransaction[] = [
 
   // Flash Express（泰国）
   {
-    id: 'tx-303', enterpriseId: 'ENT-20260220-001', date: '2026-03-01 00:00',
+    id: 'tx-303', enterpriseId: 'E004', date: '2026-03-01 00:00',
     orderId: null, description: '月度额度重置',
     localCurrency: null, localAmount: null, cnyAmount: 150000,
     exchangeRate: null, rateDate: null
   },
   {
-    id: 'tx-302', enterpriseId: 'ENT-20260220-001', date: '2026-03-22 08:45',
+    id: 'tx-302', enterpriseId: 'E004', date: '2026-03-22 08:45',
     orderId: 'LLI-20260322-302', description: '订单支付',
     localCurrency: 'THB', localAmount: 950.00, cnyAmount: -195.88,
     exchangeRate: 4.85, rateDate: '2026-02-28'
   },
   {
-    id: 'tx-301', enterpriseId: 'ENT-20260220-001', date: '2026-03-23 11:15',
+    id: 'tx-301', enterpriseId: 'E004', date: '2026-03-23 11:15',
     orderId: 'LLI-20260323-301', description: '订单支付',
     localCurrency: 'THB', localAmount: 1800.00, cnyAmount: -371.13,
     exchangeRate: 4.85, rateDate: '2026-02-28'
@@ -302,7 +302,7 @@ export const adminOrders: AdminOrder[] = [
   // 菜鸟速递 orders (香港 → LLM-HK)
   {
     orderId: 'LLI-20260320-001', supplierOrderId: 'LLM-HK-88001', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
-    enterpriseId: 'ENT-20251101-001', orderDate: '2026-03-20 14:30', country: '香港', vehicleType: 'Van',
+    enterpriseId: 'E001', orderDate: '2026-03-20 14:30', country: '香港', vehicleType: 'Van',
     pickupAddress: '中环皇后大道中 99 号', pickupContact: '李明 +852 6312 3456',
     dropoffAddress: '尖沙咀广东道 28 号', dropoffContact: '王芳 +852 9876 5432',
     driverInfo: 'AB 1234 / +852 5111 2222', status: '已完成',
@@ -312,7 +312,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260318-003', supplierOrderId: 'LLM-HK-88002', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
-    enterpriseId: 'ENT-20251101-001', orderDate: '2026-03-18 09:45', country: '香港', vehicleType: 'Pickup Truck',
+    enterpriseId: 'E001', orderDate: '2026-03-18 09:45', country: '香港', vehicleType: 'Pickup Truck',
     pickupAddress: '葵涌工业区 12 号', pickupContact: '陈生 +852 6312 3456',
     dropoffAddress: '观塘开源道 50 号', dropoffContact: '张太 +852 6234 5678',
     driverInfo: 'CD 5678 / +852 5222 3333', status: '已完成',
@@ -322,7 +322,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260315-002', supplierOrderId: 'LLM-HK-88003', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
-    enterpriseId: 'ENT-20251101-001', orderDate: '2026-03-15 16:20', country: '香港', vehicleType: 'Small Truck',
+    enterpriseId: 'E001', orderDate: '2026-03-15 16:20', country: '香港', vehicleType: 'Small Truck',
     pickupAddress: '新蒲岗大有街 1 号', pickupContact: '刘先生 +852 6312 3456',
     dropoffAddress: '荃湾德士古道 200 号', dropoffContact: '何小姐 +852 9345 6789',
     driverInfo: 'EF 9012 / +852 5333 4444', status: '已完成',
@@ -332,7 +332,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260312-001', supplierOrderId: 'LLM-HK-88004', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
-    enterpriseId: 'ENT-20251101-001', orderDate: '2026-03-12 11:00', country: '香港', vehicleType: 'Van',
+    enterpriseId: 'E001', orderDate: '2026-03-12 11:00', country: '香港', vehicleType: 'Van',
     pickupAddress: '铜锣湾轩尼诗道 500 号', pickupContact: '赵明 +852 6312 3456',
     dropoffAddress: '北角英皇道 600 号', dropoffContact: '孙丽 +852 9456 7890',
     driverInfo: 'GH 3456 / +852 5444 5555', status: '已完成',
@@ -342,7 +342,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260324-005', supplierOrderId: 'LLM-HK-88005', supplierCode: 'LLM-HK', supplierName: 'Lalamove Hong Kong',
-    enterpriseId: 'ENT-20251101-001', orderDate: '2026-03-24 08:30', country: '香港', vehicleType: 'Van',
+    enterpriseId: 'E001', orderDate: '2026-03-24 08:30', country: '香港', vehicleType: 'Van',
     pickupAddress: '湾仔港湾道 25 号', pickupContact: '周敏 +852 6312 3456',
     dropoffAddress: '深水埗长沙湾道 888 号', dropoffContact: '吴刚 +852 9567 8901',
     driverInfo: 'IJ 7890 / +852 5555 6666', status: '配送中',
@@ -353,7 +353,7 @@ export const adminOrders: AdminOrder[] = [
   // 顺丰国际 orders (泰国 → LLM-TH)
   {
     orderId: 'LLI-20260321-101', supplierOrderId: 'LLM-TH-99001', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
-    enterpriseId: 'ENT-20251215-001', orderDate: '2026-03-21 09:30', country: '泰国', vehicleType: 'Van',
+    enterpriseId: 'E002', orderDate: '2026-03-21 09:30', country: '泰国', vehicleType: 'Van',
     pickupAddress: 'Sukhumvit Rd, Khlong Toei', pickupContact: 'Somchai +66 812 345 67',
     dropoffAddress: 'Silom Rd, Bang Rak', dropoffContact: 'Nattaya +66 823 456 78',
     driverInfo: 'กข 1234 / +66 891 234 567', status: '已完成',
@@ -363,7 +363,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260320-102', supplierOrderId: 'LLM-TH-99002', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
-    enterpriseId: 'ENT-20251215-001', orderDate: '2026-03-20 15:45', country: '泰国', vehicleType: 'Motorcycle',
+    enterpriseId: 'E002', orderDate: '2026-03-20 15:45', country: '泰国', vehicleType: 'Motorcycle',
     pickupAddress: 'Ratchadaphisek Rd, Din Daeng', pickupContact: 'Pradit +66 812 345 67',
     dropoffAddress: 'Phahonyothin Rd, Chatuchak', dropoffContact: 'Wanida +66 834 567 89',
     driverInfo: 'คง 5678 / +66 892 345 678', status: '已完成',
@@ -373,7 +373,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260315-103', supplierOrderId: 'LLM-TH-99003', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
-    enterpriseId: 'ENT-20251215-001', orderDate: '2026-03-15 14:10', country: '泰国', vehicleType: 'Pickup Truck',
+    enterpriseId: 'E002', orderDate: '2026-03-15 14:10', country: '泰国', vehicleType: 'Pickup Truck',
     pickupAddress: 'Rama IV Rd, Pathum Wan', pickupContact: 'Kittisak +66 812 345 67',
     dropoffAddress: 'Lat Phrao Rd, Wang Thonglang', dropoffContact: 'Siriporn +66 845 678 90',
     driverInfo: 'จฉ 9012 / +66 893 456 789', status: '已完成',
@@ -383,7 +383,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260324-104', supplierOrderId: 'LLM-TH-99004', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
-    enterpriseId: 'ENT-20251215-001', orderDate: '2026-03-24 10:00', country: '泰国', vehicleType: 'Van',
+    enterpriseId: 'E002', orderDate: '2026-03-24 10:00', country: '泰国', vehicleType: 'Van',
     pickupAddress: 'Charoen Krung Rd, Samphanthawong', pickupContact: 'Apinya +66 812 345 67',
     dropoffAddress: 'Petchaburi Rd, Ratchathewi', dropoffContact: 'Chalerm +66 856 789 01',
     driverInfo: 'ชซ 3456 / +66 894 567 890', status: '前往装货地',
@@ -393,7 +393,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260323-105', supplierOrderId: 'GRAB-TH-55001', supplierCode: 'GRAB-TH', supplierName: 'Grab Thailand',
-    enterpriseId: 'ENT-20251215-001', orderDate: '2026-03-23 16:30', country: '泰国', vehicleType: '4-Door Car',
+    enterpriseId: 'E002', orderDate: '2026-03-23 16:30', country: '泰国', vehicleType: '4-Door Car',
     pickupAddress: 'Wireless Rd, Lumphini', pickupContact: 'Tanawat +66 812 345 67',
     dropoffAddress: 'Thonglor Soi 13', dropoffContact: 'Parichat +66 867 890 12',
     driverInfo: 'ฌญ 7890 / +66 895 678 901', status: '已完成',
@@ -404,7 +404,7 @@ export const adminOrders: AdminOrder[] = [
   // 极兔快递 orders (马来西亚 → LLM-MY)
   {
     orderId: 'LLI-20260322-201', supplierOrderId: 'LLM-MY-77001', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
-    enterpriseId: 'ENT-20260108-001', orderDate: '2026-03-22 10:00', country: '马来西亚', vehicleType: 'Van',
+    enterpriseId: 'E003', orderDate: '2026-03-22 10:00', country: '马来西亚', vehicleType: 'Van',
     pickupAddress: 'Jalan Bukit Bintang, KL', pickupContact: 'Ahmad +60 12 345 6789',
     dropoffAddress: 'Jalan Ampang, KL', dropoffContact: 'Mei Ling +60 13 456 7890',
     driverInfo: 'WKL 1234 / +60 17 123 4567', status: '已完成',
@@ -414,7 +414,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260321-202', supplierOrderId: 'LLM-MY-77002', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
-    enterpriseId: 'ENT-20260108-001', orderDate: '2026-03-21 14:30', country: '马来西亚', vehicleType: 'Pickup Truck',
+    enterpriseId: 'E003', orderDate: '2026-03-21 14:30', country: '马来西亚', vehicleType: 'Pickup Truck',
     pickupAddress: 'Petaling Jaya, Selangor', pickupContact: 'Raj +60 12 345 6789',
     dropoffAddress: 'Shah Alam, Selangor', dropoffContact: 'Siti +60 14 567 8901',
     driverInfo: 'BJK 5678 / +60 18 234 5678', status: '已完成',
@@ -424,7 +424,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260319-203', supplierOrderId: 'LLM-MY-77003', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
-    enterpriseId: 'ENT-20260108-001', orderDate: '2026-03-19 09:00', country: '马来西亚', vehicleType: 'Small Truck',
+    enterpriseId: 'E003', orderDate: '2026-03-19 09:00', country: '马来西亚', vehicleType: 'Small Truck',
     pickupAddress: 'Subang Jaya, Selangor', pickupContact: 'Wei +60 12 345 6789',
     dropoffAddress: 'Klang, Selangor', dropoffContact: 'Hafiz +60 15 678 9012',
     driverInfo: 'BDG 9012 / +60 19 345 6789', status: '已完成',
@@ -434,7 +434,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260324-204', supplierOrderId: 'LLM-MY-77004', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
-    enterpriseId: 'ENT-20260108-001', orderDate: '2026-03-24 15:00', country: '马来西亚', vehicleType: 'Van',
+    enterpriseId: 'E003', orderDate: '2026-03-24 15:00', country: '马来西亚', vehicleType: 'Van',
     pickupAddress: 'Bangsar South, KL', pickupContact: 'Tan +60 12 345 6789',
     dropoffAddress: 'Mont Kiara, KL', dropoffContact: 'Aisha +60 16 789 0123',
     driverInfo: 'WPJ 3456 / +60 11 456 7890', status: '正在呼叫司机',
@@ -444,7 +444,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260317-205', supplierOrderId: 'LLM-MY-77005', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
-    enterpriseId: 'ENT-20260108-001', orderDate: '2026-03-17 11:30', country: '马来西亚', vehicleType: 'Motorcycle',
+    enterpriseId: 'E003', orderDate: '2026-03-17 11:30', country: '马来西亚', vehicleType: 'Motorcycle',
     pickupAddress: 'KLCC, KL', pickupContact: 'Danny +60 12 345 6789',
     dropoffAddress: 'Mid Valley, KL', dropoffContact: 'Priya +60 17 890 1234',
     driverInfo: 'WA 7777 / +60 12 567 8901', status: '已完成',
@@ -454,7 +454,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260314-206', supplierOrderId: 'GRAB-MY-66001', supplierCode: 'GRAB-MY', supplierName: 'Grab Malaysia',
-    enterpriseId: 'ENT-20260108-001', orderDate: '2026-03-14 08:00', country: '马来西亚', vehicleType: 'Van',
+    enterpriseId: 'E003', orderDate: '2026-03-14 08:00', country: '马来西亚', vehicleType: 'Van',
     pickupAddress: 'Sunway Pyramid, Selangor', pickupContact: 'Jason +60 12 345 6789',
     dropoffAddress: 'Puchong, Selangor', dropoffContact: 'Nurul +60 18 901 2345',
     driverInfo: 'BHP 8888 / +60 13 678 9012', status: '已完成',
@@ -465,7 +465,7 @@ export const adminOrders: AdminOrder[] = [
   // Flash Express orders (泰国 → LLM-TH)
   {
     orderId: 'LLI-20260323-301', supplierOrderId: 'LLM-TH-66001', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
-    enterpriseId: 'ENT-20260220-001', orderDate: '2026-03-23 11:15', country: '泰国', vehicleType: 'Pickup Truck',
+    enterpriseId: 'E004', orderDate: '2026-03-23 11:15', country: '泰国', vehicleType: 'Pickup Truck',
     pickupAddress: 'Bang Na-Trat Rd, Bang Na', pickupContact: 'Anurak +66 912 345 67',
     dropoffAddress: 'Samut Prakan Industrial Estate', dropoffContact: 'Suwanna +66 923 456 78',
     driverInfo: 'ฎฏ 1111 / +66 896 789 012', status: '已完成',
@@ -475,7 +475,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260322-302', supplierOrderId: 'LLM-TH-66002', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
-    enterpriseId: 'ENT-20260220-001', orderDate: '2026-03-22 08:45', country: '泰国', vehicleType: 'Van',
+    enterpriseId: 'E004', orderDate: '2026-03-22 08:45', country: '泰国', vehicleType: 'Van',
     pickupAddress: 'Ngamwongwan Rd, Nonthaburi', pickupContact: 'Piyapong +66 912 345 67',
     dropoffAddress: 'Muang Thong Thani, Pak Kret', dropoffContact: 'Ratana +66 934 567 89',
     driverInfo: 'ฐฑ 2222 / +66 897 890 123', status: '已完成',
@@ -485,7 +485,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260324-303', supplierOrderId: 'LLM-TH-66003', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
-    enterpriseId: 'ENT-20260220-001', orderDate: '2026-03-24 14:00', country: '泰国', vehicleType: 'Small Truck',
+    enterpriseId: 'E004', orderDate: '2026-03-24 14:00', country: '泰国', vehicleType: 'Small Truck',
     pickupAddress: 'Rama II Rd, Samae Dam', pickupContact: 'Worapat +66 912 345 67',
     dropoffAddress: 'Bangpakong Industrial Park', dropoffContact: 'Jintana +66 945 678 90',
     driverInfo: 'ฒณ 3333 / +66 898 901 234', status: '配送中',
@@ -495,7 +495,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260319-304', supplierOrderId: 'GRAB-TH-55002', supplierCode: 'GRAB-TH', supplierName: 'Grab Thailand',
-    enterpriseId: 'ENT-20260220-001', orderDate: '2026-03-19 13:20', country: '泰国', vehicleType: 'Motorcycle',
+    enterpriseId: 'E004', orderDate: '2026-03-19 13:20', country: '泰国', vehicleType: 'Motorcycle',
     pickupAddress: 'Siam Square Soi 7', pickupContact: 'Chanin +66 912 345 67',
     dropoffAddress: 'Ekamai Soi 5', dropoffContact: 'Naruemon +66 956 789 01',
     driverInfo: 'ดต 4444 / +66 899 012 345', status: '已完成',
@@ -505,7 +505,7 @@ export const adminOrders: AdminOrder[] = [
   },
   {
     orderId: 'LLI-20260316-305', supplierOrderId: 'LLM-TH-66004', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
-    enterpriseId: 'ENT-20260220-001', orderDate: '2026-03-16 10:00', country: '泰国', vehicleType: 'Van',
+    enterpriseId: 'E004', orderDate: '2026-03-16 10:00', country: '泰国', vehicleType: 'Van',
     pickupAddress: 'Ratchayothin, Chatuchak', pickupContact: 'Boonmee +66 912 345 67',
     dropoffAddress: 'Don Mueang, Lak Si', dropoffContact: 'Araya +66 967 890 12',
     driverInfo: 'ถท 5555 / +66 890 123 456', status: '已过期',

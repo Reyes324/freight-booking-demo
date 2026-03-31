@@ -29,27 +29,28 @@ export default function EnterprisesPage() {
       title: '企业ID',
       dataIndex: 'id',
       key: 'id',
-      width: 180,
-      render: (id: string) => <span className="font-mono text-xs">{id}</span>,
+      width: 80,
+      render: (id: string) => <span className="font-mono text-xs whitespace-nowrap">{id}</span>,
     },
     {
       title: '企业名称',
       dataIndex: 'name',
       key: 'name',
-      width: 160,
+      width: 140,
+      render: (name: string) => <span className="whitespace-nowrap">{name}</span>,
     },
     {
       title: '登录手机号',
       key: 'phone',
       width: 160,
-      render: (_, r) => `${r.countryCode} ${r.phone}`,
+      render: (_, r) => <span className="whitespace-nowrap">{r.countryCode} {r.phone}</span>,
     },
     {
       title: '登录密码',
       key: 'password',
-      width: 160,
+      width: 140,
       render: (_, r) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           <span className="font-mono text-sm">
             {visiblePasswords[r.id] ? r.password : '••••••••'}
           </span>
@@ -66,76 +67,50 @@ export default function EnterprisesPage() {
       title: '国家',
       dataIndex: 'country',
       key: 'country',
-      width: 80,
+      width: 100,
+      render: (country: string) => <span className="whitespace-nowrap">{country}</span>,
     },
     {
       title: '溢价系数',
       dataIndex: 'premiumRate',
       key: 'premiumRate',
-      width: 100,
-      render: (v: number) => v.toFixed(2),
+      width: 90,
+      render: (v: number) => <span className="whitespace-nowrap">{v.toFixed(2)}</span>,
     },
     {
       title: '月账期额度',
       dataIndex: 'creditLimit',
       key: 'creditLimit',
-      width: 140,
+      width: 130,
       render: (v: number) => (
-        <span>CNY {v.toLocaleString()}</span>
+        <span className="whitespace-nowrap">CNY {v.toLocaleString()}</span>
       ),
-    },
-    {
-      title: '已用额度',
-      dataIndex: 'usedCredit',
-      key: 'usedCredit',
-      width: 160,
-      render: (v: number, r: Enterprise) => {
-        const percent = (v / r.creditLimit * 100).toFixed(1);
-        return (
-          <span>CNY {v.toLocaleString()} ({percent}%)</span>
-        );
-      },
-    },
-    {
-      title: '剩余额度',
-      key: 'remaining',
-      width: 140,
-      render: (_: any, r: Enterprise) => {
-        const remaining = r.creditLimit - r.usedCredit;
-        return (
-          <span>CNY {remaining.toLocaleString()}</span>
-        );
-      },
     },
     {
       title: '创建时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 120,
+      width: 110,
+      render: (date: string) => <span className="whitespace-nowrap">{date}</span>,
     },
     {
       title: '操作',
       key: 'action',
-      width: 280,
+      width: 170,
+      fixed: 'right',
       render: (_, r) => (
-        <div className="flex gap-3">
+        <div className="flex gap-3 whitespace-nowrap">
           <a
             className="text-blue-600 hover:text-blue-800 cursor-pointer"
             onClick={() => router.push(`/admin/enterprises/${r.id}/edit`)}
           >
-            更改信息
+            更改资料
           </a>
           <a
             className="text-blue-600 hover:text-blue-800 cursor-pointer"
-            onClick={() => router.push(`/admin/enterprises/${r.id}?tab=credit`)}
+            onClick={() => router.push(`/admin/enterprises/${r.id}`)}
           >
-            交易明细
-          </a>
-          <a
-            className="text-blue-600 hover:text-blue-800 cursor-pointer"
-            onClick={() => router.push(`/admin/enterprises/${r.id}?tab=orders`)}
-          >
-            订单记录
+            订单交易
           </a>
         </div>
       ),

@@ -14,16 +14,10 @@ import {
   CREDIT_LIMIT_MAX,
 } from '@/data/enterpriseConstants';
 
-/** 生成企业ID：ENT-YYYYMMDD-XXX */
+/** 生成企业ID：E001, E002, E003... */
 export function generateEnterpriseId(): string {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const d = String(now.getDate()).padStart(2, '0');
-  const datePart = `${y}${m}${d}`;
-
-  // 找到同日最大序号
-  const prefix = `ENT-${datePart}-`;
+  // 找到所有企业ID中最大的序号
+  const prefix = 'E';
   const existing = enterprises
     .filter((e) => e.id.startsWith(prefix))
     .map((e) => parseInt(e.id.slice(prefix.length), 10))

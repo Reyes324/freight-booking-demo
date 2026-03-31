@@ -6,7 +6,7 @@ import { Form, Input, InputNumber, Select, Button, message } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { enterprises } from '@/data/adminMockData';
-import { countryCodes, currencyOptions, regionMap } from '@/data/enterpriseConstants';
+import { countryCodes } from '@/data/enterpriseConstants';
 import { PREMIUM_RATE_MAX, CREDIT_LIMIT_MAX } from '@/data/enterpriseConstants';
 import {
   getEnterpriseNameRules,
@@ -70,7 +70,6 @@ export default function EditEnterprisePage() {
             phone: enterprise.phone,
             password: enterprise.password,
             premiumRate: enterprise.premiumRate,
-            currency: enterprise.currency,
             creditLimit: enterprise.creditLimit,
           }}
         >
@@ -123,26 +122,20 @@ export default function EditEnterprisePage() {
             <InputNumber min={1} max={PREMIUM_RATE_MAX} step={0.01} precision={2} style={{ width: '100%' }} />
           </Form.Item>
 
-          <Form.Item label="每月账期额度" required>
-            <div className="flex gap-2">
-              <Form.Item name="currency" noStyle>
-                <Select options={currencyOptions} style={{ width: 160 }} disabled />
-              </Form.Item>
-              <Form.Item
-                name="creditLimit"
-                noStyle
-                rules={creditLimitRules}
-              >
-                <InputNumber
-                  min={0}
-                  max={CREDIT_LIMIT_MAX}
-                  step={1000}
-                  precision={0}
-                  placeholder="50000"
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-            </div>
+          <Form.Item
+            label="每月账期额度（人民币）"
+            name="creditLimit"
+            rules={creditLimitRules}
+          >
+            <InputNumber
+              min={0}
+              max={CREDIT_LIMIT_MAX}
+              step={1000}
+              precision={0}
+              placeholder="50000"
+              addonBefore="CNY"
+              style={{ width: '100%' }}
+            />
           </Form.Item>
 
           <div className="flex justify-end gap-3 mt-8">

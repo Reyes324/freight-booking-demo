@@ -81,7 +81,7 @@ export default function EnterprisesPage() {
       key: 'creditLimit',
       width: 140,
       render: (v: number) => (
-        <span>¥ {v.toLocaleString()}</span>
+        <span>CNY {v.toLocaleString()}</span>
       ),
     },
     {
@@ -92,7 +92,7 @@ export default function EnterprisesPage() {
       render: (v: number, r: Enterprise) => {
         const percent = (v / r.creditLimit * 100).toFixed(1);
         return (
-          <span>¥ {v.toLocaleString()} ({percent}%)</span>
+          <span>CNY {v.toLocaleString()} ({percent}%)</span>
         );
       },
     },
@@ -103,7 +103,7 @@ export default function EnterprisesPage() {
       render: (_: any, r: Enterprise) => {
         const remaining = r.creditLimit - r.usedCredit;
         return (
-          <span>¥ {remaining.toLocaleString()}</span>
+          <span>CNY {remaining.toLocaleString()}</span>
         );
       },
     },

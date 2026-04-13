@@ -120,6 +120,14 @@ export default function LoginPage() {
   const [passwordValue, setPasswordValue] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  // 初始化时从 localStorage 读取应用语言设置
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("appLanguage");
+    if (savedLanguage && (savedLanguage === "zh" || savedLanguage === "en")) {
+      setCurrentLang(savedLanguage as Language);
+    }
+  }, []);
+
   // 关闭下拉菜单
   useEffect(() => {
     const handleClick = () => {
@@ -133,6 +141,10 @@ export default function LoginPage() {
   // 切换语言
   const applyLang = (lang: Language) => {
     setCurrentLang(lang);
+    // 如果切换到中英文，同步保存到应用语言设置
+    if (lang === 'zh' || lang === 'en') {
+      localStorage.setItem("appLanguage", lang);
+    }
     setLangDropdownOpen(false);
   };
 
@@ -162,50 +174,6 @@ export default function LoginPage() {
 
   return (
     <div data-theme={currentTheme}>
-      {/* Theme Switcher */}
-      <div className="theme-bar">
-        <div
-          className="theme-trigger"
-          onClick={(e) => {
-            e.stopPropagation();
-            setThemeDropdownOpen(!themeDropdownOpen);
-            setLangDropdownOpen(false);
-          }}
-        >
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-            <circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-          风格：<span className="theme-badge">{themeNames[currentTheme]}</span>
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-        </div>
-        {themeDropdownOpen && (
-          <div className="theme-dropdown">
-            {(Object.keys(themeNames) as Theme[]).map((theme) => (
-              <div
-                key={theme}
-                className={`theme-option ${currentTheme === theme ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  applyTheme(theme);
-                }}
-              >
-                <div className="theme-swatch" style={{ background: getThemeSwatch(theme) }}></div>
-                <div className="theme-info">
-                  <span className="theme-name">{themeNames[theme]}</span>
-                  <span className="theme-desc">{getThemeDesc(theme)}</span>
-                </div>
-                <svg className="theme-check" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2 7L5.5 10.5L12 3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                </svg>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
       {/* Language Switcher */}
       <div className="lang-bar">
         <div

@@ -61,6 +61,14 @@ export default function RegionLanguageSelector() {
   const [selectedLanguage, setSelectedLanguage] = useState<string>("zh");
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // 初始化时从 localStorage 读取语言设置
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("appLanguage");
+    if (savedLanguage && (savedLanguage === "zh" || savedLanguage === "en")) {
+      setSelectedLanguage(savedLanguage);
+    }
+  }, []);
+
   // 点击外部关闭
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -194,6 +202,8 @@ export default function RegionLanguageSelector() {
                   key={language.id}
                   onClick={() => {
                     setSelectedLanguage(language.id);
+                    // 保存到 localStorage
+                    localStorage.setItem("appLanguage", language.id);
                     // 选择语言后关闭弹窗
                     setTimeout(() => setIsOpen(false), 150);
                   }}

@@ -38,6 +38,7 @@ export default function OrderPage() {
   const [scheduledTime, setScheduledTime] = useState<string>("");
   const [driverNote, setDriverNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactPhoneError, setContactPhoneError] = useState<string>("");
 
   // 防止浏览器 scrollIntoView 静默滚动父容器（checkbox 获取焦点时会触发）
   const leftColRef = useRef<HTMLDivElement>(null);
@@ -127,6 +128,20 @@ export default function OrderPage() {
 
   const handleConfirm = useCallback(async () => {
     if (!orderDraft) return;
+
+    // 校验联系电话
+    setContactPhoneError("");
+    if (!contactPhone || !contactPhone.trim()) {
+      setContactPhoneError("请输入联系电话");
+      return;
+    }
+
+    // 提取电话号码部分（去掉区号）
+    const phoneNumberPart = contactPhone.split(" ").slice(1).join(" ").trim();
+    if (!phoneNumberPart) {
+      setContactPhoneError("请输入电话号码");
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -258,7 +273,7 @@ export default function OrderPage() {
               </div>
 
               <div className="mb-4">
-                <OrderContactPhone value={contactPhone} onChange={setContactPhone} />
+                <OrderContactPhone value={contactPhone} onChange={setContactPhone} error={contactPhoneError} />
               </div>
 
               <div className="mb-4">

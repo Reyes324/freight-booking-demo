@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 interface OrderContactPhoneProps {
   value: string;
   onChange: (value: string) => void;
+  error?: string;
 }
 
 // 国家区号列表
@@ -15,7 +16,7 @@ const COUNTRY_CODES = [
   { code: "+62", flag: "🇮🇩", country: "印尼" },
 ];
 
-export default function OrderContactPhone({ value, onChange }: OrderContactPhoneProps) {
+export default function OrderContactPhone({ value, onChange, error }: OrderContactPhoneProps) {
   const [selectedCode, setSelectedCode] = useState("+66");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -53,7 +54,11 @@ export default function OrderContactPhone({ value, onChange }: OrderContactPhone
       <label className="block text-sm font-semibold text-gray-900 mb-3">订单联系电话</label>
 
       <div className={`w-full h-11 rounded-lg border bg-white flex items-center overflow-hidden transition-all ${
-        isFocused ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-200 hover:border-gray-300'
+        error
+          ? 'border-red-500'
+          : isFocused
+            ? 'border-blue-500 ring-2 ring-blue-500/20'
+            : 'border-gray-200 hover:border-gray-300'
       }`}>
         {/* 区号选择器 - 始终可见可选 */}
         <div className="relative flex items-center border-r border-gray-200 px-2">
@@ -86,6 +91,11 @@ export default function OrderContactPhone({ value, onChange }: OrderContactPhone
           placeholder="812345678"
         />
       </div>
+
+      {/* 错误提示 */}
+      {error && (
+        <p className="mt-1.5 text-xs text-red-500">{error}</p>
+      )}
     </div>
   );
 }

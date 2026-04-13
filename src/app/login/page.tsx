@@ -130,11 +130,14 @@ export default function LoginPage() {
     }
   }, []);
 
-  // 关闭下拉菜单
+  // 关闭下拉菜单（点击外部时）
   useEffect(() => {
-    const handleClick = () => {
-      setThemeDropdownOpen(false);
-      setLangDropdownOpen(false);
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // 检查点击是否在语言菜单内
+      if (!target.closest('.lang-bar') && !target.closest('.lang-trigger') && !target.closest('.lang-dropdown')) {
+        setLangDropdownOpen(false);
+      }
     };
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);

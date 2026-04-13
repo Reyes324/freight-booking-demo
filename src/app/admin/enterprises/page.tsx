@@ -3,18 +3,13 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Table, Input, Button, Card } from 'antd';
-import { SearchOutlined, PlusOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { enterprises, type Enterprise } from '@/data/adminMockData';
 
 export default function EnterprisesPage() {
   const router = useRouter();
   const [search, setSearch] = useState('');
-  const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
-
-  const togglePassword = (id: string) => {
-    setVisiblePasswords((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   const filtered = useMemo(() => {
     if (!search.trim()) return enterprises;
@@ -48,19 +43,11 @@ export default function EnterprisesPage() {
     {
       title: '登录密码',
       key: 'password',
-      width: 140,
-      render: (_, r) => (
-        <div className="flex items-center gap-2 whitespace-nowrap">
-          <span className="font-mono text-sm">
-            {visiblePasswords[r.id] ? r.password : '••••••••'}
-          </span>
-          <span
-            className="cursor-pointer text-gray-400 hover:text-gray-600"
-            onClick={() => togglePassword(r.id)}
-          >
-            {visiblePasswords[r.id] ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-          </span>
-        </div>
+      width: 100,
+      render: () => (
+        <span className="font-mono text-sm text-gray-400 whitespace-nowrap">
+          ••••••••
+        </span>
       ),
     },
     {

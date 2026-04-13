@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { Form, Input, InputNumber, Select, Button, message } from 'antd';
+import { Form, Input, InputNumber, Select, Button, message, Modal } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { enterprises } from '@/data/adminMockData';
@@ -20,11 +20,14 @@ export default function EditEnterprisePage() {
   const router = useRouter();
   const params = useParams();
   const [form] = Form.useForm();
+  const [passwordForm] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
   const enterprise = enterprises.find((e) => e.id === params.id);
 
   const [countryCode, setCountryCode] = useState(enterprise?.countryCode || '+852');
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState<string | null>(null);
 
   if (!enterprise) {
     return <div className="text-gray-500">企业不存在</div>;
@@ -42,6 +45,15 @@ export default function EditEnterprisePage() {
   const onFinish = () => {
     messageApi.success('企业信息已更新');
     setTimeout(() => router.push('/admin/enterprises'), 800);
+  };
+
+  const handlePasswordChange = () => {
+    passwordForm.validateFields().then((values) => {
+      setNewPassword(values.newPassword);
+      setIsPasswordModalOpen(false);
+      passwordForm.resetFields();
+      messageApi.success('密码已修改');
+    });
   };
 
   return (
@@ -68,7 +80,6 @@ export default function EditEnterprisePage() {
             name: enterprise.name,
             countryCode: enterprise.countryCode,
             phone: enterprise.phone,
-            password: enterprise.password,
             premiumRate: enterprise.premiumRate,
             creditLimit: enterprise.creditLimit,
           }}
@@ -105,12 +116,17 @@ export default function EditEnterprisePage() {
             </div>
           </Form.Item>
 
-          <Form.Item
-            label="登录密码"
-            name="password"
-            rules={passwordRules}
-          >
-            <Input.Password placeholder="8-20位，须包含字母和数字" />
+          <Form.Item label="登录密码">
+            <div className="flex items-center gap-3">
+              <Input
+                value="••••••••"
+                disabled
+                className="flex-1"
+              />
+              <Button onClick={() => setIsPasswordModalOpen(true)}>
+                修改密码
+              </Button>
+            </div>
           </Form.Item>
 
           <Form.Item
@@ -146,6 +162,55 @@ export default function EditEnterprisePage() {
           </div>
         </Form>
       </div>
+
+      {/* 修改密码弹窗 */}
+      <Modal
+        title="修改登录密码"
+        open={isPasswordModalOpen}
+        onOk={handlePasswordChange}
+        onCancel={() => {
+          setIsPasswordModalOpen(false);
+          passwordForm.resetFields();
+        }}
+        okText="确定"
+        cancelText="取消"
+      >
+        <Form
+          form={passwordForm}
+          layout="vertical"
+          className="mt-6"
+        >
+          <Form.Item
+            label="新密码"
+            name="newPassword"
+            rules={passwordRules}
+          >
+            <Input.Password placeholder="8-20位，须包含字母和数字" />
+          </Form.Item>
+
+          <Form.Item
+            label="确认新密码"
+            name="confirmPassword"
+            dependencies={['newPassword']}
+            rules={[
+              {
+                required: true,
+                message: '请确认新密码',
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('newPassword') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('两次输入的密码不一致'));
+                },
+              }),
+            ]}
+          >
+            <Input.Password placeholder="请再次输入新密码" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }

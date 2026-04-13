@@ -346,10 +346,10 @@ export default function LoginPage() {
           --card-bg:        #FFFFFF;
           --card-radius:    16px;
           --card-shadow:    0 0 0 1px rgba(15,23,42,.06), 0 8px 32px rgba(15,23,42,.10), 0 2px 8px rgba(15,23,42,.06);
-          --brand-bg:       #2257D4;
-          --brand-text:     rgba(255,255,255,.92);
-          --brand-sub:      rgba(255,255,255,.50);
-          --brand-deco:     rgba(255,255,255,.07);
+          --brand-bg:       #1B46AA;
+          --brand-text:     rgba(255,255,255,.95);
+          --brand-sub:      rgba(255,255,255,.65);
+          --brand-deco:     rgba(255,255,255,.10);
           --text-title:     #0F172A;
           --text-body:      #475569;
           --text-muted:     #94A3B8;

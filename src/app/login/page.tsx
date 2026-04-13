@@ -357,7 +357,7 @@ export default function LoginPage() {
             <div className="contact-note">
               <strong>{t.contactTitle}</strong><br/>
               <span>{t.contactBody}</span>
-              <a href="mailto:enterprise@lalamove.com">enterprise@lalamove.com</a>
+              <a href="mailto:nora.xiang@huolala.cn">nora.xiang@huolala.cn</a>
             </div>
 
             <p className="form-footer">{t.formFooter}</p>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { LogoutOutlined } from "@ant-design/icons";
 import { Popconfirm } from "antd";
+import { shadow } from "@/styles/design-tokens";
 
 const tabs = [
   { id: "order", label: "下单叫车", path: "/" },
@@ -27,7 +28,7 @@ export default function Navbar() {
     <nav
       className="h-14 lg:h-16 border-b border-gray-200 bg-white flex items-center justify-between px-4 lg:px-6 relative"
       style={{
-        boxShadow: '0 1px 3px 0 rgba(0,0,0,0.08), 0 1px 2px 0 rgba(0,0,0,0.04)',
+        boxShadow: shadow.navbar,
         overflow: 'visible'
       }}
     >

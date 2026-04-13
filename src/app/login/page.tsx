@@ -13,7 +13,7 @@ const i18n = {
     phonePlaceholder: '请输入手机号',
     labelPwd: '密码',
     pwdPlaceholder: '请输入密码',
-    btnSubmit: '登 录',
+    btnSubmit: '登录',
     contactTitle: '还没有账户？',
     contactBody: '请联系运营人员申请开通账户：',
     formFooter: '登录即表示您同意货拉拉的服务条款及隐私政策',
@@ -268,7 +268,7 @@ export default function LoginPage() {
                 style={{ height: '50px', width: 'auto', opacity: 0.95 }}
               />
               <div className="brand-name">
-                <span className="zh" style={{ fontSize: '12px', opacity: 0.70, marginTop: '4px' }}>货拉拉企业国际版</span>
+                <span className="zh" style={{ fontSize: '12px', opacity: 0.70, marginTop: '4px', fontFamily: '"FZRuiZhengHeiS-DB-GB", "PingFang SC", sans-serif' }}>货拉拉企业国际版</span>
               </div>
             </div>
             <div className="brand-body">
@@ -420,10 +420,10 @@ export default function LoginPage() {
           --note-bg:        #F8FAFC;
           --note-border:    #E2E8F0;
           --link:           #2257D4;
-          --title-size:     22px;
+          --title-size:     20px;
           --title-weight:   600;
           --title-spacing:  -0.3px;
-          --label-size:     13px;
+          --label-size:     12px;
           --label-weight:   500;
           --label-transform: none;
           --label-spacing:  0;
@@ -761,7 +761,7 @@ export default function LoginPage() {
         /* ── Brand Panel ── */
         .brand-panel {
           width: var(--brand-width);
-          background: linear-gradient(160deg, #0B1D40 0%, #163A6E 100%);
+          background: linear-gradient(153deg, #0B1D40 0%, #163A6E 100%);
           padding: 48px 40px;
           display: var(--show-brand);
           flex-direction: column; justify-content: space-between;
@@ -960,7 +960,7 @@ export default function LoginPage() {
           width: 100%; height: var(--btn-h);
           background: var(--btn-bg); color: var(--btn-text);
           border: none; border-radius: var(--btn-radius);
-          font-family: inherit; font-size: 15px; font-weight: 500;
+          font-family: inherit; font-size: 16px; font-weight: 500;
           cursor: pointer; margin-top: 10px;
           box-shadow: var(--btn-shadow);
           transition: background .15s, box-shadow .15s, transform .15s;

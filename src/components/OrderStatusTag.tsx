@@ -1,42 +1,21 @@
 import { Tag } from 'antd';
 import type { OrderStatus } from '@/data/mockData';
+import { statusColors, radius, fontSize } from '@/styles/design-tokens';
 
-interface StatusConfig {
-  color: string;
-  bgColor: string;
-  text: string;
-}
-
-const statusConfig: Record<OrderStatus, StatusConfig> = {
-  calling_driver: {
-    color: '#1677FF',
-    bgColor: '#E5EDFF',
-    text: '呼叫司机中',
-  },
-  in_transit: {
-    color: '#1677FF',
-    bgColor: '#E5EDFF',
-    text: '前往装货地',
-  },
-  delivering: {
-    color: '#1677FF',
-    bgColor: '#E5EDFF',
-    text: '配送中',
-  },
-  completed: {
-    color: '#00A178',
-    bgColor: '#DFF3EC',
-    text: '已完成',
-  },
-  cancelled: {
-    color: '#8990A3',
-    bgColor: '#F0F3F7',
-    text: '已取消',
-  },
+const statusText: Record<OrderStatus, string> = {
+  calling_driver: '呼叫司机中',
+  in_transit: '前往装货地',
+  delivering: '配送中',
+  completed: '已完成',
+  cancelled: '已取消',
 };
 
 export function getStatusConfig(status: OrderStatus) {
-  return statusConfig[status];
+  return {
+    color: statusColors[status].color,
+    bgColor: statusColors[status].bg,
+    text: statusText[status],
+  };
 }
 
 interface OrderStatusTagProps {
@@ -44,21 +23,21 @@ interface OrderStatusTagProps {
 }
 
 export default function OrderStatusTag({ status }: OrderStatusTagProps) {
-  const config = statusConfig[status];
+  const colors = statusColors[status];
 
   return (
     <Tag
       style={{
-        color: config.color,
-        backgroundColor: config.bgColor,
+        color: colors.color,
+        backgroundColor: colors.bg,
         border: 'none',
-        borderRadius: 4,
+        borderRadius: parseInt(radius.sm),
         padding: '2px 8px',
-        fontSize: 12,
+        fontSize: parseInt(fontSize.sm.size),
         fontWeight: 400,
       }}
     >
-      {config.text}
+      {statusText[status]}
     </Tag>
   );
 }

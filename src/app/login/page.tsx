@@ -119,6 +119,8 @@ export default function LoginPage() {
   const [phoneValue, setPhoneValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   // 初始化时从 localStorage 读取应用语言设置
   useEffect(() => {
@@ -157,7 +159,22 @@ export default function LoginPage() {
   // 超简单的登录逻辑 - 任何输入都能成功
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phoneValue.trim() || !passwordValue.trim()) return;
+
+    // 清除之前的错误
+    setPhoneError('');
+    setPasswordError('');
+
+    // 验证手机号
+    if (!phoneValue.trim()) {
+      setPhoneError(currentLang === 'zh' ? '请输入手机号' : 'Please enter phone number');
+      return;
+    }
+
+    // 验证密码
+    if (!passwordValue.trim()) {
+      setPasswordError(currentLang === 'zh' ? '请输入密码' : 'Please enter password');
+      return;
+    }
 
     setSubmitting(true);
 
@@ -281,11 +298,16 @@ export default function LoginPage() {
                   <input
                     type="tel"
                     value={phoneValue}
-                    onChange={(e) => setPhoneValue(e.target.value)}
+                    onChange={(e) => {
+                      setPhoneValue(e.target.value);
+                      if (phoneError) setPhoneError('');
+                    }}
                     placeholder={t.phonePlaceholder}
                     autoComplete="tel"
+                    className={phoneError ? 'input-error' : ''}
                   />
                 </div>
+                {phoneError && <div className="field-error">{phoneError}</div>}
               </div>
 
               <div className="field">
@@ -294,9 +316,13 @@ export default function LoginPage() {
                   <input
                     type={passwordVisible ? 'text' : 'password'}
                     value={passwordValue}
-                    onChange={(e) => setPasswordValue(e.target.value)}
+                    onChange={(e) => {
+                      setPasswordValue(e.target.value);
+                      if (passwordError) setPasswordError('');
+                    }}
                     placeholder={t.pwdPlaceholder}
                     autoComplete="current-password"
+                    className={passwordError ? 'input-error' : ''}
                   />
                   <button
                     type="button"
@@ -315,6 +341,7 @@ export default function LoginPage() {
                     )}
                   </button>
                 </div>
+                {passwordError && <div className="field-error">{passwordError}</div>}
               </div>
 
               <button type="submit" className="btn-submit" disabled={submitting}>
@@ -833,6 +860,15 @@ export default function LoginPage() {
           letter-spacing: var(--label-spacing);
           color: var(--label-color);
           margin-bottom: 7px;
+        }
+        .field-error {
+          margin-top: 6px;
+          font-size: 12px;
+          color: #EF4444;
+          line-height: 1.4;
+        }
+        input.input-error, .pwd-wrapper:has(input.input-error) {
+          border-color: #EF4444 !important;
         }
         .phone-row { display: flex; gap: 8px; }
 

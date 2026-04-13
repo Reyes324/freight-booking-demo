@@ -18,7 +18,7 @@ const i18n = {
     contactBody: '请联系运营人员申请开通账户：',
     formFooter: '登录即表示您同意货拉拉的服务条款及隐私政策',
     brandHeadline: '连接中国企业<br/>与东南亚市场',
-    brandSub: '专为中资出海企业设计的<br/>跨境物流管理平台',
+    brandSub: '货运物流叫车平台',
   },
   en: {
     langLabel: 'English',
@@ -33,7 +33,7 @@ const i18n = {
     contactBody: 'Contact our operations team to apply:',
     formFooter: "By signing in, you agree to Lalamove's Terms of Service and Privacy Policy",
     brandHeadline: 'Connecting Chinese Enterprises<br/>with Southeast Asia',
-    brandSub: 'Cross-border logistics platform<br/>built for Chinese companies abroad',
+    brandSub: 'Freight & Logistics On-Demand Platform',
   },
   id: {
     langLabel: 'Indonesia',
@@ -234,17 +234,13 @@ export default function LoginPage() {
           {/* Brand Panel */}
           <div className="brand-panel">
             <div className="brand-logo">
-              <svg width="140" height="32" viewBox="0 0 140 32" fill="none" style={{ opacity: 0.95 }}>
-                {/* Flying wing icon */}
-                <path d="M4 16C4 16 8 8 12 4C8 8 6 12 6 16C6 20 8 24 12 28C8 24 4 16 4 16Z" fill="white" opacity="0.9"/>
-                <path d="M8 16C8 16 11 10 14 7C11 10 9.5 13 9.5 16C9.5 19 11 22 14 25C11 22 8 16 8 16Z" fill="white" opacity="0.75"/>
-                <path d="M12 16C12 16 14 12 16 10C14 12 13 14 13 16C13 18 14 20 16 22C14 20 12 16 12 16Z" fill="white" opacity="0.6"/>
-
-                {/* LALA i LOGISTICS text */}
-                <text x="24" y="22" fill="white" fontSize="16" fontWeight="600" letterSpacing="0.5" fontFamily="Arial, sans-serif">LALA i LOGISTICS</text>
-              </svg>
+              <img
+                src="https://www.figma.com/api/mcp/asset/22745a69-5d3a-4704-a178-e6f136e28c81"
+                alt="LALA i LOGISTICS"
+                style={{ height: '28px', width: 'auto', opacity: 0.95 }}
+              />
               <div className="brand-name">
-                <span className="zh" style={{ fontSize: '13px', opacity: 0.8 }}>货拉拉企业国际版</span>
+                <span className="zh" style={{ fontSize: '13px', opacity: 0.75, marginTop: '4px' }}>货拉拉企业国际版</span>
               </div>
             </div>
             <div className="brand-body">
@@ -738,7 +734,7 @@ export default function LoginPage() {
         /* ── Brand Panel ── */
         .brand-panel {
           width: var(--brand-width);
-          background: var(--brand-bg);
+          background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
           padding: 48px 40px;
           display: var(--show-brand);
           flex-direction: column; justify-content: space-between;

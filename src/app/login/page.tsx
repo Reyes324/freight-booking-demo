@@ -217,16 +217,17 @@ export default function LoginPage() {
           {/* Brand Panel */}
           <div className="brand-panel">
             <div className="brand-logo">
-              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                <rect width="36" height="36" rx="8" fill="rgba(255,255,255,0.12)"/>
-                <path d="M6 14h16v10H6V14z" fill="white" opacity=".9"/>
-                <path d="M22 17h5l3 4v3h-8V17z" fill="white" opacity=".75"/>
-                <circle cx="10" cy="25" r="2.5" fill="transparent" stroke="white" strokeWidth="1.5"/>
-                <circle cx="26" cy="25" r="2.5" fill="transparent" stroke="white" strokeWidth="1.5"/>
+              <svg width="140" height="32" viewBox="0 0 140 32" fill="none" style={{ opacity: 0.95 }}>
+                {/* Flying wing icon */}
+                <path d="M4 16C4 16 8 8 12 4C8 8 6 12 6 16C6 20 8 24 12 28C8 24 4 16 4 16Z" fill="white" opacity="0.9"/>
+                <path d="M8 16C8 16 11 10 14 7C11 10 9.5 13 9.5 16C9.5 19 11 22 14 25C11 22 8 16 8 16Z" fill="white" opacity="0.75"/>
+                <path d="M12 16C12 16 14 12 16 10C14 12 13 14 13 16C13 18 14 20 16 22C14 20 12 16 12 16Z" fill="white" opacity="0.6"/>
+
+                {/* LALA i LOGISTICS text */}
+                <text x="24" y="22" fill="white" fontSize="16" fontWeight="600" letterSpacing="0.5" fontFamily="Arial, sans-serif">LALA i LOGISTICS</text>
               </svg>
               <div className="brand-name">
-                <span className="en">Lalamove Enterprise</span>
-                <span className="zh">货拉拉企业国际版</span>
+                <span className="zh" style={{ fontSize: '13px', opacity: 0.8 }}>货拉拉企业国际版</span>
               </div>
             </div>
             <div className="brand-body">
@@ -268,11 +269,10 @@ export default function LoginPage() {
                 <div className="phone-row">
                   <div className="cc-wrapper">
                     <select className="cc-select">
-                      <option value="+86">🇨🇳 +86</option>
-                      <option value="+62">🇮🇩 +62</option>
+                      <option value="+66">🇹🇭 +66</option>
                       <option value="+84">🇻🇳 +84</option>
                       <option value="+60">🇲🇾 +60</option>
-                      <option value="+66">🇹🇭 +66</option>
+                      <option value="+62">🇮🇩 +62</option>
                     </select>
                     <svg className="cc-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
                       <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>

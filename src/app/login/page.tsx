@@ -106,7 +106,7 @@ const themeNames = {
   apple: 'Apple'
 };
 
-type Language = 'zh' | 'en' | 'id' | 'vi' | 'ms' | 'th';
+type Language = 'zh' | 'en';
 type Theme = 'stripe' | 'linear' | 'revolut' | 'notion' | 'wise' | 'apple';
 
 export default function LoginPage() {
@@ -215,7 +215,7 @@ export default function LoginPage() {
         </div>
         {langDropdownOpen && (
           <div className="lang-dropdown">
-            {(['zh', 'en', 'id', 'vi', 'ms', 'th'] as Language[]).map((lang) => (
+            {(['zh', 'en'] as Language[]).map((lang) => (
               <div
                 key={lang}
                 className={`lang-option ${currentLang === lang ? 'active' : ''}`}
@@ -236,14 +236,39 @@ export default function LoginPage() {
         <div className="card">
           {/* Brand Panel */}
           <div className="brand-panel">
+            {/* 地球装饰 */}
+            <svg className="brand-globe" viewBox="0 0 300 300" fill="none">
+              <defs>
+                <radialGradient id="globe-light" cx="35%" cy="35%" r="65%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.08)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                </radialGradient>
+                <radialGradient id="globe-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="70%" stopColor="rgba(34,87,212,0)" />
+                  <stop offset="100%" stopColor="rgba(34,87,212,0.08)" />
+                </radialGradient>
+              </defs>
+              <circle cx="150" cy="150" r="130" fill="url(#globe-glow)" />
+              <circle cx="150" cy="150" r="120" fill="url(#globe-light)" />
+              <circle cx="150" cy="150" r="120" stroke="rgba(255,255,255,0.15)" strokeWidth="1.2" fill="none" />
+              <ellipse cx="150" cy="150" rx="25" ry="120" stroke="rgba(255,255,255,0.10)" strokeWidth="0.8" fill="none" />
+              <ellipse cx="150" cy="150" rx="55" ry="120" stroke="rgba(255,255,255,0.08)" strokeWidth="0.8" fill="none" />
+              <ellipse cx="150" cy="150" rx="85" ry="120" stroke="rgba(255,255,255,0.06)" strokeWidth="0.7" fill="none" />
+              <ellipse cx="150" cy="150" rx="110" ry="120" stroke="rgba(255,255,255,0.05)" strokeWidth="0.6" fill="none" />
+              <ellipse cx="150" cy="150" rx="120" ry="28" stroke="rgba(255,255,255,0.10)" strokeWidth="0.8" fill="none" />
+              <ellipse cx="150" cy="105" rx="108" ry="20" stroke="rgba(255,255,255,0.07)" strokeWidth="0.7" fill="none" />
+              <ellipse cx="150" cy="195" rx="108" ry="20" stroke="rgba(255,255,255,0.07)" strokeWidth="0.7" fill="none" />
+              <ellipse cx="150" cy="68" rx="80" ry="14" stroke="rgba(255,255,255,0.05)" strokeWidth="0.6" fill="none" />
+              <ellipse cx="150" cy="232" rx="80" ry="14" stroke="rgba(255,255,255,0.05)" strokeWidth="0.6" fill="none" />
+            </svg>
             <div className="brand-logo">
               <img
                 src="https://www.figma.com/api/mcp/asset/22745a69-5d3a-4704-a178-e6f136e28c81"
                 alt="LALA i LOGISTICS"
-                style={{ height: '28px', width: 'auto', opacity: 0.95 }}
+                style={{ height: '50px', width: 'auto', opacity: 0.95 }}
               />
               <div className="brand-name">
-                <span className="zh" style={{ fontSize: '13px', opacity: 0.75, marginTop: '4px' }}>货拉拉企业国际版</span>
+                <span className="zh" style={{ fontSize: '12px', opacity: 0.70, marginTop: '4px' }}>货拉拉企业国际版</span>
               </div>
             </div>
             <div className="brand-body">
@@ -277,7 +302,6 @@ export default function LoginPage() {
             <div className="notion-divider"></div>
 
             <h1 className="form-title">{t.formTitle}</h1>
-            <p className="form-subtitle">{t.formSubtitle}</p>
 
             <form onSubmit={handleSubmit}>
               <div className="field">
@@ -737,22 +761,29 @@ export default function LoginPage() {
         /* ── Brand Panel ── */
         .brand-panel {
           width: var(--brand-width);
-          background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+          background: linear-gradient(160deg, #0B1D40 0%, #163A6E 100%);
           padding: 48px 40px;
           display: var(--show-brand);
           flex-direction: column; justify-content: space-between;
           position: relative; overflow: hidden; flex-shrink: 0;
           transition: width .3s;
         }
+        .brand-globe {
+          position: absolute; right: -180px; bottom: 40px;
+          width: 380px; height: 380px;
+          z-index: 0; pointer-events: none; opacity: 0.9;
+        }
         .brand-panel::before {
           content: ''; position: absolute;
-          top: -80px; right: -80px; width: 280px; height: 280px;
-          border-radius: 50%; border: 1px solid var(--brand-deco);
+          top: -60px; right: -60px; width: 280px; height: 280px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(34,87,212,0.12) 0%, transparent 70%);
         }
         .brand-panel::after {
           content: ''; position: absolute;
-          bottom: -60px; left: -60px; width: 220px; height: 220px;
-          border-radius: 50%; border: 1px solid var(--brand-deco);
+          bottom: -40px; left: -40px; width: 200px; height: 200px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(34,87,212,0.08) 0%, transparent 70%);
         }
 
         /* Linear: accent glow */
@@ -840,7 +871,7 @@ export default function LoginPage() {
           font-weight: var(--title-weight);
           letter-spacing: var(--title-spacing);
           color: var(--text-title);
-          margin-bottom: 6px;
+          margin-bottom: 28px;
           line-height: 1.2;
         }
         .form-subtitle {

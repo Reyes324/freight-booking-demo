@@ -1,9 +1,10 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { SettingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { LogoutOutlined } from "@ant-design/icons";
+import { Popconfirm } from "antd";
 
 const tabs = [
   { id: "order", label: "下单叫车", path: "/" },
@@ -13,7 +14,14 @@ const tabs = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const activeTab = tabs.find(tab => tab.path === pathname)?.id || "";
+
+  // 退出登录处理
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
+    router.push('/login');
+  };
 
   return (
     <nav
@@ -81,15 +89,20 @@ export default function Navbar() {
 
         {/* 功能图标 */}
         <div className="flex items-center gap-2">
-          <Link
-            href="/settings"
-            className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+          <Popconfirm
+            title="确认退出登录"
+            description="退出后需要重新登录才能继续使用"
+            onConfirm={handleLogout}
+            okText="确认退出"
+            cancelText="取消"
+            okButtonProps={{ danger: true }}
           >
-            <SettingOutlined className="text-gray-500 text-lg" />
-          </Link>
-          <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer">
-            <QuestionCircleOutlined className="text-gray-500 text-lg" />
-          </button>
+            <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer">
+              <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </Popconfirm>
         </div>
       </div>
     </nav>

@@ -51,7 +51,7 @@ export default function OrdersPage() {
       ),
     },
     {
-      title: '取货时间',
+      title: '装货时间',
       dataIndex: 'scheduledTime',
       key: 'scheduledTime',
       width: 120,

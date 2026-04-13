@@ -7,66 +7,85 @@ interface OrderContactPhoneProps {
   onChange: (value: string) => void;
 }
 
+// 国家区号列表
+const COUNTRY_CODES = [
+  { code: "+66", flag: "🇹🇭", country: "泰国" },
+  { code: "+84", flag: "🇻🇳", country: "越南" },
+  { code: "+60", flag: "🇲🇾", country: "马来西亚" },
+  { code: "+62", flag: "🇮🇩", country: "印尼" },
+];
+
 export default function OrderContactPhone({ value, onChange }: OrderContactPhoneProps) {
-  const [isEditing, setIsEditing] = useState(false);
+  const [selectedCode, setSelectedCode] = useState("+66");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // 初始化时解析 value
   useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      // 将光标移到末尾
-      const len = inputRef.current.value.length;
-      inputRef.current.setSelectionRange(len, len);
+    if (value) {
+      const matchedCode = COUNTRY_CODES.find(c => value.startsWith(c.code));
+      if (matchedCode) {
+        setSelectedCode(matchedCode.code);
+        setPhoneNumber(value.substring(matchedCode.code.length).trim());
+      } else {
+        setPhoneNumber(value);
+      }
     }
-  }, [isEditing]);
+  }, []);
 
-  const handleClick = () => {
-    setIsEditing(true);
+  const handleCodeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newCode = e.target.value;
+    setSelectedCode(newCode);
+    const fullNumber = phoneNumber ? `${newCode} ${phoneNumber}` : "";
+    onChange(fullNumber);
   };
 
-  const handleBlur = () => {
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      setIsEditing(false);
-    }
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPhone = e.target.value;
+    setPhoneNumber(newPhone);
+    const fullNumber = newPhone ? `${selectedCode} ${newPhone}` : "";
+    onChange(fullNumber);
   };
 
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-900 mb-3">订单联系电话</label>
 
-      {isEditing ? (
-        <div className="w-full h-11 rounded-lg border border-blue-500 bg-white flex items-center overflow-hidden ring-2 ring-blue-500/20">
-          <input
-            ref={inputRef}
-            type="tel"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            className="flex-1 h-full text-sm text-gray-900 outline-none bg-transparent px-3.5"
-            placeholder="+66 xxxxxxxxx"
-          />
-        </div>
-      ) : (
-        <div
-          onClick={handleClick}
-          className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white
-                   flex items-center gap-2.5 text-sm text-gray-900
-                   hover:border-gray-300 transition-colors cursor-pointer"
-        >
-          <span className={value ? "text-gray-900" : "text-gray-400"}>
-            {value || "+66 xxxxxxxxx"}
-          </span>
-          <svg className="w-4 h-4 text-gray-400 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+      <div className={`w-full h-11 rounded-lg border bg-white flex items-center overflow-hidden transition-all ${
+        isFocused ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-200 hover:border-gray-300'
+      }`}>
+        {/* 区号选择器 - 始终可见可选 */}
+        <div className="relative flex items-center border-r border-gray-200 px-2">
+          <select
+            value={selectedCode}
+            onChange={handleCodeChange}
+            className="appearance-none bg-transparent text-sm text-gray-900 pr-5 pl-1 outline-none cursor-pointer"
+            style={{ minWidth: "85px" }}
+          >
+            {COUNTRY_CODES.map((item) => (
+              <option key={item.code} value={item.code}>
+                {item.flag} {item.code}
+              </option>
+            ))}
+          </select>
+          <svg className="absolute right-2 w-3 h-3 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </div>
-      )}
+
+        {/* 电话号码输入 - 始终可输入 */}
+        <input
+          ref={inputRef}
+          type="tel"
+          value={phoneNumber}
+          onChange={handlePhoneChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          className="flex-1 h-full text-sm text-gray-900 outline-none bg-transparent px-3"
+          placeholder="812345678"
+        />
+      </div>
     </div>
   );
 }

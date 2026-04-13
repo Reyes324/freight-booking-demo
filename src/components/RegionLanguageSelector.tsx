@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 interface Region {
   id: string;
   name: string;
+  country: string;
   flag: string;
 }
 
@@ -14,12 +15,36 @@ interface Language {
   localName: string;
 }
 
+// 按国家分组的地区列表
 const REGIONS: Region[] = [
-  { id: "th", name: "泰国", flag: "🇹🇭" },
-  { id: "vn", name: "越南", flag: "🇻🇳" },
-  { id: "my", name: "马来西亚", flag: "🇲🇾" },
-  { id: "id", name: "印尼", flag: "🇮🇩" },
-  { id: "hk", name: "香港", flag: "🇭🇰" },
+  // 泰国
+  { id: "th-bangkok", name: "Bangkok（曼谷）", country: "泰国", flag: "🇹🇭" },
+  { id: "th-chonburi", name: "Chonburi（春武里）", country: "泰国", flag: "🇹🇭" },
+  { id: "th-khonkaen", name: "Khon Kaen（孔敬）", country: "泰国", flag: "🇹🇭" },
+
+  // 马来西亚
+  { id: "my-kl", name: "Kuala Lumpur（吉隆坡）", country: "马来西亚", flag: "🇲🇾" },
+  { id: "my-johor", name: "Johor & Nearby Districts（柔佛及周边）", country: "马来西亚", flag: "🇲🇾" },
+  { id: "my-penang", name: "Penang & Nearby States（槟城及周边）", country: "马来西亚", flag: "🇲🇾" },
+  { id: "my-malacca", name: "Malacca（马六甲）", country: "马来西亚", flag: "🇲🇾" },
+  { id: "my-kuching", name: "Kuching（古晋）", country: "马来西亚", flag: "🇲🇾" },
+
+  // 印尼
+  { id: "id-jakarta", name: "Jakarta（雅加达）", country: "印尼", flag: "🇮🇩" },
+  { id: "id-bandung", name: "Bandung（万隆）", country: "印尼", flag: "🇮🇩" },
+  { id: "id-surabaya", name: "Surabaya（泗水）", country: "印尼", flag: "🇮🇩" },
+  { id: "id-semarang", name: "Semarang（三宝垄）", country: "印尼", flag: "🇮🇩" },
+  { id: "id-medan", name: "Medan（棉兰）", country: "印尼", flag: "🇮🇩" },
+  { id: "id-malang", name: "Malang（玛琅）", country: "印尼", flag: "🇮🇩" },
+  { id: "id-cirebon", name: "Cirebon（井里汶）", country: "印尼", flag: "🇮🇩" },
+  { id: "id-yogyakarta", name: "Yogyakarta（日惹）", country: "印尼", flag: "🇮🇩" },
+
+  // 越南
+  { id: "vn-hcm", name: "Ho Chi Minh City and Nearby Regions（胡志明市及周边）", country: "越南", flag: "🇻🇳" },
+  { id: "vn-hanoi", name: "Hanoi and Nearby Regions（河内及周边）", country: "越南", flag: "🇻🇳" },
+  { id: "vn-danang", name: "Da Nang and Central Provinces（岘港及中部省份）", country: "越南", flag: "🇻🇳" },
+  { id: "vn-cantho", name: "Can Tho and Mekong Delta Region（芹苴及湄公河三角洲）", country: "越南", flag: "🇻🇳" },
+  { id: "vn-thainguyen", name: "Thai Nguyen and Northern Region（太原及北部地区）", country: "越南", flag: "🇻🇳" },
 ];
 
 const LANGUAGES: Language[] = [
@@ -27,9 +52,12 @@ const LANGUAGES: Language[] = [
   { id: "en", name: "English", localName: "English" },
 ];
 
+// 按国家分组
+const COUNTRIES = ["泰国", "马来西亚", "印尼", "越南"];
+
 export default function RegionLanguageSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState<string>("th");
+  const [selectedRegion, setSelectedRegion] = useState<string>("th-bangkok");
   const [selectedLanguage, setSelectedLanguage] = useState<string>("zh");
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +88,7 @@ export default function RegionLanguageSelector() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm
                    text-sm font-medium text-gray-700
-                   hover:bg-gray-50 transition-colors cursor-pointer"
+                   hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap"
       >
         <svg
           className="w-4 h-4 text-gray-500"
@@ -96,8 +124,8 @@ export default function RegionLanguageSelector() {
       {/* 弹出气泡 */}
       {isOpen && (
         <div
-          className="absolute top-full right-0 mt-2 min-w-[200px] bg-white rounded-xl shadow-lg
-                     border border-gray-200 overflow-hidden z-50
+          className="absolute top-full right-0 mt-2 min-w-[400px] max-w-max bg-white rounded-xl shadow-lg
+                     border border-gray-200 overflow-hidden z-50 max-h-[500px] overflow-y-auto
                      animate-in fade-in slide-in-from-top-2 duration-200"
         >
           {/* 地区选择 */}
@@ -105,42 +133,53 @@ export default function RegionLanguageSelector() {
             <div className="text-xs font-medium text-gray-500 mb-2 px-2">
               地区
             </div>
-            <div className="space-y-0.5">
-              {REGIONS.map((region) => (
-                <button
-                  key={region.id}
-                  onClick={() => {
-                    setSelectedRegion(region.id);
-                    // 不立即关闭，允许继续选择语言
-                  }}
-                  className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg
-                             text-sm transition-colors cursor-pointer ${
-                    selectedRegion === region.id
-                      ? "bg-blue-50 text-blue-700"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <span className="text-lg">{region.flag}</span>
-                  <span className="flex-1 text-left font-medium">
-                    {region.name}
-                  </span>
-                  {selectedRegion === region.id && (
-                    <svg
-                      className="w-4 h-4 text-blue-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  )}
-                </button>
-              ))}
+            <div className="space-y-3">
+              {COUNTRIES.map((country) => {
+                const countryRegions = REGIONS.filter(r => r.country === country);
+                return (
+                  <div key={country}>
+                    <div className="text-xs font-medium text-gray-400 mb-1.5 px-2">
+                      {countryRegions[0]?.flag} {country}
+                    </div>
+                    <div className="space-y-0.5">
+                      {countryRegions.map((region) => (
+                        <button
+                          key={region.id}
+                          onClick={() => {
+                            setSelectedRegion(region.id);
+                            // 不立即关闭，允许继续选择语言
+                          }}
+                          className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg
+                                     text-sm transition-colors cursor-pointer ${
+                            selectedRegion === region.id
+                              ? "bg-blue-50 text-blue-700"
+                              : "text-gray-700 hover:bg-gray-50"
+                          }`}
+                        >
+                          <span className="flex-1 text-left text-xs whitespace-nowrap">
+                            {region.name}
+                          </span>
+                          {selectedRegion === region.id && (
+                            <svg
+                              className="w-4 h-4 text-blue-600 flex-shrink-0"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2.5}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

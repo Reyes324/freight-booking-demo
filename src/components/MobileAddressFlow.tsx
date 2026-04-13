@@ -353,13 +353,13 @@ export default function MobileAddressFlow({
             {/* Contact Name */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                收货人姓名
+                联系人姓名
               </label>
               <input
                 type="text"
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
-                placeholder="请输入收货人姓名"
+                placeholder="请输入联系人姓名"
                 className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
               />
@@ -368,13 +368,13 @@ export default function MobileAddressFlow({
             {/* Phone */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                电话号码
+                联系人手机号
               </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="请输入电话号码"
+                placeholder="请输入联系人手机号"
                 className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
               />
@@ -383,13 +383,13 @@ export default function MobileAddressFlow({
             {/* Unit */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                门牌号
+                地址备注
               </label>
               <input
                 type="text"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                placeholder="例如：3楼A室"
+                placeholder="例如：3楼A室，请按门铃"
                 className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
               />

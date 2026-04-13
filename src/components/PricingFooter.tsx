@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Popover } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { OrderStorage } from "@/lib/orderStorage";
 import type { OrderDraft } from "@/data/mockData";
 
@@ -43,6 +45,20 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
     if (!orderDraft || !onNext) return;
     onNext();
   };
+
+  // 费用明细内容
+  const priceBreakdown = (
+    <div className="py-1 space-y-2 min-w-[200px]">
+      <div className="flex justify-between items-center text-sm">
+        <span className="text-gray-600">运费</span>
+        <span className="font-medium text-gray-900">฿100</span>
+      </div>
+      <div className="flex justify-between items-center text-sm">
+        <span className="text-gray-600">平板费用</span>
+        <span className="font-medium text-gray-900">฿50</span>
+      </div>
+    </div>
+  );
 
   return (
     <div
@@ -100,16 +116,14 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
                 </p>
                 {/* Info icon（仅选中时显示） */}
                 {isSelected && (
-                  <div className="w-3.5 h-3.5 mb-0.5 animate-in fade-in zoom-in duration-200">
-                    <Image
-                      src="/info-icon.svg"
-                      alt="详情"
-                      width={14}
-                      height={14}
-                      className="hover:scale-125 transition-transform cursor-pointer"
-                      unoptimized
-                    />
-                  </div>
+                  <Popover
+                    content={priceBreakdown}
+                    title="费用明细"
+                    trigger="click"
+                    placement="top"
+                  >
+                    <InfoCircleOutlined className="mb-0.5 text-gray-400 text-base cursor-pointer hover:text-gray-600 transition-colors animate-in fade-in zoom-in duration-200" />
+                  </Popover>
                 )}
               </div>
             </button>

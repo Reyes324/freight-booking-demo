@@ -246,22 +246,32 @@ export default function OrderPage() {
               </div>
 
               {/* 内容区 */}
-              <div className="p-4 lg:p-6 space-y-4 lg:space-y-6" style={{ paddingBottom: "120px" }}>
-              <OrderSummary
-                pickup={orderDraft.pickup}
-                dropoff={orderDraft.dropoff}
-                vehicle={orderDraft.vehicle}
-                pricingOption={orderDraft.pricingOption}
-                totalPrice={orderDraft.totalPrice}
-              />
+              <div className="p-4 lg:p-6" style={{ paddingBottom: "120px" }}>
+              <div className="mb-4">
+                <OrderSummary
+                  pickup={orderDraft.pickup}
+                  dropoff={orderDraft.dropoff}
+                  vehicle={orderDraft.vehicle}
+                  pricingOption={orderDraft.pricingOption}
+                  totalPrice={orderDraft.totalPrice}
+                />
+              </div>
 
-              <OrderContactPhone value={contactPhone} onChange={setContactPhone} />
+              <div className="mb-4">
+                <OrderContactPhone value={contactPhone} onChange={setContactPhone} />
+              </div>
 
-              <DateTimePicker value={scheduledTime} onChange={setScheduledTime} />
+              <div className="mb-4">
+                <DateTimePicker value={scheduledTime} onChange={setScheduledTime} />
+              </div>
 
-              <DriverNoteInput value={driverNote} onChange={setDriverNote} />
+              <div className="mb-4">
+                <DriverNoteInput value={driverNote} onChange={setDriverNote} />
+              </div>
 
-              <PaymentMethodSelector />
+              <div>
+                <PaymentMethodSelector />
+              </div>
               </div>
             </div>
           )}

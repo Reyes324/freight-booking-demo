@@ -104,10 +104,17 @@ export default function AdministratorsPage() {
         ),
     },
     {
+      title: '创建时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 180,
+      sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 80,
       render: (status: string, record: Administrator) => {
         // 初始账号或非超级管理员：不可操作
         const disabled = record.cannotBeDeleted || !isSuperAdmin || (admin && admin.id === record.id);
@@ -123,18 +130,9 @@ export default function AdministratorsPage() {
                 handleDisable(record.id, record.name);
               }
             }}
-            checkedChildren="启用"
-            unCheckedChildren="禁用"
           />
         );
       },
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: 180,
-      sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
     },
     {
       title: '操作',

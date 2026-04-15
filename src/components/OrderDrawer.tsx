@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { CloseOutlined, PhoneOutlined, StarFilled, MessageOutlined, EnvironmentOutlined, QuestionCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import type { Order, PriceAdjustment } from "@/data/mockData";
+import { vehicleServicesMap, isServiceGroup } from "@/data/mockData";
 import PickupProofModal from "./PickupProofModal";
 import PriceIncreaseView from "./PriceIncreaseView";
 import AdjustPriceView from "./AdjustPriceView";
@@ -72,6 +73,39 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   const [showAdjustTooltip, setShowAdjustTooltip] = useState(false);
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [changeDriverModalOpen, setChangeDriverModalOpen] = useState(false);
+
+  // 计算额外服务总价
+  const additionalServicesTotal = useMemo(() => {
+    if (!order) return 0;
+
+    let total = 0;
+    const vehicleServices = vehicleServicesMap[order.vehicle.id] || [];
+
+    // 累加单项服务价格
+    order.selectedServices?.itemIds.forEach((itemId) => {
+      const service = vehicleServices.find((s) => s.id === itemId);
+      if (service && !isServiceGroup(service) && service.price > 0) {
+        total += service.price;
+      }
+    });
+
+    // 累加分组服务价格
+    if (order.selectedServices?.groupSelections) {
+      Object.entries(order.selectedServices.groupSelections).forEach(([groupId, selectedItemIds]) => {
+        const group = vehicleServices.find((s) => s.id === groupId);
+        if (group && isServiceGroup(group)) {
+          selectedItemIds.forEach((itemId) => {
+            const item = group.items.find((i) => i.id === itemId);
+            if (item && item.price > 0) {
+              total += item.price;
+            }
+          });
+        }
+      });
+    }
+
+    return total;
+  }, [order]);
 
   // 两阶段动画：先挂载，再触发动画
   useEffect(() => {
@@ -438,11 +472,19 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
 
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">基础运费</span>
+                  <span className="text-sm text-gray-500">运费</span>
                   <span className="font-price text-sm text-gray-900">
-                    ฿{(order.basePrice || order.totalPrice).toFixed(0)}
+                    ฿{order.basePrice.toFixed(0)}
                   </span>
                 </div>
+                {additionalServicesTotal > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-500">额外服务</span>
+                    <span className="font-price text-sm text-gray-900">
+                      ฿{additionalServicesTotal.toFixed(0)}
+                    </span>
+                  </div>
+                )}
                 <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-900">总计</span>
                   <span className="font-price text-lg font-bold text-gray-900">

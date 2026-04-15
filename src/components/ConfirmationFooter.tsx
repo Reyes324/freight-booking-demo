@@ -1,30 +1,88 @@
 "use client";
 
+import { useMemo } from "react";
 import { Popover } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import { vehicleServicesMap, isServiceGroup, currencyConfig } from "@/data/mockData";
+import type { OrderDraft } from "@/data/mockData";
 
 interface ConfirmationFooterProps {
   totalPrice: number;
+  orderDraft?: OrderDraft;
   onConfirm: () => void;
   isSubmitting: boolean;
 }
 
 export default function ConfirmationFooter({
   totalPrice,
+  orderDraft,
   onConfirm,
   isSubmitting,
 }: ConfirmationFooterProps) {
+  // 动态计算费用明细
+  const priceBreakdownItems = useMemo(() => {
+    if (!orderDraft) return [];
+
+    const items: { label: string; price: number }[] = [];
+    let additionalServicesTotal = 0;
+
+    // 1. 运费（基础价格）
+    items.push({
+      label: "运费",
+      price: orderDraft.basePrice,
+    });
+
+    // 2. 计算额外服务总价
+    if (orderDraft.selectedServices) {
+      const vehicleServices = vehicleServicesMap[orderDraft.vehicle.id] || [];
+
+      // 累加单项服务价格
+      orderDraft.selectedServices.itemIds.forEach((itemId) => {
+        const service = vehicleServices.find((s) => s.id === itemId);
+        if (service && !isServiceGroup(service) && service.price > 0) {
+          additionalServicesTotal += service.price;
+        }
+      });
+
+      // 累加分组服务价格
+      Object.entries(orderDraft.selectedServices.groupSelections).forEach(([groupId, selectedItemIds]) => {
+        const group = vehicleServices.find((s) => s.id === groupId);
+        if (group && isServiceGroup(group)) {
+          selectedItemIds.forEach((itemId) => {
+            const item = group.items.find((i) => i.id === itemId);
+            if (item && item.price > 0) {
+              additionalServicesTotal += item.price;
+            }
+          });
+        }
+      });
+
+      // 如果有额外服务，添加总和项
+      if (additionalServicesTotal > 0) {
+        items.push({
+          label: "额外服务",
+          price: additionalServicesTotal,
+        });
+      }
+    }
+
+    return items;
+  }, [orderDraft]);
+
   // 费用明细内容
   const priceBreakdown = (
     <div className="py-1 space-y-2 min-w-[200px]">
-      <div className="flex justify-between items-center text-sm">
-        <span className="text-gray-600">运费</span>
-        <span className="font-medium text-gray-900">฿100</span>
-      </div>
-      <div className="flex justify-between items-center text-sm">
-        <span className="text-gray-600">平板费用</span>
-        <span className="font-medium text-gray-900">฿50</span>
-      </div>
+      {priceBreakdownItems.map((item, index) => (
+        <div key={index} className="flex justify-between items-center text-sm">
+          <span className="text-gray-600">{item.label}</span>
+          <span className="font-medium text-gray-900">
+            {currencyConfig.symbol}{item.price.toFixed(0)}
+          </span>
+        </div>
+      ))}
+      {priceBreakdownItems.length === 0 && (
+        <div className="text-sm text-gray-400 text-center py-2">暂无费用明细</div>
+      )}
     </div>
   );
 

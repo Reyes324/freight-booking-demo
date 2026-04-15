@@ -16,8 +16,9 @@ import PaymentMethodSelector from "@/components/PaymentMethodSelector";
 import OrderContactPhone from "@/components/OrderContactPhone";
 import ConfirmationFooter from "@/components/ConfirmationFooter";
 import { OrderStorage } from "@/lib/orderStorage";
-import { vehicles as vehicleList } from "@/data/mockData";
+import { vehicles as vehicleList, vehicleServicesMap, isServiceGroup } from "@/data/mockData";
 import type { Vehicle, AddressDetail, OrderDraft, OrderConfirmation } from "@/data/mockData";
+import GlobalAlert from "@/components/GlobalAlert";
 
 type ViewMode = "configure" | "confirm";
 
@@ -39,6 +40,10 @@ export default function OrderPage() {
   const [driverNote, setDriverNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contactPhoneError, setContactPhoneError] = useState<string>("");
+
+  // 全局提示状态
+  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [showAlert, setShowAlert] = useState(false);
 
   // 防止浏览器 scrollIntoView 静默滚动父容器（checkbox 获取焦点时会触发）
   const leftColRef = useRef<HTMLDivElement>(null);
@@ -143,6 +148,32 @@ export default function OrderPage() {
       return;
     }
 
+    // Demo 场景：检查是否选择了最后一个额外服务
+    if (orderDraft.selectedServices) {
+      const vehicleServices = vehicleServicesMap[orderDraft.vehicle.id] || [];
+      const lastService = vehicleServices[vehicleServices.length - 1];
+
+      if (lastService) {
+        // 检查单项服务
+        if (!isServiceGroup(lastService)) {
+          if (orderDraft.selectedServices.itemIds.includes(lastService.id)) {
+            setAlertMessage("订单提交失败：该附加服务暂不支持，请重新选择");
+            setShowAlert(true);
+            return;
+          }
+        }
+        // 检查分组服务（如果最后一个是分组）
+        else {
+          const groupSelections = orderDraft.selectedServices.groupSelections[lastService.id];
+          if (groupSelections && groupSelections.length > 0) {
+            setAlertMessage("订单提交失败：该附加服务暂不支持，请重新选择");
+            setShowAlert(true);
+            return;
+          }
+        }
+      }
+    }
+
     setIsSubmitting(true);
 
     const confirmation: OrderConfirmation = {
@@ -176,6 +207,14 @@ export default function OrderPage() {
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-gray-100">
       <Navbar />
+
+      {/* 全局提示横幅 */}
+      <GlobalAlert
+        message={alertMessage}
+        type="error"
+        visible={showAlert}
+        onClose={() => setShowAlert(false)}
+      />
 
       {/* Main Content: Left Panel + Right Map */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-5 overflow-hidden relative">
@@ -306,6 +345,7 @@ export default function OrderPage() {
           {currentStep === "confirm" && orderDraft && (
             <ConfirmationFooter
               totalPrice={orderDraft.totalPrice}
+              orderDraft={orderDraft}
               onConfirm={handleConfirm}
               isSubmitting={isSubmitting}
             />

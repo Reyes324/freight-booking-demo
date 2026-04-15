@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { LeftOutlined } from "@ant-design/icons";
 import type { Order } from "@/data/mockData";
+import { vehicleServicesMap, isServiceGroup } from "@/data/mockData";
 
 interface PriceIncreaseViewProps {
   order: Order;
@@ -17,6 +18,37 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
   const basePrice = order.basePrice || order.totalPrice;
   const total = order.totalPrice + increaseAmount;
   const isValid = increaseAmount > 0;
+
+  // 计算额外服务总价
+  const additionalServicesTotal = useMemo(() => {
+    let total = 0;
+    const vehicleServices = vehicleServicesMap[order.vehicle.id] || [];
+
+    // 累加单项服务价格
+    order.selectedServices?.itemIds.forEach((itemId) => {
+      const service = vehicleServices.find((s) => s.id === itemId);
+      if (service && !isServiceGroup(service) && service.price > 0) {
+        total += service.price;
+      }
+    });
+
+    // 累加分组服务价格
+    if (order.selectedServices?.groupSelections) {
+      Object.entries(order.selectedServices.groupSelections).forEach(([groupId, selectedItemIds]) => {
+        const group = vehicleServices.find((s) => s.id === groupId);
+        if (group && isServiceGroup(group)) {
+          selectedItemIds.forEach((itemId) => {
+            const item = group.items.find((i) => i.id === itemId);
+            if (item && item.price > 0) {
+              total += item.price;
+            }
+          });
+        }
+      });
+    }
+
+    return total;
+  }, [order]);
 
   return (
     <div className="flex flex-col h-full">
@@ -62,11 +94,19 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
             <h4 className="text-sm font-medium text-gray-900 mb-3">费用明细</h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">基础运费</span>
+                <span className="text-sm text-gray-500">运费</span>
                 <span className="font-price text-sm text-gray-900">
-                  HK$ {basePrice.toFixed(2)}
+                  HK$ {order.basePrice.toFixed(2)}
                 </span>
               </div>
+              {additionalServicesTotal > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">额外服务</span>
+                  <span className="font-price text-sm text-gray-900">
+                    HK$ {additionalServicesTotal.toFixed(2)}
+                  </span>
+                </div>
+              )}
               {increaseAmount > 0 && (
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">加价</span>

@@ -28,6 +28,7 @@ export default function EditAdministratorModal({
   useEffect(() => {
     if (open && administrator) {
       form.setFieldsValue({
+        username: administrator.username,
         name: administrator.name,
       });
     }
@@ -80,6 +81,13 @@ export default function EditAdministratorModal({
         layout="vertical"
         autoComplete="off"
       >
+        <Form.Item
+          label="账号"
+          name="username"
+        >
+          <Input disabled className="bg-gray-50" />
+        </Form.Item>
+
         <Form.Item
           label="姓名"
           name="name"

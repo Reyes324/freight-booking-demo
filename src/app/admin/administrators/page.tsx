@@ -100,7 +100,7 @@ export default function AdministratorsPage() {
         role === 'super_admin' ? (
           <Tag color="blue">超级管理员</Tag>
         ) : (
-          <Tag>普通管理员</Tag>
+          <Tag>运营人员</Tag>
         ),
     },
     {
@@ -209,7 +209,7 @@ export default function AdministratorsPage() {
       {/* 提示信息 */}
       {!isSuperAdmin && (
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-700">
-          您当前是普通管理员，仅可查看管理员列表。创建、启用、禁用、删除操作需要超级管理员权限。
+          您当前是运营人员，仅可查看账号列表。创建、编辑、启用、禁用操作需要超级管理员权限。
         </div>
       )}
 

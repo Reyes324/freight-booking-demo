@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Table, Input, Button, Card, Tag, Space, Modal, message } from 'antd';
+import { Table, Input, Button, Card, Tag, Space, Modal, message, Switch } from 'antd';
 import { SearchOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import type { Administrator } from '@/types/auth';
@@ -108,12 +108,26 @@ export default function AdministratorsPage() {
       dataIndex: 'status',
       key: 'status',
       width: 100,
-      render: (status: string) =>
-        status === 'active' ? (
-          <Tag color="success">启用</Tag>
-        ) : (
-          <Tag color="default">已禁用</Tag>
-        ),
+      render: (status: string, record: Administrator) => {
+        // 初始账号或非超级管理员：不可操作
+        const disabled = record.cannotBeDeleted || !isSuperAdmin || (admin && admin.id === record.id);
+
+        return (
+          <Switch
+            checked={status === 'active'}
+            disabled={disabled}
+            onChange={(checked) => {
+              if (checked) {
+                handleEnable(record.id, record.name);
+              } else {
+                handleDisable(record.id, record.name);
+              }
+            }}
+            checkedChildren="启用"
+            unCheckedChildren="禁用"
+          />
+        );
+      },
     },
     {
       title: '创建时间',
@@ -139,32 +153,13 @@ export default function AdministratorsPage() {
         }
 
         return (
-          <Space size="small">
-            <Button
-              type="link"
-              size="small"
-              onClick={() => handleEdit(record)}
-            >
-              编辑
-            </Button>
-            {record.status === 'active' ? (
-              <Button
-                type="link"
-                size="small"
-                onClick={() => handleDisable(record.id, record.name)}
-              >
-                禁用
-              </Button>
-            ) : (
-              <Button
-                type="link"
-                size="small"
-                onClick={() => handleEnable(record.id, record.name)}
-              >
-                启用
-              </Button>
-            )}
-          </Space>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => handleEdit(record)}
+          >
+            编辑
+          </Button>
         );
       },
     },

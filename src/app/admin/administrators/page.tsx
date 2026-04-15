@@ -117,7 +117,7 @@ export default function AdministratorsPage() {
       width: 80,
       render: (status: string, record: Administrator) => {
         // 初始账号或非超级管理员：不可操作
-        const disabled = record.cannotBeDeleted || !isSuperAdmin || (admin && admin.id === record.id);
+        const disabled = !!(record.cannotBeDeleted || !isSuperAdmin || (admin && admin.id === record.id));
 
         return (
           <Switch

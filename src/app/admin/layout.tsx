@@ -161,13 +161,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="p-3 border-t border-gray-800">
             <Dropdown menu={{ items: userMenuItems }} trigger={['click']} placement="topLeft">
               <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-600">
                   <span className="text-sm font-medium">{admin.name.charAt(0)}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-white truncate">{admin.name}</div>
                   <div className="text-xs text-gray-400 truncate">
-                    {admin.role === 'super_admin' ? '超级管理员' : '普通管理员'}
+                    {admin.role === 'super_admin' ? '超级管理员' : '运营人员'}
                   </div>
                 </div>
               </div>

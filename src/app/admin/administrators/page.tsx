@@ -187,6 +187,7 @@ export default function AdministratorsPage() {
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => setCreateModalVisible(true)}
+            style={{ backgroundColor: '#1f2937', borderColor: '#1f2937' }}
           >
             创建运营账号
           </Button>

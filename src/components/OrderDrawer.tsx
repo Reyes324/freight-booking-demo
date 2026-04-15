@@ -7,6 +7,8 @@ import type { Order, PriceAdjustment } from "@/data/mockData";
 import PickupProofModal from "./PickupProofModal";
 import PriceIncreaseView from "./PriceIncreaseView";
 import AdjustPriceView from "./AdjustPriceView";
+import ContactOperatorModal from "./ContactOperatorModal";
+import ChangeDriverModal from "./ChangeDriverModal";
 
 interface OrderDrawerProps {
   open: boolean;
@@ -68,6 +70,8 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   const [drawerView, setDrawerView] = useState<"detail" | "priceIncrease" | "adjustPrice">("detail");
   const [priceAdjustment, setPriceAdjustment] = useState<PriceAdjustment | null>(null);
   const [showAdjustTooltip, setShowAdjustTooltip] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [changeDriverModalOpen, setChangeDriverModalOpen] = useState(false);
 
   // 两阶段动画：先挂载，再触发动画
   useEffect(() => {
@@ -250,12 +254,14 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                             onClick={() => {
                               if (btn === "加价") {
                                 setDrawerView("priceIncrease");
+                              } else if (btn === "更换司机") {
+                                setChangeDriverModalOpen(true);
                               } else if (isAdjustBtn) {
                                 if (isAdjustDisabled) {
                                   setShowAdjustTooltip(true);
                                   setTimeout(() => setShowAdjustTooltip(false), 2000);
                                 } else {
-                                  setDrawerView("adjustPrice");
+                                  setContactModalOpen(true);
                                 }
                               }
                             }}
@@ -475,6 +481,23 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
           onClose={() => setProofModalOpen(false)}
         />
       )}
+
+      {/* 联系运营人员弹窗 */}
+      <ContactOperatorModal
+        open={contactModalOpen}
+        onClose={() => setContactModalOpen(false)}
+      />
+
+      {/* 更换司机弹窗 */}
+      <ChangeDriverModal
+        open={changeDriverModalOpen}
+        onClose={() => setChangeDriverModalOpen(false)}
+        onConfirm={(reason) => {
+          console.log("更换司机原因:", reason);
+          setChangeDriverModalOpen(false);
+          // TODO: 调用更换司机 API
+        }}
+      />
     </>
   );
 }

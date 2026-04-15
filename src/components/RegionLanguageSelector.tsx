@@ -136,8 +136,54 @@ export default function RegionLanguageSelector() {
                      border border-gray-200 overflow-hidden z-50 max-h-[500px] overflow-y-auto
                      animate-in fade-in slide-in-from-top-2 duration-200"
         >
-          {/* 地区选择 */}
+          {/* 语言选择 */}
           <div className="p-3 border-b border-gray-100">
+            <div className="text-xs font-medium text-gray-500 mb-2 px-2">
+              语言
+            </div>
+            <div className="space-y-0.5">
+              {LANGUAGES.map((language) => (
+                <button
+                  key={language.id}
+                  onClick={() => {
+                    setSelectedLanguage(language.id);
+                    // 保存到 localStorage
+                    localStorage.setItem("appLanguage", language.id);
+                    // 选择语言后关闭弹窗
+                    setTimeout(() => setIsOpen(false), 150);
+                  }}
+                  className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg
+                             text-sm transition-colors cursor-pointer ${
+                    selectedLanguage === language.id
+                      ? "bg-blue-50 text-blue-700"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <span className="flex-1 text-left font-medium">
+                    {language.localName}
+                  </span>
+                  {selectedLanguage === language.id && (
+                    <svg
+                      className="w-4 h-4 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 地区选择 */}
+          <div className="p-3">
             <div className="text-xs font-medium text-gray-500 mb-2 px-2">
               地区
             </div>
@@ -188,52 +234,6 @@ export default function RegionLanguageSelector() {
                   </div>
                 );
               })}
-            </div>
-          </div>
-
-          {/* 语言选择 */}
-          <div className="p-3">
-            <div className="text-xs font-medium text-gray-500 mb-2 px-2">
-              语言
-            </div>
-            <div className="space-y-0.5">
-              {LANGUAGES.map((language) => (
-                <button
-                  key={language.id}
-                  onClick={() => {
-                    setSelectedLanguage(language.id);
-                    // 保存到 localStorage
-                    localStorage.setItem("appLanguage", language.id);
-                    // 选择语言后关闭弹窗
-                    setTimeout(() => setIsOpen(false), 150);
-                  }}
-                  className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg
-                             text-sm transition-colors cursor-pointer ${
-                    selectedLanguage === language.id
-                      ? "bg-blue-50 text-blue-700"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <span className="flex-1 text-left font-medium">
-                    {language.localName}
-                  </span>
-                  {selectedLanguage === language.id && (
-                    <svg
-                      className="w-4 h-4 text-blue-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  )}
-                </button>
-              ))}
             </div>
           </div>
         </div>

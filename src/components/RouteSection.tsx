@@ -229,8 +229,8 @@ export default function RouteSection({
                             {address.address}
                           </p>
                           {(address.contactName || address.phone || address.unit) && (
-                            <p
-                              className="text-xs text-gray-400 mt-1.5 cursor-pointer hover:text-gray-700 leading-snug"
+                            <div
+                              className="flex items-center gap-1.5 mt-1.5 group cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setSelectedAddressText(address.address);
@@ -241,9 +241,24 @@ export default function RouteSection({
                                 setShowPopovers(updated);
                               }}
                             >
-                              {address.contactName} · {address.phone}
-                              {address.unit && ` · ${address.unit}`}
-                            </p>
+                              <p className="text-xs text-gray-500 group-hover:text-gray-700 leading-snug transition-colors">
+                                {address.contactName} · {address.phone}
+                                {address.unit && ` · ${address.unit}`}
+                              </p>
+                              <svg
+                                className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                />
+                              </svg>
+                            </div>
                           )}
                         </div>
                       </div>

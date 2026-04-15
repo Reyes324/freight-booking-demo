@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Dropdown, Modal } from 'antd';
@@ -10,11 +10,9 @@ import {
   TransactionOutlined,
   UserOutlined,
   LogoutOutlined,
-  LockOutlined,
 } from '@ant-design/icons';
 import { useCurrentAdmin } from '@/hooks/useAdminAuth';
 import { logout } from '@/utils/adminAuth';
-import ChangePasswordModal from '@/components/Admin/ChangePasswordModal';
 
 const businessMenuItems = [
   {
@@ -50,7 +48,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const { admin } = useCurrentAdmin();
-  const [changePasswordVisible, setChangePasswordVisible] = useState(false);
 
   useEffect(() => {
     document.title = '企业国际运营后台';
@@ -83,15 +80,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   const userMenuItems = [
-    {
-      key: 'changePassword',
-      icon: <LockOutlined />,
-      label: '修改密码',
-      onClick: () => setChangePasswordVisible(true),
-    },
-    {
-      type: 'divider' as const,
-    },
     {
       key: 'logout',
       icon: <LogoutOutlined />,
@@ -180,16 +168,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <main className="flex-1 bg-gray-50 p-6 overflow-auto">
         {children}
       </main>
-
-      {/* 修改密码弹窗 */}
-      <ChangePasswordModal
-        open={changePasswordVisible}
-        onCancel={() => setChangePasswordVisible(false)}
-        onSuccess={() => {
-          setChangePasswordVisible(false);
-        }}
-        isMandatory={false}
-      />
     </div>
   );
 }

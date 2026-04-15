@@ -1,11 +1,22 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { TeamOutlined, FileTextOutlined, TransactionOutlined } from '@ant-design/icons';
+import { usePathname, useRouter } from 'next/navigation';
+import { Dropdown, Modal } from 'antd';
+import {
+  TeamOutlined,
+  FileTextOutlined,
+  TransactionOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  LockOutlined,
+} from '@ant-design/icons';
+import { useCurrentAdmin } from '@/hooks/useAdminAuth';
+import { logout } from '@/utils/adminAuth';
+import ChangePasswordModal from '@/components/Admin/ChangePasswordModal';
 
-const menuItems = [
+const businessMenuItems = [
   {
     key: 'enterprises',
     label: '企业管理',
@@ -26,8 +37,20 @@ const menuItems = [
   },
 ];
 
+const systemMenuItems = [
+  {
+    key: 'administrators',
+    label: '运营账号管理',
+    icon: <UserOutlined />,
+    href: '/admin/administrators',
+  },
+];
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { admin } = useCurrentAdmin();
+  const [changePasswordVisible, setChangePasswordVisible] = useState(false);
 
   useEffect(() => {
     document.title = '企业国际运营后台';
@@ -45,6 +68,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       if (link) link.href = '/favicon.ico';
     };
   }, []);
+
+  const handleLogout = () => {
+    Modal.confirm({
+      title: '确认退出登录？',
+      content: '退出后需要重新登录才能访问后台管理系统',
+      okText: '确认退出',
+      cancelText: '取消',
+      onOk() {
+        logout();
+        router.push('/login');
+      },
+    });
+  };
+
+  const userMenuItems = [
+    {
+      key: 'changePassword',
+      icon: <LockOutlined />,
+      label: '修改密码',
+      onClick: () => setChangePasswordVisible(true),
+    },
+    {
+      type: 'divider' as const,
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: '退出登录',
+      onClick: handleLogout,
+    },
+  ];
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -64,17 +118,36 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Menu */}
         <nav className="flex-1 py-4 px-3">
-          {menuItems.map((item) => {
+          {businessMenuItems.map((item) => {
             const isActive = pathname.startsWith(item.href);
             return (
               <Link
                 key={item.key}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  isActive
-                    ? 'bg-gray-800 text-white'
-                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors no-underline ${
+                  isActive ? 'bg-gray-800' : 'hover:bg-gray-800'
                 }`}
+                style={{ color: isActive ? '#ffffff' : '#9ca3af' }}
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            );
+          })}
+
+          {/* 分隔线 */}
+          <div className="my-3 mx-2 border-t border-gray-700"></div>
+
+          {systemMenuItems.map((item) => {
+            const isActive = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.key}
+                href={item.href}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors no-underline ${
+                  isActive ? 'bg-gray-800' : 'hover:bg-gray-800'
+                }`}
+                style={{ color: isActive ? '#ffffff' : '#9ca3af' }}
               >
                 {item.icon}
                 {item.label}
@@ -82,12 +155,41 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             );
           })}
         </nav>
+
+        {/* User Info */}
+        {admin && (
+          <div className="p-3 border-t border-gray-800">
+            <Dropdown menu={{ items: userMenuItems }} trigger={['click']} placement="topLeft">
+              <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500">
+                  <span className="text-sm font-medium">{admin.name.charAt(0)}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-white truncate">{admin.name}</div>
+                  <div className="text-xs text-gray-400 truncate">
+                    {admin.role === 'super_admin' ? '超级管理员' : '普通管理员'}
+                  </div>
+                </div>
+              </div>
+            </Dropdown>
+          </div>
+        )}
       </aside>
 
       {/* Main content */}
       <main className="flex-1 bg-gray-50 p-6 overflow-auto">
         {children}
       </main>
+
+      {/* 修改密码弹窗 */}
+      <ChangePasswordModal
+        open={changePasswordVisible}
+        onCancel={() => setChangePasswordVisible(false)}
+        onSuccess={() => {
+          setChangePasswordVisible(false);
+        }}
+        isMandatory={false}
+      />
     </div>
   );
 }

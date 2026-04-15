@@ -2,26 +2,20 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const mode = process.env.NEXT_PUBLIC_APP_MODE;
   const { pathname } = request.nextUrl;
 
-  // 本地开发不限制
-  if (!mode || mode === 'dev') {
-    return NextResponse.next();
+  // 检查登录状态（通过 Cookie）
+  const authCookie = request.cookies.get('auth');
+  const isLoggedIn = authCookie?.value === 'true';
+
+  // 未登录访问后台管理系统 → 跳转到登录页
+  if (pathname.startsWith('/admin') && !isLoggedIn) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // 后台运营模式：只允许 /admin/*，其他重定向到 /admin/orders
-  if (mode === 'admin') {
-    if (!pathname.startsWith('/admin')) {
-      return NextResponse.redirect(new URL('/admin/orders', request.url));
-    }
-  }
-
-  // 企业下单模式：禁止访问 /admin/*，返回 404
-  if (mode === 'customer') {
-    if (pathname.startsWith('/admin')) {
-      return NextResponse.rewrite(new URL('/not-found', request.url));
-    }
+  // 已登录访问登录页 → 跳转到后台首页
+  if (pathname === '/login' && isLoggedIn) {
+    return NextResponse.redirect(new URL('/admin/orders', request.url));
   }
 
   return NextResponse.next();

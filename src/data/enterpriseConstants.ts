@@ -1,48 +1,44 @@
 // 地区号下拉选项
 export const countryCodes = [
-  { value: '+852', label: '+852 香港' },
-  { value: '+66', label: '+66 泰国' },
-  { value: '+86', label: '+86 中国' },
-  { value: '+65', label: '+65 新加坡' },
   { value: '+60', label: '+60 马来西亚' },
+  { value: '+84', label: '+84 越南' },
+  { value: '+66', label: '+66 泰国' },
+  { value: '+62', label: '+62 印尼' },
 ];
 
-// 币种下拉选项（账期管理统一使用 CNY，此选项仅用于显示）
+// 币种下拉选项（账期管理统一使用 CNY，此选项仅用于显示参考）
 export const currencyOptions = [
-  { value: 'CNY', label: 'CNY 人民币' },  // CNY 置顶
-  { value: 'HK$', label: 'HK$ 港币' },
-  { value: 'THB', label: 'THB 泰铢' },
-  { value: 'SGD', label: 'SGD 新加坡元' },
+  { value: 'CNY', label: 'CNY 人民币' },
   { value: 'MYR', label: 'MYR 马来西亚林吉特' },
+  { value: 'VND', label: 'VND 越南盾' },
+  { value: 'THB', label: 'THB 泰铢' },
+  { value: 'IDR', label: 'IDR 印尼盾' },
 ];
 
 // 地区号 → 国家 + 币种 映射
 // currency: 账期管理币种（统一为 CNY）
 // localCurrency: 当地货币（用于订单结算）
 export const regionMap: Record<string, { country: string; currency: string; localCurrency: string }> = {
-  '+852': { country: '香港', currency: 'CNY', localCurrency: 'HKD' },
-  '+66':  { country: '泰国', currency: 'CNY', localCurrency: 'THB' },
-  '+86':  { country: '中国', currency: 'CNY', localCurrency: 'CNY' },
-  '+65':  { country: '新加坡', currency: 'CNY', localCurrency: 'SGD' },
-  '+60':  { country: '马来西亚', currency: 'CNY', localCurrency: 'MYR' },
+  '+60': { country: '马来西亚', currency: 'CNY', localCurrency: 'MYR' },
+  '+84': { country: '越南', currency: 'CNY', localCurrency: 'VND' },
+  '+66': { country: '泰国', currency: 'CNY', localCurrency: 'THB' },
+  '+62': { country: '印尼', currency: 'CNY', localCurrency: 'IDR' },
 };
 
 // 地区号 → 当地货币映射（用于订单结算）
 export const localCurrencyMap: Record<string, string> = {
-  '+852': 'HKD',
-  '+66': 'THB',
-  '+86': 'CNY',
-  '+65': 'SGD',
   '+60': 'MYR',
+  '+84': 'VND',
+  '+66': 'THB',
+  '+62': 'IDR',
 };
 
 // 地区号 → 手机号位数规则
 export const phoneDigitsMap: Record<string, { min: number; max: number }> = {
-  '+852': { min: 8, max: 8 },
-  '+66':  { min: 9, max: 9 },
-  '+86':  { min: 11, max: 11 },
-  '+65':  { min: 8, max: 8 },
-  '+60':  { min: 10, max: 11 },
+  '+60': { min: 9,  max: 11 }, // 马来西亚: 9-11位
+  '+84': { min: 9,  max: 10 }, // 越南: 9-10位
+  '+66': { min: 9,  max: 9 },  // 泰国: 9位
+  '+62': { min: 9,  max: 12 }, // 印尼: 9-12位
 };
 
 // 校验常量

@@ -21,7 +21,6 @@ export default function TransactionsPage() {
 
   const allTransactions = useMemo(() => {
     return creditTransactions
-      .filter((t) => t.orderId !== null) // 只显示订单交易
       .map((t) => ({
         ...t,
         enterpriseName: enterpriseMap[t.enterpriseId]?.name || '-',
@@ -60,7 +59,7 @@ export default function TransactionsPage() {
     [filtered]
   );
 
-  const transactionTypes = [...new Set(creditTransactions.map((t) => t.description))];
+  const transactionTypes = ['订单支付', '订单退款'];
 
   const columns: ColumnsType<CreditTransaction & { enterpriseName: string }> = [
     {

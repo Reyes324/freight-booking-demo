@@ -20,7 +20,7 @@ export default function CreateEnterprisePage() {
   const router = useRouter();
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
-  const [countryCode, setCountryCode] = useState('+852');
+  const [countryCode, setCountryCode] = useState('+60');
 
   const onCountryCodeChange = (value: string) => {
     setCountryCode(value);
@@ -67,7 +67,7 @@ export default function CreateEnterprisePage() {
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          initialValues={{ countryCode: '+852', premiumRate: 1.15 }}
+          initialValues={{ countryCode: '+60', premiumRate: 1.15 }}
         >
           <Form.Item
             label="企业名称"

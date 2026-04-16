@@ -9,10 +9,10 @@ import * as XLSX from 'xlsx';
 
 // 参考汇率（日常运营使用，月末按官方挂牌汇率结算）
 const REFERENCE_RATES: Record<string, number> = {
-  'THB': 5.00,  // 1 CNY = 5.00 THB
-  'HKD': 1.10,  // 1 CNY = 1.10 HKD
-  'MYR': 0.65,  // 1 CNY = 0.65 MYR
-  'SGD': 0.19,  // 1 CNY = 0.19 SGD
+  'THB': 4.85,    // 1 CNY = 4.85 THB
+  'VND': 3450.00, // 1 CNY = 3450 VND
+  'MYR': 0.62,    // 1 CNY = 0.62 MYR
+  'IDR': 2150.00, // 1 CNY = 2150 IDR
 };
 
 // 转换为CNY（仅供参考）
@@ -142,7 +142,6 @@ export default function AdminOrdersPage() {
     '配送中': { color: 'blue' },
     '已完成': { color: 'green' },
     '已取消': { color: 'red' },
-    '已过期': { color: 'default' },
   };
 
   const columns: ColumnsType<AdminOrder> = [
@@ -200,6 +199,13 @@ export default function AdminOrdersPage() {
           </div>
         </Tooltip>
       ),
+    },
+    {
+      title: '装货时间',
+      dataIndex: 'pickupTime',
+      key: 'pickupTime',
+      width: 110,
+      render: (v: string) => v.slice(5, 16),
     },
     {
       title: 'LLI单号',

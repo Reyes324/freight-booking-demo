@@ -80,7 +80,7 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         {/* 企业名称（桌面端显示） */}
         <div className="hidden md:flex items-center gap-2">
-          <span className="text-sm text-gray-600">Viettel Post</span>
+          <span className="text-sm text-gray-600">菜鸟物流国际</span>
         </div>
 
         {/* 分隔线（桌面端） */}

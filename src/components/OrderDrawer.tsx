@@ -460,11 +460,11 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
               <h4 className="text-sm font-medium text-gray-900">订单信息</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">订单编号</span>
+                  <span className="text-sm text-gray-400">订单编号</span>
                   <span className="text-sm text-gray-900">{order.orderId}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">用车时间</span>
+                  <span className="text-sm text-gray-400">用车时间</span>
                   <span className="text-sm text-gray-900">
                     {order.scheduledTime
                       ? order.scheduledTime.toLocaleString("zh-CN", {
@@ -479,18 +479,18 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                 </div>
                 {order.driverNote && (
                   <div className="flex justify-between items-start">
-                    <span className="text-sm text-gray-500">订单备注</span>
+                    <span className="text-sm text-gray-400">订单备注</span>
                     <span className="text-sm text-gray-900 text-right max-w-[200px]">
                       {order.driverNote}
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">支付方式</span>
+                  <span className="text-sm text-gray-400">支付方式</span>
                   <span className="text-sm text-gray-900">账期支付</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">下单日期</span>
+                  <span className="text-sm text-gray-400">下单日期</span>
                   <span className="text-sm text-gray-900">
                     {order.createdAt.toLocaleString("zh-CN", {
                       year: "numeric",
@@ -520,14 +520,14 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
 
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">运费</span>
+                  <span className="text-sm text-gray-400">运费</span>
                   <span className="font-price text-sm text-gray-900">
                     ฿{order.basePrice.toFixed(0)}
                   </span>
                 </div>
                 {additionalServicesTotal > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">额外服务</span>
+                    <span className="text-sm text-gray-400">额外服务</span>
                     <span className="font-price text-sm text-gray-900">
                       ฿{additionalServicesTotal.toFixed(0)}
                     </span>

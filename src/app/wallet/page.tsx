@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Table, DatePicker, Empty } from 'antd';
-import { CalendarOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { CalendarOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs, { Dayjs } from 'dayjs';
 import Navbar from '@/components/Navbar';
@@ -103,29 +103,16 @@ export default function WalletPage() {
             <h2 className="text-lg font-semibold text-gray-900">交易明细</h2>
 
             {/* 日期范围选择器 */}
-            <div className="flex items-center gap-4">
-              <RangePicker
-                value={dateRange}
-                onChange={(dates) => {
-                  if (dates && dates[0] && dates[1]) {
-                    setDateRange([dates[0], dates[1]]);
-                  }
-                }}
-                format="YYYY-MM-DD"
-                suffixIcon={<CalendarOutlined />}
-              />
-
-              {/* 分页信息 */}
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <span>显示 {filteredTransactions.length > 0 ? 1 : 0} - {filteredTransactions.length} 共 {filteredTransactions.length} 条</span>
-                <button className="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 cursor-pointer">
-                  <LeftOutlined className="text-xs" />
-                </button>
-                <button className="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 cursor-pointer">
-                  <RightOutlined className="text-xs" />
-                </button>
-              </div>
-            </div>
+            <RangePicker
+              value={dateRange}
+              onChange={(dates) => {
+                if (dates && dates[0] && dates[1]) {
+                  setDateRange([dates[0], dates[1]]);
+                }
+              }}
+              format="YYYY-MM-DD"
+              suffixIcon={<CalendarOutlined />}
+            />
           </div>
 
           {/* 表格 */}
@@ -134,7 +121,11 @@ export default function WalletPage() {
               columns={columns}
               dataSource={filteredTransactions}
               rowKey="id"
-              pagination={false}
+              pagination={{
+                pageSize: 15,
+                showSizeChanger: false,
+                showTotal: (total) => `共 ${total} 条交易记录`,
+              }}
               locale={{
                 emptyText: (
                   <Empty

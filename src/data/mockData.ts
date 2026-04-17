@@ -616,6 +616,7 @@ export interface Order extends CompleteOrder {
   createdAt: Date; // 下单时间
   status: OrderStatus;
   actualPickupTime?: Date;
+  actualDropoffTime?: Date;
   completedTime?: Date;
   cancelledTime?: Date;
   driver?: {

@@ -65,13 +65,13 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
             <div className="flex justify-between mb-2">
               <span className="text-sm text-gray-500">原订单总价</span>
               <span className="font-price text-sm text-gray-900">
-                HK$ {order.totalPrice.toFixed(2)}
+                ฿ {order.totalPrice.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-gray-200">
               <span className="text-sm font-medium text-gray-900">调整至</span>
               <span className="font-price text-sm font-bold text-blue-600">
-                HK$ {adjustedPrice.toFixed(2)}
+                ฿ {adjustedPrice.toFixed(2)}
               </span>
             </div>
           </div>
@@ -126,7 +126,7 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
             <div className="bg-gray-50 rounded-lg p-4 flex items-center justify-between">
               <span className="text-sm text-gray-500">订单总价</span>
               <span className="font-price text-lg font-bold text-gray-900">
-                HK$ {order.totalPrice.toFixed(2)}
+                ฿ {order.totalPrice.toFixed(2)}
               </span>
             </div>
           </div>
@@ -136,7 +136,7 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
             <h4 className="text-sm font-medium text-gray-900 mb-3">调整后金额</h4>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 select-none">
-                HK$
+                ฿
               </span>
               <input
                 type="number"
@@ -153,8 +153,8 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
             {adjustedPrice > 0 && adjustedPrice !== order.totalPrice && (
               <p className="text-xs text-gray-400 mt-2">
                 {adjustedPrice > order.totalPrice
-                  ? `将增加 HK$ ${(adjustedPrice - order.totalPrice).toFixed(2)}`
-                  : `将减少 HK$ ${(order.totalPrice - adjustedPrice).toFixed(2)}`
+                  ? `将增加 ฿ ${(adjustedPrice - order.totalPrice).toFixed(2)}`
+                  : `将减少 ฿ ${(order.totalPrice - adjustedPrice).toFixed(2)}`
                 }
               </p>
             )}

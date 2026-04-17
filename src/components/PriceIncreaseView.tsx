@@ -87,7 +87,7 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
             <h4 className="text-sm font-medium text-gray-900 mb-3">加价金额</h4>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 select-none">
-                HK$
+                ฿
               </span>
               <input
                 type="number"
@@ -117,14 +117,14 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
               <div className="flex justify-between">
                 <span className="text-sm text-gray-500">运费</span>
                 <span className="font-price text-sm text-gray-900">
-                  HK$ {order.basePrice.toFixed(2)}
+                  ฿ {order.basePrice.toFixed(2)}
                 </span>
               </div>
               {additionalServicesTotal > 0 && (
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">额外服务</span>
                   <span className="font-price text-sm text-gray-900">
-                    HK$ {additionalServicesTotal.toFixed(2)}
+                    ฿ {additionalServicesTotal.toFixed(2)}
                   </span>
                 </div>
               )}
@@ -132,14 +132,14 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">加价</span>
                   <span className="font-price text-sm text-blue-600">
-                    HK$ {increaseAmount.toFixed(2)}
+                    ฿ {increaseAmount.toFixed(2)}
                   </span>
                 </div>
               )}
               <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
                 <span className="text-sm font-medium text-gray-900">总计</span>
                 <span className="font-price text-lg font-bold text-gray-900">
-                  HK$ {total.toFixed(2)}
+                  ฿ {total.toFixed(2)}
                 </span>
               </div>
             </div>

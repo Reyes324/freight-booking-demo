@@ -626,6 +626,7 @@ export interface Order extends CompleteOrder {
     rating?: number;
   };
   pickupProofPhoto?: string;
+  dropoffProofPhoto?: string;
   priceAdjustment?: PriceAdjustment;
 }
 

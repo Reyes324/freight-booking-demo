@@ -18,7 +18,9 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
   const increaseAmount = parseFloat(inputValue) || 0;
   const basePrice = order.basePrice || order.totalPrice;
   const total = order.totalPrice + increaseAmount;
-  const isValid = increaseAmount > 0;
+  const MIN_INCREASE = 10; // 最小加价金额
+  const isValid = increaseAmount >= MIN_INCREASE;
+  const showError = inputValue !== "" && increaseAmount > 0 && increaseAmount < MIN_INCREASE;
 
   // 处理返回动画
   const handleBack = () => {
@@ -94,11 +96,18 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
                 placeholder="输入加价金额"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                className="w-full h-11 pl-12 pr-3 border border-gray-300 rounded-lg text-sm
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none
-                         transition-colors"
+                className={`w-full h-11 pl-12 pr-3 border rounded-lg text-sm outline-none transition-colors
+                         ${showError
+                           ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200'
+                           : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200'
+                         }`}
               />
             </div>
+            {showError && (
+              <p className="mt-2 text-sm text-red-500">
+                不能小于最小加价金额 {MIN_INCREASE} 元
+              </p>
+            )}
           </div>
 
           {/* 费用明细 */}

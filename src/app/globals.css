@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* 品牌蓝色 */
   --color-blue-50: #eef2fb;
   --color-blue-100: #dae3f7;
   --color-blue-200: #b5c7ef;
@@ -12,6 +13,12 @@
   --color-blue-800: #163884;
   --color-blue-900: #112a5e;
   --color-blue-950: #0b1b3d;
+
+  /* 设计系统文本色 - 覆盖 Tailwind 默认 gray */
+  --color-gray-900: #0F1229;  /* Ink/T10 - 一级文案 */
+  --color-gray-700: #454C66;  /* Ink/T30 - 二级文案（按钮等） */
+  --color-gray-500: #454C66;  /* Ink/T30 - 二级文案（标签等） */
+  --color-gray-400: #8990A3;  /* Ink/T50 - 三级文案 */
 }
 
 html,

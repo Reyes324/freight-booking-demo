@@ -233,7 +233,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                           {order.driver.name}
                         </h4>
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="bg-gray-100 rounded px-2 py-0.5 text-xs font-medium text-gray-700">
+                          <span className="bg-gray-100 rounded px-2 py-0.5 text-xs font-medium text-gray-900">
                             {order.driver.vehiclePlate}
                           </span>
                           <span className="text-sm text-gray-500">{order.vehicle.name}</span>
@@ -258,7 +258,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                         {order.driver.rating && (
                           <div className="flex items-center gap-0.5 mt-1.5">
                             <StarFilled className="text-orange-500 text-xs" />
-                            <span className="text-xs font-medium text-gray-700">{order.driver.rating}</span>
+                            <span className="text-xs font-medium text-gray-900">{order.driver.rating}</span>
                           </div>
                         )}
                       </div>

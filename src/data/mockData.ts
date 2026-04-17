@@ -570,6 +570,7 @@ export const serviceOptions: ServiceOption[] = [
 export interface OrderDraft {
   pickup: AddressDetail;
   dropoff: AddressDetail;
+  waypoints?: AddressDetail[]; // 途经点（可选）
   vehicle: Vehicle;
   pricingOption: 'economy' | 'standard' | 'priority';
   selectedServices: {
@@ -672,6 +673,15 @@ export const mockOrders: Order[] = [
       lat: 13.7472,
       lng: 100.5399,
     },
+    waypoints: [
+      {
+        address: '曼谷素坤逸路Emporium百货',
+        contactName: '林小姐',
+        phone: '+66 845 111 222',
+        lat: 13.7307,
+        lng: 100.5698,
+      },
+    ],
     dropoff: {
       address: '曼谷阿索克路Terminal 21购物中心',
       contactName: '陈小姐',
@@ -712,6 +722,22 @@ export const mockOrders: Order[] = [
       lat: 13.7650,
       lng: 100.5746,
     },
+    waypoints: [
+      {
+        address: '曼谷席隆路BTS站',
+        contactName: '赵先生',
+        phone: '+66 845 333 444',
+        lat: 13.7292,
+        lng: 100.5266,
+      },
+      {
+        address: '曼谷拉玛四世路隆比尼公园',
+        contactName: '钱小姐',
+        phone: '+66 845 555 666',
+        lat: 13.7308,
+        lng: 100.5419,
+      },
+    ],
     dropoff: {
       address: '曼谷惠恭王路尚泰世界购物中心',
       contactName: '何小姐',

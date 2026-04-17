@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
-import { CloseOutlined, PhoneOutlined, StarFilled, MessageOutlined, EnvironmentOutlined, QuestionCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { CloseOutlined, PhoneOutlined, StarFilled, MessageOutlined, EnvironmentOutlined, QuestionCircleOutlined, InfoCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { Modal, message } from "antd";
 import type { Order, PriceAdjustment } from "@/data/mockData";
 import { vehicleServicesMap, isServiceGroup } from "@/data/mockData";
 import PickupProofModal from "./PickupProofModal";
@@ -73,6 +74,22 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   const [showAdjustTooltip, setShowAdjustTooltip] = useState(false);
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [changeDriverModalOpen, setChangeDriverModalOpen] = useState(false);
+
+  // 处理取消订单
+  const handleCancelOrder = () => {
+    Modal.confirm({
+      title: "确认取消订单？",
+      icon: <ExclamationCircleOutlined />,
+      content: "取消后订单将无法恢复，是否确认取消？",
+      okText: "确认取消",
+      cancelText: "返回",
+      okButtonProps: { danger: true },
+      onOk() {
+        // Demo 场景：不改变订单状态，只显示 toast
+        message.success("订单已取消");
+      },
+    });
+  };
 
   // 计算额外服务总价
   const additionalServicesTotal = useMemo(() => {
@@ -175,28 +192,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                      visible ? "translate-x-0" : "translate-x-full"
                    }`}
       >
-        {drawerView === "priceIncrease" ? (
-          <PriceIncreaseView
-            order={order}
-            onBack={() => setDrawerView("detail")}
-            onConfirm={(amount) => {
-              console.log("加价金额:", amount);
-              setDrawerView("detail");
-            }}
-          />
-        ) : drawerView === "adjustPrice" ? (
-          <AdjustPriceView
-            order={order}
-            onBack={() => setDrawerView("detail")}
-            onSubmit={(adjustedPrice) => {
-              setPriceAdjustment({
-                adjustedPrice,
-                status: "pending",
-                submittedAt: new Date(),
-              });
-            }}
-          />
-        ) : (
+        {/* 订单详情 - 一级页面（始终渲染） */}
         <>
         {/* 头部 - 关闭按钮 */}
         <div className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6">
@@ -218,14 +214,11 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
             <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
               {/* 状态 header */}
               <div className="p-4">
-                <div className="flex items-start justify-between mb-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base font-semibold text-gray-900">
-                      {statusConfig.title}
-                    </h3>
-                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${statusConfig.dotColor} ${statusConfig.showPulse ? "animate-pulse" : ""}`} />
-                  </div>
-                  <span className="text-xs text-gray-400 flex-shrink-0">{order.orderId}</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-base font-semibold text-gray-900">
+                    {statusConfig.title}
+                  </h3>
+                  <span className={`w-2 h-2 rounded-full flex-shrink-0 ${statusConfig.dotColor} ${statusConfig.showPulse ? "animate-pulse" : ""}`} />
                 </div>
                 <p className="text-sm text-gray-500">{statusConfig.description}</p>
               </div>
@@ -331,71 +324,114 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
             {/* 路线信息 */}
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-3">路线信息</h4>
-              <div className="flex gap-2.5">
-                {/* 左侧标记列 */}
-                <div className="flex flex-col items-center" style={{ width: "12px" }}>
-                  <div className="w-3 h-3 rounded-full bg-blue-600 flex-shrink-0 mt-[3px]" />
-                  <div className="w-px flex-1 min-h-[24px] border-l border-dashed border-gray-300 my-2" />
-                  <div className="w-3 h-3 rounded-full border border-gray-400 bg-white flex-shrink-0 mb-[3px]" />
-                </div>
+              {/* 构建路线点数组：起点 + 途径点 + 终点 */}
+              {(() => {
+                const routePoints = [
+                  order.pickup,
+                  ...(order.waypoints || []),
+                  order.dropoff
+                ];
 
-                {/* 右侧地址列 */}
-                <div className="flex-1 space-y-4 min-w-0">
-                  {/* 起点 */}
+                return (
                   <div>
-                    <p className="text-sm text-gray-900 break-words leading-[1.4] mb-1">
-                      {order.pickup.address}
-                    </p>
-                    {(order.pickup.contactName || order.pickup.phone || order.pickup.unit) && (
-                      <div className="text-xs text-gray-400 space-y-0.5">
-                        {order.pickup.contactName && order.pickup.phone && (
-                          <p>
-                            {order.pickup.contactName} · {order.pickup.phone}
-                          </p>
-                        )}
-                        {order.pickup.unit && <p>{order.pickup.unit}</p>}
-                      </div>
-                    )}
+                    {routePoints.map((point, index) => (
+                      <div key={index}>
+                        {/* 每个路线点：圆圈 + 地址信息 */}
+                        <div className="flex gap-2.5">
+                          {/* 左侧：时间轴列（圆圈 + 虚线） */}
+                          <div className="flex flex-col items-center flex-shrink-0" style={{ width: "18px" }}>
+                            {/* 圆圈 - 固定在顶部 */}
+                            <div className="flex-shrink-0" style={{ marginTop: "2px" }}>
+                              {index === 0 ? (
+                                // 起点：填充蓝色 + 白色数字
+                                <div className="w-[18px] h-[18px] rounded-full bg-blue-600 flex items-center justify-center">
+                                  <span className="text-[10px] font-medium leading-none text-white">
+                                    {index + 1}
+                                  </span>
+                                </div>
+                              ) : (
+                                // 途径点和终点：白色背景 + 蓝色边框 + 蓝色数字
+                                <div className="w-[18px] h-[18px] rounded-full border-[1.5px] border-blue-600 bg-white flex items-center justify-center">
+                                  <span className="text-[10px] font-medium leading-none text-blue-600">
+                                    {index + 1}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
 
-                    {/* 装货证明（有证明照片时显示） */}
-                    {order.pickupProofPhoto && (order.status === "completed" || order.status === "delivering") && (
-                      <div className="mt-2 bg-gray-50 rounded-lg p-3 flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-green-600">已装货</p>
-                          {order.actualPickupTime && (
-                            <p className="text-xs text-gray-400 mt-0.5">
-                              {formatPickupTime(order.actualPickupTime)}
+                            {/* 向下延伸的虚线（最后一个点不显示） */}
+                            {index < routePoints.length - 1 && (
+                              <div className="w-px flex-1 border-l border-dashed border-gray-300 mt-2" />
+                            )}
+                          </div>
+
+                          {/* 右侧：地址信息 */}
+                          <div className="flex-1 min-w-0 pb-3">
+                            <p className="text-sm text-gray-900 break-words leading-[1.4] mb-1">
+                              {point.address}
                             </p>
-                          )}
-                        </div>
-                        <img
-                          src={order.pickupProofPhoto}
-                          alt="装货证明"
-                          className="w-14 h-14 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => setProofModalOpen(true)}
-                        />
-                      </div>
-                    )}
-                  </div>
+                            {(point.contactName || point.phone || point.unit) && (
+                              <div className="text-xs text-gray-400 space-y-0.5">
+                                {point.contactName && point.phone && (
+                                  <p>
+                                    {point.contactName} · {point.phone}
+                                  </p>
+                                )}
+                                {point.unit && <p>{point.unit}</p>}
+                              </div>
+                            )}
 
-                  {/* 终点 */}
-                  <div>
-                    <p className="text-sm text-gray-900 break-words leading-[1.4] mb-1">
-                      {order.dropoff.address}
-                    </p>
-                    {(order.dropoff.contactName || order.dropoff.phone || order.dropoff.unit) && (
-                      <div className="text-xs text-gray-400 space-y-0.5">
-                        {order.dropoff.contactName && order.dropoff.phone && (
-                          <p>
-                            {order.dropoff.contactName} · {order.dropoff.phone}
-                          </p>
-                        )}
-                        {order.dropoff.unit && <p>{order.dropoff.unit}</p>}
+                            {/* 装货证明（仅起点且有证明照片时显示） */}
+                            {index === 0 && order.pickupProofPhoto && (order.status === "completed" || order.status === "delivering") && (
+                              <div className="mt-2 bg-gray-50 rounded-lg p-3 flex items-center justify-between">
+                                <div>
+                                  <p className="text-sm font-medium text-green-600">已装货</p>
+                                  {order.actualPickupTime && (
+                                    <p className="text-xs text-gray-400 mt-0.5">
+                                      {formatPickupTime(order.actualPickupTime)}
+                                    </p>
+                                  )}
+                                </div>
+                                <img
+                                  src={order.pickupProofPhoto}
+                                  alt="装货证明"
+                                  className="w-14 h-14 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                                  onClick={() => setProofModalOpen(true)}
+                                />
+                              </div>
+                            )}
+
+                            {/* 卸货证明（仅终点且有证明照片时显示） */}
+                            {index === routePoints.length - 1 && order.dropoffProofPhoto && order.status === "completed" && (
+                              <div className="mt-2 bg-gray-50 rounded-lg p-3 flex items-center justify-between">
+                                <div>
+                                  <p className="text-sm font-medium text-green-600">已卸货</p>
+                                  {order.actualDropoffTime && (
+                                    <p className="text-xs text-gray-400 mt-0.5">
+                                      {new Date(order.actualDropoffTime).toLocaleString("zh-CN", {
+                                        month: "numeric",
+                                        day: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                      })}
+                                    </p>
+                                  )}
+                                </div>
+                                <img
+                                  src={order.dropoffProofPhoto}
+                                  alt="卸货证明"
+                                  className="w-14 h-14 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                                  onClick={() => setProofModalOpen(true)}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    )}
+                    ))}
                   </div>
-                </div>
-              </div>
+                );
+              })()}
             </div>
 
             {/* 车型信息 */}
@@ -503,6 +539,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                        flex justify-end"
           >
             <button
+              onClick={handleCancelOrder}
               className="h-11 px-6 rounded-lg border border-gray-200 bg-white
                        text-gray-700 font-medium text-sm hover:bg-gray-50
                        transition-colors cursor-pointer"
@@ -512,6 +549,35 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
           </div>
         )}
         </>
+
+        {/* 二级页面覆盖层 */}
+        {drawerView === "priceIncrease" && (
+          <div className="absolute inset-0 z-20 overflow-hidden">
+            <PriceIncreaseView
+              order={order}
+              onBack={() => setDrawerView("detail")}
+              onConfirm={(amount) => {
+                console.log("加价金额:", amount);
+                setDrawerView("detail");
+              }}
+            />
+          </div>
+        )}
+
+        {drawerView === "adjustPrice" && (
+          <div className="absolute inset-0 z-20 overflow-hidden">
+            <AdjustPriceView
+              order={order}
+              onBack={() => setDrawerView("detail")}
+              onSubmit={(adjustedPrice) => {
+                setPriceAdjustment({
+                  adjustedPrice,
+                  status: "pending",
+                  submittedAt: new Date(),
+                });
+              }}
+            />
+          </div>
         )}
       </div>
 

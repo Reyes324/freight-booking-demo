@@ -13,6 +13,7 @@ interface AdjustPriceViewProps {
 export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPriceViewProps) {
   const [inputValue, setInputValue] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
 
   const adjustedPrice = parseFloat(inputValue) || 0;
   const isValid = adjustedPrice > 0 && adjustedPrice !== order.totalPrice;
@@ -23,21 +24,32 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
     onSubmit(adjustedPrice);
   };
 
+  // 处理返回动画
+  const handleBack = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onBack();
+    }, 250); // 与动画时长一致
+  };
+
   // 提交成功后的审核中页面
   if (submitted) {
     return (
-      <div className="flex flex-col h-full">
+      <div className={`flex flex-col h-full bg-white ${isExiting ? 'slide-out-to-right' : 'slide-in-from-right'}`}>
         {/* 头部 */}
-        <div className="h-14 bg-white border-b border-gray-200 flex items-center px-4 lg:px-6">
+        <div
+          className="sticky top-0 z-10 bg-white px-4 lg:px-6 border-b border-gray-200 flex items-center h-14"
+          style={{ boxShadow: "0px 1px 3px 0px rgba(0,0,0,0.04)" }}
+        >
           <button
-            onClick={onBack}
-            className="w-8 h-8 flex items-center justify-center rounded-lg
+            onClick={handleBack}
+            className="-ml-2 w-8 h-8 flex items-center justify-center rounded-lg
                      text-gray-500 hover:text-gray-900 hover:bg-gray-100
-                     transition-colors cursor-pointer mr-2"
+                     transition-colors cursor-pointer"
           >
             <LeftOutlined className="text-sm" />
           </button>
-          <h2 className="text-base font-semibold text-gray-900">调整费用</h2>
+          <h2 className="text-base font-semibold text-gray-900 ml-1">调整费用</h2>
         </div>
 
         {/* 成功提示 */}
@@ -68,7 +80,7 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
         {/* 底部返回按钮 */}
         <div className="p-4 lg:p-6 bg-white border-t border-gray-200">
           <button
-            onClick={onBack}
+            onClick={handleBack}
             className="w-full h-11 rounded-lg font-semibold text-sm transition-colors cursor-pointer
                      bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
           >
@@ -80,18 +92,21 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className={`flex flex-col h-full bg-white ${isExiting ? 'slide-out-to-right' : 'slide-in-from-right'}`}>
       {/* 头部 */}
-      <div className="h-14 bg-white border-b border-gray-200 flex items-center px-4 lg:px-6">
+      <div
+        className="sticky top-0 z-10 bg-white px-4 lg:px-6 border-b border-gray-200 flex items-center h-14"
+        style={{ boxShadow: "0px 1px 3px 0px rgba(0,0,0,0.04)" }}
+      >
         <button
-          onClick={onBack}
-          className="w-8 h-8 flex items-center justify-center rounded-lg
+          onClick={handleBack}
+          className="-ml-2 w-8 h-8 flex items-center justify-center rounded-lg
                    text-gray-500 hover:text-gray-900 hover:bg-gray-100
-                   transition-colors cursor-pointer mr-2"
+                   transition-colors cursor-pointer"
         >
           <LeftOutlined className="text-sm" />
         </button>
-        <h2 className="text-base font-semibold text-gray-900">调整费用</h2>
+        <h2 className="text-base font-semibold text-gray-900 ml-1">调整费用</h2>
       </div>
 
       {/* 内容 */}

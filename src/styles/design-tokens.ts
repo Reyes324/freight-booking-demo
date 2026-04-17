@@ -184,17 +184,154 @@ export const controlHeight = {
 /** 直接导入给 ConfigProvider 使用 */
 export const antdTheme = {
   token: {
-    colorPrimary: brand[600],
-    colorPrimaryHover: brand[700],
-    borderRadius: parseInt(radius.base),
+    // ===== 品牌色 =====
+    colorPrimary: brand[600],           // 主色：#2257D4
+    colorPrimaryHover: brand[700],      // 主色悬停：#1C47AC
+    colorPrimaryActive: brand[700],     // 主色激活
+    colorPrimaryBg: brand[50],          // 主色背景
+    colorPrimaryBgHover: brand[100],    // 主色背景悬停
+    colorPrimaryBorder: brand[200],     // 主色边框
+    colorPrimaryBorderHover: brand[300],// 主色边框悬停
+
+    // ===== 链接色（不设置，避免覆盖导航栏）=====
+    // colorLink: brand[600],           // 注释掉，让链接使用默认或手动控制
+    // colorLinkHover: brand[700],
+    // colorLinkActive: brand[700],
+
+    // ===== 成功色 =====
+    colorSuccess: semantic.success.base,      // #00A178
+    colorSuccessBg: semantic.success.light,   // #DFF3EC
+
+    // ===== 警告色 =====
+    colorWarning: semantic.warning.base,      // #FAAD14
+    colorWarningBg: semantic.warning.light,   // #FFF7E6
+
+    // ===== 错误色 =====
+    colorError: semantic.error.base,          // #EF4444
+    colorErrorBg: semantic.error.light,       // #FEF2F2
+
+    // ===== 信息色 =====
+    colorInfo: semantic.info.base,            // #1677FF
+    colorInfoBg: semantic.info.light,         // #E5EDFF
+
+    // ===== 文本色 =====
+    colorText: neutral[900],              // 主文本：#111827
+    colorTextSecondary: neutral[600],     // 次要文本：#4B5563
+    colorTextTertiary: neutral[400],      // 三级文本：#9CA3AF
+    colorTextDisabled: neutral[300],      // 禁用文本：#D1D5DB
+
+    // ===== 边框色 =====
+    colorBorder: neutral[200],            // 边框：#E5E7EB
+    colorBorderSecondary: neutral[100],   // 次要边框：#F3F4F6
+
+    // ===== 背景色 =====
+    colorBgContainer: neutral[0],         // 容器背景：#FFFFFF
+    colorBgLayout: neutral[50],           // 布局背景：#F9FAFB
+    colorBgElevated: neutral[0],          // 浮层背景：#FFFFFF
+
+    // ===== 圆角 =====
+    borderRadius: parseInt(radius.base),  // 8px
+    borderRadiusLG: parseInt(radius.lg),  // 12px
+    borderRadiusSM: parseInt(radius.sm),  // 4px
+
+    // ===== 字体 =====
+    fontFamily: fontFamily.base,
+    fontSize: parseInt(fontSize.base.size),
+    fontSizeHeading1: parseInt(fontSize['2xl'].size),
+    fontSizeHeading2: parseInt(fontSize.xl.size),
+    fontSizeHeading3: parseInt(fontSize.lg.size),
+    fontSizeHeading4: parseInt(fontSize.md.size),
+    fontSizeHeading5: parseInt(fontSize.base.size),
+
+    // ===== 控件高度 =====
+    controlHeight: controlHeight.md,      // 44px
+    controlHeightLG: controlHeight.lg,    // 54px
+    controlHeightSM: controlHeight.sm,    // 32px
   },
   components: {
-    Switch:  { colorPrimary: brand[600], colorPrimaryHover: brand[700] },
-    Button:  { colorPrimary: brand[600], colorPrimaryHover: brand[700] },
-    Radio:   { colorPrimary: brand[600] },
-    Input:   { controlHeight: controlHeight.md },
-    Select:  { controlHeight: controlHeight.md },
-    Form:    { labelColor: neutral[700], labelFontSize: parseInt(fontSize.base.size) },
+    // ===== 按钮 =====
+    Button: {
+      colorPrimary: brand[600],
+      colorPrimaryHover: brand[700],
+      colorPrimaryActive: brand[700],
+      primaryShadow: 'none',
+      dangerShadow: 'none',
+      defaultShadow: 'none',
+    },
+
+    // ===== 开关 =====
+    Switch: {
+      colorPrimary: brand[600],
+      colorPrimaryHover: brand[700],
+    },
+
+    // ===== 单选框 =====
+    Radio: {
+      colorPrimary: brand[600],
+    },
+
+    // ===== 复选框 =====
+    Checkbox: {
+      colorPrimary: brand[600],
+      colorPrimaryHover: brand[700],
+    },
+
+    // ===== 输入框 =====
+    Input: {
+      controlHeight: controlHeight.md,
+      colorPrimaryHover: brand[600],
+      colorPrimary: brand[600],
+    },
+
+    // ===== 选择器 =====
+    Select: {
+      controlHeight: controlHeight.md,
+      colorPrimary: brand[600],
+      colorPrimaryHover: brand[600],
+    },
+
+    // ===== 日期选择器 =====
+    DatePicker: {
+      controlHeight: controlHeight.md,
+      colorPrimary: brand[600],
+      colorPrimaryHover: brand[700],
+    },
+
+    // ===== 表单 =====
+    Form: {
+      labelColor: neutral[700],
+      labelFontSize: parseInt(fontSize.base.size),
+    },
+
+    // ===== 表格 =====
+    Table: {
+      colorPrimary: brand[600],
+      headerBg: neutral[50],
+    },
+
+    // ===== 标签页 =====
+    Tabs: {
+      colorPrimary: brand[600],
+      colorPrimaryHover: brand[700],
+      inkBarColor: brand[600],
+      itemHoverColor: neutral[700],
+      itemSelectedColor: brand[600],
+    },
+
+    // ===== 消息提示 =====
+    Message: {
+      colorInfo: brand[600],
+    },
+
+    // ===== 通知 =====
+    Notification: {
+      colorInfo: brand[600],
+    },
+
+    // ===== 标签 =====
+    Tag: {
+      colorPrimary: brand[600],
+    },
   },
 } as const;
 

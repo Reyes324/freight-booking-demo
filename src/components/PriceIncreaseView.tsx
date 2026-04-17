@@ -13,11 +13,20 @@ interface PriceIncreaseViewProps {
 
 export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceIncreaseViewProps) {
   const [inputValue, setInputValue] = useState("");
+  const [isExiting, setIsExiting] = useState(false);
 
   const increaseAmount = parseFloat(inputValue) || 0;
   const basePrice = order.basePrice || order.totalPrice;
   const total = order.totalPrice + increaseAmount;
   const isValid = increaseAmount > 0;
+
+  // 处理返回动画
+  const handleBack = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onBack();
+    }, 250); // 与动画时长一致
+  };
 
   // 计算额外服务总价
   const additionalServicesTotal = useMemo(() => {
@@ -51,18 +60,21 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
   }, [order]);
 
   return (
-    <div className="flex flex-col h-full">
-      {/* 头部 */}
-      <div className="h-14 bg-white border-b border-gray-200 flex items-center px-4 lg:px-6">
+    <div className={`flex flex-col h-full bg-white ${isExiting ? 'slide-out-to-right' : 'slide-in-from-right'}`}>
+      {/* 头部导航栏 */}
+      <div
+        className="sticky top-0 z-10 bg-white px-4 lg:px-6 border-b border-gray-200 flex items-center h-14"
+        style={{ boxShadow: "0px 1px 3px 0px rgba(0,0,0,0.04)" }}
+      >
         <button
-          onClick={onBack}
-          className="w-8 h-8 flex items-center justify-center rounded-lg
+          onClick={handleBack}
+          className="-ml-2 w-8 h-8 flex items-center justify-center rounded-lg
                    text-gray-500 hover:text-gray-900 hover:bg-gray-100
-                   transition-colors cursor-pointer mr-2"
+                   transition-colors cursor-pointer"
         >
           <LeftOutlined className="text-sm" />
         </button>
-        <h2 className="text-base font-semibold text-gray-900">加价</h2>
+        <h2 className="text-base font-semibold text-gray-900 ml-1">加价</h2>
       </div>
 
       {/* 内容 */}

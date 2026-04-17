@@ -98,7 +98,7 @@ export default function AdministratorsPage() {
       width: 130,
       render: (role: string) =>
         role === 'super_admin' ? (
-          <Tag color="blue">超级管理员</Tag>
+          <Tag style={{ backgroundColor: '#EEF2FB', color: '#2257D4', borderColor: '#B5C7EF' }}>超级管理员</Tag>
         ) : (
           <Tag>运营人员</Tag>
         ),
@@ -202,7 +202,7 @@ export default function AdministratorsPage() {
 
       {/* 提示信息 */}
       {!isSuperAdmin && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-700">
+        <div className="mb-4 p-3 rounded text-sm" style={{ backgroundColor: '#EEF2FB', borderWidth: '1px', borderColor: '#B5C7EF', color: '#2257D4' }}>
           您当前是运营人员，仅可查看账号列表。创建、编辑、启用、禁用操作需要超级管理员权限。
         </div>
       )}

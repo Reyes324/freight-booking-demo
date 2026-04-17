@@ -60,18 +60,16 @@ export default function Navbar() {
               key={tab.id}
               href={tab.path}
               prefetch={true}
-              className={`relative px-4 py-2.5 text-base font-medium
-                         transition-all duration-200 cursor-pointer ${
-                activeTab === tab.id
-                  ? "text-blue-600"
-                  : "text-gray-500 hover:text-gray-900"
-              }`}
+              data-active={activeTab === tab.id ? "true" : undefined}
+              className="relative px-4 py-2.5 text-base font-medium transition-all duration-200 cursor-pointer"
             >
               {tab.label}
               {/* 底部指示线 - 延伸到导航栏底部 */}
               {activeTab === tab.id && (
-                <div className="absolute left-0 right-0 h-0.5 bg-blue-600 z-20"
-                     style={{ bottom: '-10px' }} />
+                <div
+                  className="absolute left-0 right-0 h-0.5 z-20"
+                  style={{ bottom: '-10px', backgroundColor: '#2257D4' }}
+                />
               )}
             </Link>
           ))}

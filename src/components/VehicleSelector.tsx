@@ -35,7 +35,10 @@ export default function VehicleSelector({
           href="https://www.lalamove.com/zh-hk/all-vehicle-pricing-detail"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
+          className="flex items-center gap-1 text-sm transition-colors cursor-pointer"
+          style={{ color: '#2257D4' }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#1C47AC'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#2257D4'}
         >
           <InfoCircleOutlined className="text-base" />
           更多详情

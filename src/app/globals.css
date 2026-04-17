@@ -72,6 +72,24 @@ body {
   }
 }
 
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
 .animate-in {
   animation-fill-mode: both;
 }
@@ -90,6 +108,14 @@ body {
 
 .zoom-in-95 {
   animation: zoomIn 200ms ease-out;
+}
+
+.slide-in-from-right {
+  animation: slideInFromRight 300ms linear;
+}
+
+.slide-out-to-right {
+  animation: slideOutToRight 250ms linear;
 }
 
 /* Subtle always-on scrollbar — thin, transparent track, sits within padding */
@@ -144,4 +170,25 @@ body {
 /* Safe area padding for mobile */
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ===== Ant Design 样式覆盖 ===== */
+
+/*
+  问题：Ant Design 的 <App> 组件会设置全局链接样式
+  解决：针对性覆盖导航栏的链接样式
+*/
+
+/* 导航栏未选中链接：保持灰色 */
+nav a:not([data-active="true"]) {
+  color: #6B7280 !important;  /* text-gray-500 */
+}
+
+nav a:not([data-active="true"]):hover {
+  color: #111827 !important;  /* text-gray-900 */
+}
+
+/* 导航栏选中链接：品牌色 */
+nav a[data-active="true"] {
+  color: #2257D4 !important;  /* 品牌色 */
 }

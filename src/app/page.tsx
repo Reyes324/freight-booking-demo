@@ -149,14 +149,24 @@ export default function OrderPage() {
     }
 
     // Demo 场景：检查是否选择了最后一个额外服务
+    console.log("🔍 开始验证附加服务...");
+    console.log("orderDraft.selectedServices:", orderDraft.selectedServices);
+    console.log("orderDraft.vehicle.id:", orderDraft.vehicle.id);
+
     if (orderDraft.selectedServices) {
       const vehicleServices = vehicleServicesMap[orderDraft.vehicle.id] || [];
       const lastService = vehicleServices[vehicleServices.length - 1];
 
+      console.log("vehicleServices:", vehicleServices);
+      console.log("lastService:", lastService);
+
       if (lastService) {
         // 检查单项服务
         if (!isServiceGroup(lastService)) {
+          console.log("检查单项服务，lastService.id:", lastService.id);
+          console.log("selectedServices.itemIds:", orderDraft.selectedServices.itemIds);
           if (orderDraft.selectedServices.itemIds.includes(lastService.id)) {
+            console.log("🚨 触发错误提示！");
             setAlertMessage("订单提交失败：该附加服务暂不支持，请重新选择");
             setShowAlert(true);
             return;
@@ -164,8 +174,11 @@ export default function OrderPage() {
         }
         // 检查分组服务（如果最后一个是分组）
         else {
+          console.log("检查分组服务，lastService.id:", lastService.id);
           const groupSelections = orderDraft.selectedServices.groupSelections[lastService.id];
+          console.log("groupSelections:", groupSelections);
           if (groupSelections && groupSelections.length > 0) {
+            console.log("🚨 触发错误提示！");
             setAlertMessage("订单提交失败：该附加服务暂不支持，请重新选择");
             setShowAlert(true);
             return;
@@ -173,6 +186,8 @@ export default function OrderPage() {
         }
       }
     }
+
+    console.log("✅ 验证通过，继续提交...");
 
     setIsSubmitting(true);
 
@@ -208,19 +223,27 @@ export default function OrderPage() {
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-gray-100">
       <Navbar />
 
-      {/* 全局提示横幅 */}
-      <GlobalAlert
-        message={alertMessage}
-        type="error"
-        visible={showAlert}
-        onClose={() => setShowAlert(false)}
-      />
-
       {/* Main Content: Left Panel + Right Map */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-5 overflow-hidden relative">
         {/* Map - Mobile background (full screen) + Desktop right panel (3/5 = 60%) */}
         <div className="absolute inset-0 lg:relative lg:col-span-3 lg:col-start-3 lg:row-start-1">
           <MapView pickupAddress={pickupAddress} dropoffAddress={dropoffAddress} />
+
+          {/* 测试按钮（地图左侧） */}
+          <button
+            onClick={() => {
+              setAlertMessage("订单提交失败：该附加服务暂不支持，请重新选择");
+              setShowAlert(true);
+            }}
+            className="absolute top-4 left-4 px-3 py-1.5
+                       bg-white/90 backdrop-blur-sm
+                       text-gray-700 text-xs rounded-lg
+                       shadow-md hover:shadow-lg
+                       border border-gray-200
+                       transition-all cursor-pointer z-10"
+          >
+            测试报错
+          </button>
         </div>
 
         {/* Left Panel — Form (floats on mobile, fixed on desktop, 2/5 = 40%) */}
@@ -229,44 +252,60 @@ export default function OrderPage() {
           {currentStep === "configure" && (
             <div
               ref={configScrollRef}
-              className="h-full overflow-y-scroll subtle-scroll p-4 lg:p-6 space-y-4 lg:space-y-6 bg-white
+              className="h-full overflow-y-scroll subtle-scroll bg-white relative
                          animate-in fade-in slide-in-from-left-8 duration-300"
               style={{ paddingBottom: showPricing ? 'calc(320px + env(safe-area-inset-bottom))' : '24px' }}
             >
-              {/* 页面标题 */}
-              <div className="pb-4 border-b border-gray-100">
-                <h1 className="text-lg font-semibold text-gray-900">
-                  下单叫车
-                </h1>
-                <p className="text-sm text-gray-500 mt-1.5">
-                  填写装卸货信息，快速匹配司机
-                </p>
+              {/* 报错栏（固定悬浮在顶部，不占空间） */}
+              {showAlert && (
+                <div className="sticky top-0 z-50 h-0 overflow-visible">
+                  <div className="px-4 lg:px-6 pt-4">
+                    <GlobalAlert
+                      message={alertMessage}
+                      type="error"
+                      visible={showAlert}
+                      onClose={() => setShowAlert(false)}
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
+                {/* 页面标题 */}
+                <div className="pb-4 border-b border-gray-100">
+                  <h1 className="text-lg font-semibold text-gray-900">
+                    下单叫车
+                  </h1>
+                  <p className="text-sm text-gray-500 mt-1.5">
+                    填写装卸货信息，快速匹配司机
+                  </p>
+                </div>
+
+                <VehicleSelector
+                  selectedVehicle={selectedVehicle}
+                  onSelect={handleVehicleSelect}
+                />
+
+                <RouteSection
+                  pickupAddress={pickupAddress}
+                  dropoffAddress={dropoffAddress}
+                  onPickupChange={setPickupAddress}
+                  onDropoffChange={setDropoffAddress}
+                />
+
+                <AdditionalServices
+                  visible={selectedVehicle !== null}
+                  selectedVehicle={selectedVehicle}
+                  onSelectionChange={setSelectedServices}
+                />
               </div>
-
-              <VehicleSelector
-                selectedVehicle={selectedVehicle}
-                onSelect={handleVehicleSelect}
-              />
-
-              <RouteSection
-                pickupAddress={pickupAddress}
-                dropoffAddress={dropoffAddress}
-                onPickupChange={setPickupAddress}
-                onDropoffChange={setDropoffAddress}
-              />
-
-              <AdditionalServices
-                visible={selectedVehicle !== null}
-                selectedVehicle={selectedVehicle}
-                onSelectionChange={setSelectedServices}
-              />
             </div>
           )}
 
           {/* 确认模式 */}
           {currentStep === "confirm" && orderDraft && (
             <div
-              className="h-full overflow-y-scroll subtle-scroll bg-white
+              className="h-full overflow-y-scroll subtle-scroll bg-white relative
                          animate-in fade-in slide-in-from-right-8 duration-300"
             >
               {/* 固定顶部导航: 返回按钮 + 确认订单标题 */}
@@ -298,6 +337,20 @@ export default function OrderPage() {
                 </button>
                 <h1 className="text-base font-semibold text-gray-900 ml-1">确认订单</h1>
               </div>
+
+              {/* 报错栏（固定悬浮在导航栏下方，不占空间） */}
+              {showAlert && (
+                <div className="sticky top-14 z-50 h-0 overflow-visible">
+                  <div className="px-4 lg:px-6 pt-4">
+                    <GlobalAlert
+                      message={alertMessage}
+                      type="error"
+                      visible={showAlert}
+                      onClose={() => setShowAlert(false)}
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* 内容区 */}
               <div className="p-4 lg:p-6" style={{ paddingBottom: "120px" }}>

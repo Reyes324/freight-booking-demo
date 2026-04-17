@@ -134,7 +134,7 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
           <Progress
             percent={((enterprise?.usedCredit ?? 0) / (enterprise?.creditLimit ?? 1) * 100)}
             showInfo={false}
-            strokeColor="#1890ff"
+            strokeColor="#2257D4"
           />
         </div>
 
@@ -394,7 +394,7 @@ export default function EnterpriseDetailPage() {
       <div className="text-center py-20 text-gray-500">
         企业不存在
         <br />
-        <Link href="/admin/enterprises" className="text-blue-600">
+        <Link href="/admin/enterprises" style={{ color: '#2257D4' }}>
           返回列表
         </Link>
       </div>

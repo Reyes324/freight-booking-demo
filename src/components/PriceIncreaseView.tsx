@@ -105,7 +105,7 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
             </div>
             {showError && (
               <p className="mt-2 text-sm text-red-500">
-                不能小于最小加价金额 {MIN_INCREASE} 元
+                不能小于上次的加价金额【{MIN_INCREASE}元】
               </p>
             )}
           </div>

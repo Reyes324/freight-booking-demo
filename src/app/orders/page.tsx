@@ -36,19 +36,41 @@ export default function OrdersPage() {
     return `${diffDays} 天前`;
   };
 
+  // 格式化完整日期
+  const formatFullDate = (date: Date) => {
+    return date.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+  };
+
   // 表格列定义
   const columns: ColumnsType<Order> = [
+    {
+      title: '下单日期',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 120,
+      render: (time) => (
+        <span className="text-sm text-gray-900">{formatFullDate(time)}</span>
+      ),
+    },
+    {
+      title: '订单编号',
+      dataIndex: 'orderId',
+      key: 'orderId',
+      width: 150,
+      render: (orderId) => (
+        <span className="text-sm text-gray-900 whitespace-nowrap">{orderId}</span>
+      ),
+    },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 180,
-      render: (status, record) => (
-        <div className="flex flex-col gap-1 items-start">
-          <OrderStatusTag status={status} />
-          <span className="text-xs text-gray-400">{record.orderId}</span>
-        </div>
-      ),
+      width: 120,
+      render: (status) => <OrderStatusTag status={status} />,
     },
     {
       title: '装货时间',

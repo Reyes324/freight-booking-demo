@@ -199,3 +199,8 @@ nav a:not([data-active="true"]):hover {
 nav a[data-active="true"] {
   color: #2257D4 !important;  /* 品牌色 */
 }
+
+/* 表格标题：一级文案 */
+.ant-table-thead > tr > th {
+  color: #0F1229 !important;  /* Ink/T10 - 一级文案 */
+}

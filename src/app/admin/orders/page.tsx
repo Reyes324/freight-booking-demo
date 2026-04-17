@@ -137,11 +137,11 @@ export default function AdminOrdersPage() {
   };
 
   const statusConfig: Record<string, { color: string }> = {
-    '正在呼叫司机': { color: 'orange' },
-    '前往装货地': { color: 'cyan' },
-    '配送中': { color: 'blue' },
-    '已完成': { color: 'green' },
-    '已取消': { color: 'red' },
+    '正在呼叫司机': { color: '#FF6600' },
+    '前往装货地': { color: '#2257D4' },
+    '配送中': { color: '#2257D4' },
+    '已完成': { color: 'default' },
+    '已取消': { color: '#F23041' },
   };
 
   const columns: ColumnsType<AdminOrder> = [

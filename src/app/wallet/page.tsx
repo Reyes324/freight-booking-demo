@@ -37,7 +37,7 @@ export default function WalletPage() {
       key: 'orderId',
       width: 200,
       render: (orderId?: string) => (
-        <span className="text-sm text-gray-900 font-mono">
+        <span className="text-sm text-gray-900">
           {orderId || '-'}
         </span>
       ),

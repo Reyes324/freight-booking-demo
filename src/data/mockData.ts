@@ -613,6 +613,7 @@ export interface PriceAdjustment {
 // ── Order Interface ──
 export interface Order extends CompleteOrder {
   orderId: string;
+  createdAt: Date; // 下单时间
   status: OrderStatus;
   actualPickupTime?: Date;
   completedTime?: Date;
@@ -631,7 +632,8 @@ export interface Order extends CompleteOrder {
 // ── Mock Orders Data ──
 export const mockOrders: Order[] = [
   {
-    orderId: 'ORD-1710681234567',
+    orderId: 'LLI-20260415-001',
+    createdAt: new Date(),
     status: 'calling_driver',
     pickup: {
       address: '曼谷素坤逸路55号(通罗)',
@@ -661,10 +663,10 @@ export const mockOrders: Order[] = [
     scheduledTime: new Date(),
     driverNote: '',
     paymentMethod: 'credit',
-    createdAt: new Date(),
   },
   {
-    orderId: 'ORD-1710667890123',
+    orderId: 'LLI-20260415-002',
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
     status: 'in_transit',
     pickup: {
       address: '曼谷是隆路中央世界商业中心',
@@ -702,7 +704,6 @@ export const mockOrders: Order[] = [
     contactPhone: '+66 812345678',
     driverNote: '请小心搬运',
     paymentMethod: 'credit',
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
     driver: {
       name: '张师傅',
       phone: '+852 6789 0123',
@@ -712,7 +713,8 @@ export const mockOrders: Order[] = [
     },
   },
   {
-    orderId: 'ORD-1710660000000',
+    orderId: 'LLI-20260415-003',
+    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
     status: 'delivering',
     pickup: {
       address: '曼谷拉差达披色路The Street商场',
@@ -758,7 +760,6 @@ export const mockOrders: Order[] = [
     contactPhone: '+66 812345678',
     driverNote: '有两箱易碎品，请轻拿轻放',
     paymentMethod: 'credit',
-    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
     driver: {
       name: '陈师傅',
       phone: '+852 6111 2233',
@@ -769,7 +770,8 @@ export const mockOrders: Order[] = [
     pickupProofPhoto: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=300&fit=crop',
   },
   {
-    orderId: 'ORD-1710654567890',
+    orderId: 'LLI-20260414-004',
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
     status: 'completed',
     pickup: {
       address: '曼谷Emporium购物中心',
@@ -799,7 +801,6 @@ export const mockOrders: Order[] = [
     contactPhone: '+66 812345678',
     driverNote: '',
     paymentMethod: 'credit',
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
     driver: {
       name: '李师傅',
       phone: '+852 6890 1234',
@@ -810,7 +811,8 @@ export const mockOrders: Order[] = [
     pickupProofPhoto: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=300&fit=crop',
   },
   {
-    orderId: 'ORD-1710641234567',
+    orderId: 'LLI-20260413-005',
+    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
     status: 'cancelled',
     pickup: {
       address: '曼谷Mega Bangna购物中心',
@@ -839,7 +841,6 @@ export const mockOrders: Order[] = [
     cancelledTime: new Date(Date.now() - 47.5 * 60 * 60 * 1000),
     driverNote: '',
     paymentMethod: 'credit',
-    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
   },
 ];
 
@@ -876,62 +877,62 @@ export const mockWalletBalance: WalletBalance = {
 // Mock 交易记录（金额为泰铢）
 export const mockTransactions: Transaction[] = [
   // 最近一周
-  { id: 'TXN-20260413-001', type: 'payment', date: new Date('2026-04-13T09:15:00'), orderId: 'ORD-20260413-001', amount: -240.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260412-002', type: 'payment', date: new Date('2026-04-12T14:30:00'), orderId: 'ORD-20260412-002', amount: -320.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260412-003', type: 'payment', date: new Date('2026-04-12T10:20:00'), orderId: 'ORD-20260412-003', amount: -185.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260411-004', type: 'payment', date: new Date('2026-04-11T16:45:00'), orderId: 'ORD-20260411-004', amount: -450.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260411-005', type: 'payment', date: new Date('2026-04-11T11:30:00'), orderId: 'ORD-20260411-005', amount: -275.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260413-001', type: 'payment', date: new Date('2026-04-13T09:15:00'), orderId: 'LLI-20260413-001', amount: -240.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260412-002', type: 'payment', date: new Date('2026-04-12T14:30:00'), orderId: 'LLI-20260412-002', amount: -320.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260412-003', type: 'payment', date: new Date('2026-04-12T10:20:00'), orderId: 'LLI-20260412-003', amount: -185.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260411-004', type: 'payment', date: new Date('2026-04-11T16:45:00'), orderId: 'LLI-20260411-004', amount: -450.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260411-005', type: 'payment', date: new Date('2026-04-11T11:30:00'), orderId: 'LLI-20260411-005', amount: -275.00, status: 'success', description: '订单支付' },
   { id: 'TXN-20260410-006', type: 'topup', date: new Date('2026-04-10T10:00:00'), orderId: undefined, amount: 5000.00, status: 'success', description: '钱包充值' },
-  { id: 'TXN-20260410-007', type: 'payment', date: new Date('2026-04-10T15:20:00'), orderId: 'ORD-20260410-007', amount: -360.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260409-008', type: 'payment', date: new Date('2026-04-09T13:40:00'), orderId: 'ORD-20260409-008', amount: -290.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260409-009', type: 'payment', date: new Date('2026-04-09T09:50:00'), orderId: 'ORD-20260409-009', amount: -220.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260408-010', type: 'payment', date: new Date('2026-04-08T16:10:00'), orderId: 'ORD-20260408-010', amount: -340.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260408-011', type: 'refund', date: new Date('2026-04-08T14:30:00'), orderId: 'ORD-20260407-012', amount: 220.00, status: 'success', description: '订单退款' },
-  { id: 'TXN-20260407-012', type: 'payment', date: new Date('2026-04-07T11:25:00'), orderId: 'ORD-20260407-012', amount: -220.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260410-007', type: 'payment', date: new Date('2026-04-10T15:20:00'), orderId: 'LLI-20260410-007', amount: -360.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260409-008', type: 'payment', date: new Date('2026-04-09T13:40:00'), orderId: 'LLI-20260409-008', amount: -290.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260409-009', type: 'payment', date: new Date('2026-04-09T09:50:00'), orderId: 'LLI-20260409-009', amount: -220.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260408-010', type: 'payment', date: new Date('2026-04-08T16:10:00'), orderId: 'LLI-20260408-010', amount: -340.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260408-011', type: 'refund', date: new Date('2026-04-08T14:30:00'), orderId: 'LLI-20260407-012', amount: 220.00, status: 'success', description: '订单退款' },
+  { id: 'TXN-20260407-012', type: 'payment', date: new Date('2026-04-07T11:25:00'), orderId: 'LLI-20260407-012', amount: -220.00, status: 'success', description: '订单支付' },
 
   // 上周
-  { id: 'TXN-20260406-013', type: 'payment', date: new Date('2026-04-06T10:30:00'), orderId: 'ORD-20260406-013', amount: -295.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260405-014', type: 'payment', date: new Date('2026-04-05T14:15:00'), orderId: 'ORD-20260405-014', amount: -380.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260405-015', type: 'payment', date: new Date('2026-04-05T09:40:00'), orderId: 'ORD-20260405-015', amount: -265.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260404-016', type: 'payment', date: new Date('2026-04-04T15:50:00'), orderId: 'ORD-20260404-016', amount: -410.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260404-017', type: 'payment', date: new Date('2026-04-04T11:20:00'), orderId: 'ORD-20260404-017', amount: -230.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260406-013', type: 'payment', date: new Date('2026-04-06T10:30:00'), orderId: 'LLI-20260406-013', amount: -295.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260405-014', type: 'payment', date: new Date('2026-04-05T14:15:00'), orderId: 'LLI-20260405-014', amount: -380.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260405-015', type: 'payment', date: new Date('2026-04-05T09:40:00'), orderId: 'LLI-20260405-015', amount: -265.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260404-016', type: 'payment', date: new Date('2026-04-04T15:50:00'), orderId: 'LLI-20260404-016', amount: -410.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260404-017', type: 'payment', date: new Date('2026-04-04T11:20:00'), orderId: 'LLI-20260404-017', amount: -230.00, status: 'success', description: '订单支付' },
   { id: 'TXN-20260403-018', type: 'topup', date: new Date('2026-04-03T10:00:00'), orderId: undefined, amount: 3000.00, status: 'success', description: '钱包充值' },
-  { id: 'TXN-20260403-019', type: 'payment', date: new Date('2026-04-03T13:30:00'), orderId: 'ORD-20260403-019', amount: -325.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260402-020', type: 'payment', date: new Date('2026-04-02T16:45:00'), orderId: 'ORD-20260402-020', amount: -270.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260402-021', type: 'payment', date: new Date('2026-04-02T10:15:00'), orderId: 'ORD-20260402-021', amount: -355.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260401-022', type: 'payment', date: new Date('2026-04-01T14:20:00'), orderId: 'ORD-20260401-022', amount: -290.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260401-023', type: 'payment', date: new Date('2026-04-01T09:30:00'), orderId: 'ORD-20260401-023', amount: -245.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260403-019', type: 'payment', date: new Date('2026-04-03T13:30:00'), orderId: 'LLI-20260403-019', amount: -325.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260402-020', type: 'payment', date: new Date('2026-04-02T16:45:00'), orderId: 'LLI-20260402-020', amount: -270.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260402-021', type: 'payment', date: new Date('2026-04-02T10:15:00'), orderId: 'LLI-20260402-021', amount: -355.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260401-022', type: 'payment', date: new Date('2026-04-01T14:20:00'), orderId: 'LLI-20260401-022', amount: -290.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260401-023', type: 'payment', date: new Date('2026-04-01T09:30:00'), orderId: 'LLI-20260401-023', amount: -245.00, status: 'success', description: '订单支付' },
 
   // 上上周
-  { id: 'TXN-20260331-024', type: 'payment', date: new Date('2026-03-31T15:40:00'), orderId: 'ORD-20260331-024', amount: -320.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260331-025', type: 'payment', date: new Date('2026-03-31T11:10:00'), orderId: 'ORD-20260331-025', amount: -275.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260330-026', type: 'payment', date: new Date('2026-03-30T13:25:00'), orderId: 'ORD-20260330-026', amount: -395.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260329-027', type: 'payment', date: new Date('2026-03-29T10:50:00'), orderId: 'ORD-20260329-027', amount: -260.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260328-028', type: 'payment', date: new Date('2026-03-28T16:15:00'), orderId: 'ORD-20260328-028', amount: -340.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260328-029', type: 'refund', date: new Date('2026-03-28T14:00:00'), orderId: 'ORD-20260327-030', amount: 285.00, status: 'success', description: '订单退款' },
-  { id: 'TXN-20260327-030', type: 'payment', date: new Date('2026-03-27T11:40:00'), orderId: 'ORD-20260327-030', amount: -285.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260327-031', type: 'payment', date: new Date('2026-03-27T09:20:00'), orderId: 'ORD-20260327-031', amount: -310.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260331-024', type: 'payment', date: new Date('2026-03-31T15:40:00'), orderId: 'LLI-20260331-024', amount: -320.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260331-025', type: 'payment', date: new Date('2026-03-31T11:10:00'), orderId: 'LLI-20260331-025', amount: -275.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260330-026', type: 'payment', date: new Date('2026-03-30T13:25:00'), orderId: 'LLI-20260330-026', amount: -395.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260329-027', type: 'payment', date: new Date('2026-03-29T10:50:00'), orderId: 'LLI-20260329-027', amount: -260.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260328-028', type: 'payment', date: new Date('2026-03-28T16:15:00'), orderId: 'LLI-20260328-028', amount: -340.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260328-029', type: 'refund', date: new Date('2026-03-28T14:00:00'), orderId: 'LLI-20260327-030', amount: 285.00, status: 'success', description: '订单退款' },
+  { id: 'TXN-20260327-030', type: 'payment', date: new Date('2026-03-27T11:40:00'), orderId: 'LLI-20260327-030', amount: -285.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260327-031', type: 'payment', date: new Date('2026-03-27T09:20:00'), orderId: 'LLI-20260327-031', amount: -310.00, status: 'success', description: '订单支付' },
   { id: 'TXN-20260326-032', type: 'topup', date: new Date('2026-03-26T10:00:00'), orderId: undefined, amount: 4000.00, status: 'success', description: '钱包充值' },
-  { id: 'TXN-20260326-033', type: 'payment', date: new Date('2026-03-26T15:30:00'), orderId: 'ORD-20260326-033', amount: -370.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260325-034', type: 'payment', date: new Date('2026-03-25T13:45:00'), orderId: 'ORD-20260325-034', amount: -255.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260325-035', type: 'payment', date: new Date('2026-03-25T10:10:00'), orderId: 'ORD-20260325-035', amount: -425.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260324-036', type: 'payment', date: new Date('2026-03-24T16:20:00'), orderId: 'ORD-20260324-036', amount: -295.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260324-037', type: 'payment', date: new Date('2026-03-24T11:35:00'), orderId: 'ORD-20260324-037', amount: -330.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260326-033', type: 'payment', date: new Date('2026-03-26T15:30:00'), orderId: 'LLI-20260326-033', amount: -370.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260325-034', type: 'payment', date: new Date('2026-03-25T13:45:00'), orderId: 'LLI-20260325-034', amount: -255.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260325-035', type: 'payment', date: new Date('2026-03-25T10:10:00'), orderId: 'LLI-20260325-035', amount: -425.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260324-036', type: 'payment', date: new Date('2026-03-24T16:20:00'), orderId: 'LLI-20260324-036', amount: -295.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260324-037', type: 'payment', date: new Date('2026-03-24T11:35:00'), orderId: 'LLI-20260324-037', amount: -330.00, status: 'success', description: '订单支付' },
 
   // 更早的记录
-  { id: 'TXN-20260323-038', type: 'payment', date: new Date('2026-03-23T14:50:00'), orderId: 'ORD-20260323-038', amount: -280.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260322-039', type: 'payment', date: new Date('2026-03-22T10:25:00'), orderId: 'ORD-20260322-039', amount: -350.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260321-040', type: 'payment', date: new Date('2026-03-21T15:15:00'), orderId: 'ORD-20260321-040', amount: -270.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260323-038', type: 'payment', date: new Date('2026-03-23T14:50:00'), orderId: 'LLI-20260323-038', amount: -280.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260322-039', type: 'payment', date: new Date('2026-03-22T10:25:00'), orderId: 'LLI-20260322-039', amount: -350.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260321-040', type: 'payment', date: new Date('2026-03-21T15:15:00'), orderId: 'LLI-20260321-040', amount: -270.00, status: 'success', description: '订单支付' },
   { id: 'TXN-20260320-041', type: 'topup', date: new Date('2026-03-20T10:00:00'), orderId: undefined, amount: 3500.00, status: 'success', description: '钱包充值' },
-  { id: 'TXN-20260320-042', type: 'payment', date: new Date('2026-03-20T13:40:00'), orderId: 'ORD-20260320-042', amount: -315.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260319-043', type: 'payment', date: new Date('2026-03-19T11:20:00'), orderId: 'ORD-20260319-043', amount: -390.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260318-044', type: 'payment', date: new Date('2026-03-18T16:30:00'), orderId: 'ORD-20260318-044', amount: -265.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260318-045', type: 'payment', date: new Date('2026-03-18T09:45:00'), orderId: 'ORD-20260318-045', amount: -335.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260317-046', type: 'payment', date: new Date('2026-03-17T14:10:00'), orderId: 'ORD-20260317-046', amount: -405.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260317-047', type: 'refund', date: new Date('2026-03-17T10:30:00'), orderId: 'ORD-20260316-048', amount: 240.00, status: 'success', description: '订单退款' },
-  { id: 'TXN-20260316-048', type: 'payment', date: new Date('2026-03-16T15:50:00'), orderId: 'ORD-20260316-048', amount: -240.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260315-049', type: 'payment', date: new Date('2026-03-15T11:25:00'), orderId: 'ORD-20260315-049', amount: -300.00, status: 'success', description: '订单支付' },
-  { id: 'TXN-20260315-050', type: 'payment', date: new Date('2026-03-15T09:15:00'), orderId: 'ORD-20260315-050', amount: -275.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260320-042', type: 'payment', date: new Date('2026-03-20T13:40:00'), orderId: 'LLI-20260320-042', amount: -315.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260319-043', type: 'payment', date: new Date('2026-03-19T11:20:00'), orderId: 'LLI-20260319-043', amount: -390.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260318-044', type: 'payment', date: new Date('2026-03-18T16:30:00'), orderId: 'LLI-20260318-044', amount: -265.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260318-045', type: 'payment', date: new Date('2026-03-18T09:45:00'), orderId: 'LLI-20260318-045', amount: -335.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260317-046', type: 'payment', date: new Date('2026-03-17T14:10:00'), orderId: 'LLI-20260317-046', amount: -405.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260317-047', type: 'refund', date: new Date('2026-03-17T10:30:00'), orderId: 'LLI-20260316-048', amount: 240.00, status: 'success', description: '订单退款' },
+  { id: 'TXN-20260316-048', type: 'payment', date: new Date('2026-03-16T15:50:00'), orderId: 'LLI-20260316-048', amount: -240.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260315-049', type: 'payment', date: new Date('2026-03-15T11:25:00'), orderId: 'LLI-20260315-049', amount: -300.00, status: 'success', description: '订单支付' },
+  { id: 'TXN-20260315-050', type: 'payment', date: new Date('2026-03-15T09:15:00'), orderId: 'LLI-20260315-050', amount: -275.00, status: 'success', description: '订单支付' },
 ];
 
 // 用户资料

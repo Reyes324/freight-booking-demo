@@ -40,10 +40,7 @@ export default function TransactionsPage() {
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(
-        (t) =>
-          t.enterpriseName.toLowerCase().includes(q) ||
-          (t.orderId && t.orderId.toLowerCase().includes(q)) ||
-          t.description.includes(q)
+        (t) => t.orderId && t.orderId.toLowerCase().includes(q)
       );
     }
 
@@ -117,16 +114,16 @@ export default function TransactionsPage() {
       {/* Filters */}
       <div className="flex items-center gap-3 mb-6 flex-wrap">
         <Input
-          size="large"
-          placeholder="搜索企业、订单号"
+
+          placeholder="搜索订单号"
           prefix={<SearchOutlined className="text-gray-400" />}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           allowClear
-          style={{ width: 280 }}
+          style={{ width: 200 }}
         />
         <Select
-          size="large"
+
           placeholder="筛选企业"
           allowClear
           value={enterpriseFilter}
@@ -135,7 +132,7 @@ export default function TransactionsPage() {
           options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
         />
         <Select
-          size="large"
+
           placeholder="筛选类型"
           allowClear
           value={typeFilter}
@@ -143,7 +140,7 @@ export default function TransactionsPage() {
           style={{ width: 140 }}
           options={transactionTypes.map((t) => ({ value: t, label: t }))}
         />
-        <RangePicker size="large" />
+        <RangePicker />
       </div>
 
       {/* Alert提示 */}

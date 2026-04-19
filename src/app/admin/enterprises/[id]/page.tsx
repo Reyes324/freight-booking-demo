@@ -160,7 +160,7 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
       {/* Transactions */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-base font-medium text-gray-900">交易明细</h3>
-        <RangePicker size="large" />
+        <RangePicker />
       </div>
 
       {/* Alert提示 */}
@@ -349,7 +349,6 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
     <div>
       <div className="flex items-center justify-between mb-6">
         <Input
-          size="large"
           placeholder="搜索订单"
           prefix={<SearchOutlined className="text-gray-400" />}
           allowClear

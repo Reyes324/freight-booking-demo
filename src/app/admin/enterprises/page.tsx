@@ -15,7 +15,7 @@ export default function EnterprisesPage() {
     if (!search.trim()) return enterprises;
     const q = search.toLowerCase();
     return enterprises.filter(
-      (e) => e.name.toLowerCase().includes(q) || e.phone.includes(q) || e.id.toLowerCase().includes(q)
+      (e) => e.id.toLowerCase().includes(q) || e.name.toLowerCase().includes(q)
     );
   }, [search]);
 
@@ -121,7 +121,7 @@ export default function EnterprisesPage() {
       {/* Search */}
       <div className="mb-4">
         <Input
-          placeholder="搜索企业ID、名称或手机号"
+          placeholder="搜索企业ID或名称"
           prefix={<SearchOutlined className="text-gray-400" />}
           value={search}
           onChange={(e) => setSearch(e.target.value)}

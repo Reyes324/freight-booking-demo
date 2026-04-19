@@ -190,7 +190,6 @@ export default function AdministratorsPage() {
       {/* 搜索框 */}
       <div className="mb-6">
         <Input
-          size="large"
           placeholder="搜索账号或姓名"
           prefix={<SearchOutlined className="text-gray-400" />}
           value={search}

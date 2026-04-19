@@ -185,18 +185,26 @@ body {
   解决：针对性覆盖导航栏的链接样式
 */
 
-/* 导航栏未选中链接：保持灰色 */
-nav a:not([data-active="true"]) {
+/* 前端导航栏未选中链接：保持灰色 */
+nav:not(.admin-sidebar) a:not([data-active="true"]) {
   color: #6B7280 !important;  /* text-gray-500 */
 }
 
-nav a:not([data-active="true"]):hover {
+nav:not(.admin-sidebar) a:not([data-active="true"]):hover {
   color: #111827 !important;  /* text-gray-900 */
 }
 
-/* 导航栏选中链接：品牌色 */
-nav a[data-active="true"] {
+/* 前端导航栏选中链接：品牌色 */
+nav:not(.admin-sidebar) a[data-active="true"] {
   color: #2257D4 !important;  /* 品牌色 */
+}
+
+/* 后台侧边栏：未选中灰色，选中白色 */
+nav.admin-sidebar a {
+  color: #9ca3af !important;
+}
+nav.admin-sidebar a[data-active="true"] {
+  color: #ffffff !important;
 }
 
 /* 表格标题：一级文案 */

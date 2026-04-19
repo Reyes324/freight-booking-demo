@@ -52,7 +52,8 @@ function FeeTooltip({ breakdown, currency }: { breakdown: FeeBreakdown; currency
 }
 
 export default function AdminOrdersPage() {
-  const [search, setSearch] = useState('');
+  const [orderNoSearch, setOrderNoSearch] = useState('');
+  const [addressSearch, setAddressSearch] = useState('');
   const [enterpriseFilter, setEnterpriseFilter] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [countryFilter, setCountryFilter] = useState<string | null>(null);
@@ -79,22 +80,25 @@ export default function AdminOrdersPage() {
     if (supplierFilter) {
       result = result.filter((o) => o.supplierCode === supplierFilter);
     }
-    if (search.trim()) {
-      const q = search.toLowerCase();
+    if (orderNoSearch.trim()) {
+      const q = orderNoSearch.toLowerCase();
       result = result.filter(
         (o) =>
           o.orderId.toLowerCase().includes(q) ||
-          o.supplierOrderId.toLowerCase().includes(q) ||
-          o.supplierCode.toLowerCase().includes(q) ||
+          o.supplierOrderId.toLowerCase().includes(q)
+      );
+    }
+    if (addressSearch.trim()) {
+      const q = addressSearch.toLowerCase();
+      result = result.filter(
+        (o) =>
           o.pickupAddress.toLowerCase().includes(q) ||
-          o.dropoffAddress.toLowerCase().includes(q) ||
-          o.driverInfo.toLowerCase().includes(q) ||
-          enterpriseMap[o.enterpriseId]?.toLowerCase().includes(q)
+          o.dropoffAddress.toLowerCase().includes(q)
       );
     }
 
     return result;
-  }, [search, enterpriseFilter, statusFilter, countryFilter, supplierFilter, enterpriseMap]);
+  }, [orderNoSearch, addressSearch, enterpriseFilter, statusFilter, countryFilter, supplierFilter, enterpriseMap]);
 
   const handleExport = () => {
     const data = filtered.map((o) => ({
@@ -297,16 +301,25 @@ export default function AdminOrdersPage() {
       {/* Filters */}
       <div className="flex items-center gap-3 mb-6 flex-wrap">
         <Input
-          size="large"
-          placeholder="搜索单号、地址、司机、客户、供应商"
+
+          placeholder="搜索单号"
           prefix={<SearchOutlined className="text-gray-400" />}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={orderNoSearch}
+          onChange={(e) => setOrderNoSearch(e.target.value)}
           allowClear
-          style={{ width: 360 }}
+          style={{ width: 200 }}
+        />
+        <Input
+
+          placeholder="搜索地址"
+          prefix={<SearchOutlined className="text-gray-400" />}
+          value={addressSearch}
+          onChange={(e) => setAddressSearch(e.target.value)}
+          allowClear
+          style={{ width: 200 }}
         />
         <Select
-          size="large"
+
           placeholder="企业客户"
           allowClear
           value={enterpriseFilter}
@@ -315,7 +328,7 @@ export default function AdminOrdersPage() {
           options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
         />
         <Select
-          size="large"
+
           placeholder="供应商"
           allowClear
           value={supplierFilter}
@@ -324,7 +337,7 @@ export default function AdminOrdersPage() {
           options={suppliers.map((s) => ({ value: s, label: s }))}
         />
         <Select
-          size="large"
+
           placeholder="国家"
           allowClear
           value={countryFilter}
@@ -333,7 +346,7 @@ export default function AdminOrdersPage() {
           options={countries.map((c) => ({ value: c, label: c }))}
         />
         <Select
-          size="large"
+
           placeholder="状态"
           allowClear
           value={statusFilter}

@@ -105,17 +105,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Menu */}
-        <nav className="flex-1 py-4 px-3">
+        <nav className="admin-sidebar flex-1 py-4 px-3">
           {businessMenuItems.map((item) => {
             const isActive = pathname.startsWith(item.href);
             return (
               <Link
                 key={item.key}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors no-underline ${
-                  isActive ? 'bg-gray-800' : 'hover:bg-gray-800'
-                }`}
-                style={{ color: isActive ? '#ffffff' : '#9ca3af' }}
+                className="flex items-center gap-3 px-3 py-2.5 text-sm no-underline"
+                data-active={isActive ? 'true' : undefined}
               >
                 {item.icon}
                 {item.label}
@@ -132,10 +130,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.key}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors no-underline ${
-                  isActive ? 'bg-gray-800' : 'hover:bg-gray-800'
-                }`}
-                style={{ color: isActive ? '#ffffff' : '#9ca3af' }}
+                className="flex items-center gap-3 px-3 py-2.5 text-sm no-underline"
+                data-active={isActive ? 'true' : undefined}
               >
                 {item.icon}
                 {item.label}

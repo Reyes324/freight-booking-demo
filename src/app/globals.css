@@ -212,11 +212,18 @@ nav.admin-sidebar a[data-active="true"] {
   color: #0F1229 !important;  /* Ink/T10 - 一级文案 */
 }
 
-/* 所有链接统一使用品牌蓝色 */
-a:not([data-active]) {
+/* Ant Design 链接颜色：统一使用品牌蓝色 */
+.ant-table a,
+.ant-table-tbody a,
+a.ant-typography,
+main a:not([data-active]) {
   color: #2257D4 !important;  /* 品牌蓝色 */
+  text-decoration: none;
 }
 
-a:not([data-active]):hover {
+.ant-table a:hover,
+.ant-table-tbody a:hover,
+a.ant-typography:hover,
+main a:not([data-active]):hover {
   color: #1c47ac !important;  /* 品牌蓝色-hover (blue-700) */
 }

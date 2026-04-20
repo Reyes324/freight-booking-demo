@@ -11,21 +11,21 @@ export function middleware(request: NextRequest) {
 
   // 域名路由：后台域名访问根路径 → 跳转到后台登录页
   if (hostname.includes('lli-freight-admin') && pathname === '/') {
-    return NextResponse.redirect(new URL('/admin/login', request.url));
+    return NextResponse.redirect(new URL('/admin-login', request.url));
   }
 
   // 域名路由：后台域名访问非后台路径 → 跳转到后台登录页
   if (hostname.includes('lli-freight-admin') && !pathname.startsWith('/admin')) {
-    return NextResponse.redirect(new URL('/admin/login', request.url));
+    return NextResponse.redirect(new URL('/admin-login', request.url));
   }
 
   // 未登录访问后台管理系统 → 跳转到后台登录页
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login' && !isLoggedIn) {
-    return NextResponse.redirect(new URL('/admin/login', request.url));
+  if (pathname.startsWith('/admin') && pathname !== '/admin-login' && !isLoggedIn) {
+    return NextResponse.redirect(new URL('/admin-login', request.url));
   }
 
   // 已登录访问后台登录页 → 跳转到后台首页
-  if (pathname === '/admin/login' && isLoggedIn) {
+  if (pathname === '/admin-login' && isLoggedIn) {
     return NextResponse.redirect(new URL('/admin/orders', request.url));
   }
 

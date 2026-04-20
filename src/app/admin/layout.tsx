@@ -74,7 +74,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       cancelText: '取消',
       onOk() {
         logout();
-        router.push('/admin/login');
+        router.push('/admin-login');
       },
     });
   };

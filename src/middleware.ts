@@ -14,10 +14,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
-  // 域名路由：用户端域名访问后台路径 → 跳转到后台域名
-  if (hostname.includes('cozy-flan') && pathname.startsWith('/admin')) {
-    const adminUrl = request.url.replace('cozy-flan-4c4d79.netlify.app', 'lli-freight-admin.netlify.app');
-    return NextResponse.redirect(adminUrl);
+  // 域名路由：后台域名访问非后台路径 → 跳转到后台登录页
+  if (hostname.includes('lli-freight-admin') && !pathname.startsWith('/admin')) {
+    return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
   // 未登录访问后台管理系统 → 跳转到后台登录页

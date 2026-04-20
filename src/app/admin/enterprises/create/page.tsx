@@ -67,7 +67,7 @@ export default function CreateEnterprisePage() {
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          initialValues={{ countryCode: '+60', premiumRate: 1.15 }}
+          initialValues={{ countryCode: '+60', premiumRate: 1.00 }}
         >
           <Form.Item
             label="企业名称"

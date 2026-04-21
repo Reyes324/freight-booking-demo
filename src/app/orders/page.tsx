@@ -14,46 +14,25 @@ export default function OrdersPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  // 格式化时间
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('zh-HK', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  // 格式化日期
-  const formatDate = (date: Date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const orderDate = new Date(date);
-    orderDate.setHours(0, 0, 0, 0);
-
-    const diffDays = Math.floor((today.getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) return '今天';
-    if (diffDays === 1) return '昨天';
-    return `${diffDays} 天前`;
-  };
-
-  // 格式化完整日期
-  const formatFullDate = (date: Date) => {
-    return date.toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
+  // 格式化完整日期时间（如 2026-03-20 14:30）
+  const formatDateTime = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
   // 表格列定义
   const columns: ColumnsType<Order> = [
     {
-      title: '下单日期',
+      title: '下单时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 120,
+      width: 150,
       render: (time) => (
-        <span className="text-sm text-gray-900">{formatFullDate(time)}</span>
+        <span className="text-sm text-gray-900">{formatDateTime(time)}</span>
       ),
     },
     {
@@ -76,12 +55,9 @@ export default function OrdersPage() {
       title: '装货时间',
       dataIndex: 'scheduledTime',
       key: 'scheduledTime',
-      width: 120,
+      width: 150,
       render: (time) => (
-        <div>
-          <p className="text-sm text-gray-900">{formatTime(time)}</p>
-          <p className="text-xs text-gray-400">{formatDate(time)}</p>
-        </div>
+        <span className="text-sm text-gray-900">{formatDateTime(time)}</span>
       ),
     },
     {

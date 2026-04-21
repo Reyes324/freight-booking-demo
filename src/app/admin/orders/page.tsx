@@ -150,7 +150,7 @@ export default function AdminOrdersPage() {
 
   const columns: ColumnsType<AdminOrder> = [
     {
-      title: '下单日期',
+      title: '下单时间',
       dataIndex: 'orderDate',
       key: 'orderDate',
       width: 110,

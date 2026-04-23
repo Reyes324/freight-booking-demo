@@ -22,7 +22,7 @@ export default function PaymentMethodSelector() {
               余额: <span className="font-price font-semibold text-gray-900">CNY {balance.toLocaleString('zh-CN')}</span>
             </p>
             <p className="text-xs text-gray-500 leading-relaxed">
-              订单人民币金额按今日参考汇率估算，仅用于额度控制。实际结算以每月月末汇率为准。
+              人民币金额按今日参考汇率估算，仅用于额度控制。实际结算以每月月末汇率为准。
             </p>
           </div>
           <div className="text-xs text-gray-500 bg-white border border-gray-200 px-2 py-1 rounded flex-shrink-0">

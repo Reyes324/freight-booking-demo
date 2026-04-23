@@ -91,7 +91,7 @@ export default function WalletPage() {
               <span className="text-lg font-normal text-gray-400"> / CNY {mockWalletBalance.creditLimit.toLocaleString('zh-CN')}</span>
             </p>
             <p className="text-xs text-gray-500 mt-3 leading-relaxed">
-              当月订单按每日参考汇率估算扣减，实际金额以月末挂牌汇率结算为准 · 当日参考汇率：1 CNY = 5.00 THB
+              页面人民币金额按订单发生当日参考汇率估算，仅用于额度控制。实际结算以每月月末汇率为准。
             </p>
           </div>
         </div>

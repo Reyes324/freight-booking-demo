@@ -11,6 +11,7 @@ export interface Enterprise {
   creditLimit: number;      // 人民币金额
   usedCredit: number;       // 人民币金额
   createdAt: string;
+  status: 'active' | 'disabled';
 }
 
 export interface CreditTransaction {
@@ -129,6 +130,7 @@ export const enterprises: Enterprise[] = [
     creditLimit: 50000,
     usedCredit: 11500,
     createdAt: '2025-11-01',
+    status: 'active',
   },
   {
     id: 'E002',
@@ -143,6 +145,7 @@ export const enterprises: Enterprise[] = [
     creditLimit: 200000,
     usedCredit: 45000,
     createdAt: '2025-12-15',
+    status: 'active',
   },
   {
     id: 'E003',
@@ -157,6 +160,7 @@ export const enterprises: Enterprise[] = [
     creditLimit: 30000,
     usedCredit: 12800,
     createdAt: '2026-01-08',
+    status: 'active',
   },
   {
     id: 'E004',
@@ -171,6 +175,7 @@ export const enterprises: Enterprise[] = [
     creditLimit: 150000,
     usedCredit: 32000,
     createdAt: '2026-02-20',
+    status: 'active',
   },
 ];
 

@@ -2,22 +2,47 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Table, Input, Button, Card } from 'antd';
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { Table, Input, Button, Card, Modal, message, Switch } from 'antd';
+import { SearchOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { enterprises, type Enterprise } from '@/data/adminMockData';
+import { enterprises as initialEnterprises, type Enterprise } from '@/data/adminMockData';
 
 export default function EnterprisesPage() {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [enterpriseList, setEnterpriseList] = useState<Enterprise[]>(initialEnterprises);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return enterprises;
+    if (!search.trim()) return enterpriseList;
     const q = search.toLowerCase();
-    return enterprises.filter(
+    return enterpriseList.filter(
       (e) => e.id.toLowerCase().includes(q) || e.name.toLowerCase().includes(q)
     );
-  }, [search]);
+  }, [search, enterpriseList]);
+
+  const handleDisable = (id: string, name: string) => {
+    Modal.confirm({
+      title: '确认停用企业账号？',
+      icon: <ExclamationCircleOutlined />,
+      content: `确定要停用企业 "${name}" 吗？停用后该企业将无法登录系统。`,
+      okText: '确认停用',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        setEnterpriseList((prev) =>
+          prev.map((e) => (e.id === id ? { ...e, status: 'disabled' } : e))
+        );
+        message.success(`已停用企业账号 "${name}"`);
+      },
+    });
+  };
+
+  const handleEnable = (id: string, name: string) => {
+    setEnterpriseList((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, status: 'active' } : e))
+    );
+    message.success(`已启用企业账号 "${name}"`);
+  };
 
   const columns: ColumnsType<Enterprise> = [
     {
@@ -79,6 +104,24 @@ export default function EnterprisesPage() {
       key: 'createdAt',
       width: 110,
       render: (date: string) => <span className="whitespace-nowrap">{date}</span>,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 80,
+      render: (status: string, record: Enterprise) => (
+        <Switch
+          checked={status === 'active'}
+          onChange={(checked) => {
+            if (checked) {
+              handleEnable(record.id, record.name);
+            } else {
+              handleDisable(record.id, record.name);
+            }
+          }}
+        />
+      ),
     },
     {
       title: '操作',

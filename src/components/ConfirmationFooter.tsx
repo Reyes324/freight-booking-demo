@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { Popover } from "antd";
+import { useT } from "@/hooks/useT";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { vehicleServicesMap, isServiceGroup, currencyConfig } from "@/data/mockData";
 import type { OrderDraft } from "@/data/mockData";
@@ -19,6 +20,8 @@ export default function ConfirmationFooter({
   onConfirm,
   isSubmitting,
 }: ConfirmationFooterProps) {
+  const t = useT();
+
   // 动态计算费用明细
   const priceBreakdownItems = useMemo(() => {
     if (!orderDraft) return [];
@@ -28,7 +31,7 @@ export default function ConfirmationFooter({
 
     // 1. 运费（基础价格）
     items.push({
-      label: "运费",
+      label: t.confirmationFooter.deliveryFee,
       price: orderDraft.basePrice,
     });
 
@@ -60,14 +63,14 @@ export default function ConfirmationFooter({
       // 如果有额外服务，添加总和项
       if (additionalServicesTotal > 0) {
         items.push({
-          label: "额外服务",
+          label: t.confirmationFooter.addons,
           price: additionalServicesTotal,
         });
       }
     }
 
     return items;
-  }, [orderDraft]);
+  }, [orderDraft, t]);
 
   // 费用明细内容
   const priceBreakdown = (
@@ -81,7 +84,7 @@ export default function ConfirmationFooter({
         </div>
       ))}
       {priceBreakdownItems.length === 0 && (
-        <div className="text-sm text-gray-400 text-center py-2">暂无费用明细</div>
+        <div className="text-sm text-gray-400 text-center py-2">{t.confirmationFooter.noPriceBreakdown}</div>
       )}
     </div>
   );
@@ -97,14 +100,14 @@ export default function ConfirmationFooter({
       <div className="flex items-center gap-4">
         {/* 总价显示 */}
         <div className="flex-1">
-          <p className="text-xs text-gray-500 mb-0.5">总价</p>
+          <p className="text-xs text-gray-500 mb-0.5">{t.confirmationFooter.total}</p>
           <div className="flex items-center gap-2">
             <p className="font-price text-2xl font-bold text-gray-900">
               ฿{totalPrice.toFixed(0)}
             </p>
             <Popover
               content={priceBreakdown}
-              title="费用明细"
+              title={t.confirmationFooter.priceBreakdownTitle}
               trigger="click"
               placement="top"
             >
@@ -123,7 +126,7 @@ export default function ConfirmationFooter({
                    disabled:opacity-50 disabled:cursor-not-allowed
                    hover:shadow-lg active:scale-[0.98] cursor-pointer"
         >
-          <span>{isSubmitting ? '提交中...' : '确认叫车'}</span>
+          <span>{isSubmitting ? t.confirmationFooter.submitting : t.confirmationFooter.confirmBooking}</span>
           {!isSubmitting && (
             <svg
               className="w-4 h-4"

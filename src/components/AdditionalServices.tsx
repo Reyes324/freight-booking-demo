@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useT } from "@/hooks/useT";
 import {
   vehicleServicesMap,
   currencyConfig,
@@ -50,6 +51,8 @@ export default function AdditionalServices({
       });
     }
   }, [selectedItems, selectedGroupItems, onSelectionChange]);
+
+  const t = useT();
 
   if (!visible || !selectedVehicle) return null;
 
@@ -212,7 +215,7 @@ export default function AdditionalServices({
             </span>
             {group.maxSelect && (
               <span className="text-xs text-gray-400 ml-2">
-                最多选择 {group.maxSelect} 个
+                {t.additionalServices.maxSelect(group.maxSelect)}
               </span>
             )}
           </div>
@@ -244,7 +247,7 @@ export default function AdditionalServices({
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-900 mb-3">附加服务</h2>
+      <h2 className="text-sm font-semibold text-gray-900 mb-3">{t.additionalServices.title}</h2>
 
       <div className="space-y-0 border border-gray-200/60 rounded-xl overflow-hidden bg-white">
         {services.map((service: VehicleService, index: number) => {

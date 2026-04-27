@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import type { AddressDetail } from "@/data/mockData";
+import { useT } from "@/hooks/useT";
 
 interface AddressDetailsPopoverProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export default function AddressDetailsPopover({
   const [contactName, setContactName] = useState(initialData?.contactName || "");
   const [phone, setPhone] = useState(initialData?.phone || "");
   const [unit, setUnit] = useState(initialData?.unit || "");
+  const t = useT();
   const popoverRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [arrowTop, setArrowTop] = useState(24);
@@ -144,7 +146,7 @@ export default function AddressDetailsPopover({
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100">
-          <h3 className="text-base font-semibold text-gray-900">填写地址详情</h3>
+          <h3 className="text-base font-semibold text-gray-900">{t.address.detailsTitle}</h3>
           <button
             onClick={onClose}
             className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-150"
@@ -160,7 +162,7 @@ export default function AddressDetailsPopover({
           {/* Selected Address (read-only) */}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1.5">
-              选择的地址
+              {t.address.selectedAddress}
             </label>
             <div className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-100">
               <p className="text-sm text-gray-700 leading-snug">{addressText}</p>
@@ -170,13 +172,13 @@ export default function AddressDetailsPopover({
           {/* Contact Name */}
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1.5">
-              联系人姓名
+              {t.address.contactName}
             </label>
             <input
               type="text"
               value={contactName}
               onChange={(e) => setContactName(e.target.value)}
-              placeholder="请输入联系人姓名"
+              placeholder={t.address.contactNamePlaceholder}
               className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder:text-gray-400
                          transition-all duration-200 ease-out
                          hover:border-gray-300
@@ -187,13 +189,13 @@ export default function AddressDetailsPopover({
           {/* Phone */}
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1.5">
-              联系人手机号
+              {t.address.contactPhone}
             </label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="请输入联系人手机号"
+              placeholder={t.address.contactPhonePlaceholder}
               className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder:text-gray-400
                          transition-all duration-200 ease-out
                          hover:border-gray-300
@@ -204,7 +206,7 @@ export default function AddressDetailsPopover({
           {/* Unit (optional) */}
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1.5">
-              地址备注
+              {t.address.addressNote}
             </label>
             <input
               type="text"
@@ -256,7 +258,7 @@ export default function AddressDetailsPopover({
 
           {/* Header */}
           <div className="px-4 pb-3 border-b border-gray-100 flex-shrink-0">
-            <h3 className="text-base font-semibold text-gray-900">填写地址详情</h3>
+            <h3 className="text-base font-semibold text-gray-900">{t.address.detailsTitle}</h3>
           </div>
 
           {/* Content - Scrollable */}
@@ -264,7 +266,7 @@ export default function AddressDetailsPopover({
             {/* Selected Address */}
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                选择的地址
+                {t.address.selectedAddress}
               </label>
               <div className="px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-100">
                 <p className="text-sm text-gray-700">{addressText}</p>
@@ -274,13 +276,13 @@ export default function AddressDetailsPopover({
             {/* Contact Name */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                联系人姓名
+                {t.address.contactName}
               </label>
               <input
                 type="text"
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
-                placeholder="请输入联系人姓名"
+                placeholder={t.address.contactNamePlaceholder}
                 className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            transition-all duration-200 ease-out
                            focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
@@ -290,13 +292,13 @@ export default function AddressDetailsPopover({
             {/* Phone */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                联系人手机号
+                {t.address.contactPhone}
               </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="请输入联系人手机号"
+                placeholder={t.address.contactPhonePlaceholder}
                 className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            transition-all duration-200 ease-out
                            focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
@@ -306,7 +308,7 @@ export default function AddressDetailsPopover({
             {/* Unit */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                地址备注
+                {t.address.addressNote}
               </label>
               <input
                 type="text"

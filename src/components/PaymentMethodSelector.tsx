@@ -1,13 +1,16 @@
 "use client";
 
+import { useT } from "@/hooks/useT";
+
 export default function PaymentMethodSelector() {
+  const t = useT();
   // Mock 余额数据（统一以人民币显示）
   const balance = 46000.00;
 
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-900 mb-3">
-        支付方式
+        {t.payment.label}
       </label>
       <div className="border border-blue-200 rounded-lg p-4 bg-blue-50/30">
         <div className="flex items-start gap-3">
@@ -16,17 +19,17 @@ export default function PaymentMethodSelector() {
             <div className="w-2 h-2 rounded-full bg-blue-500" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900">账期支付</p>
-            <p className="text-xs text-gray-500 mb-1.5">企业账期结算</p>
+            <p className="text-sm font-medium text-gray-900">{t.payment.creditAccount}</p>
+            <p className="text-xs text-gray-500 mb-1.5">{t.payment.creditAccountDesc}</p>
             <p className="text-sm text-gray-700 mb-2">
-              余额: <span className="font-price font-semibold text-gray-900">CNY {balance.toLocaleString('zh-CN')}</span>
+              {t.payment.balance} <span className="font-price font-semibold text-gray-900">CNY {balance.toLocaleString('zh-CN')}</span>
             </p>
             <p className="text-xs text-gray-500 leading-relaxed">
-              人民币金额按今日参考汇率估算，仅用于额度控制。实际结算以每月月末汇率为准。
+              {t.payment.rateNote}
             </p>
           </div>
           <div className="text-xs text-gray-500 bg-white border border-gray-200 px-2 py-1 rounded flex-shrink-0">
-            默认
+            {t.payment.default}
           </div>
         </div>
       </div>

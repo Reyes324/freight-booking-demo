@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { searchAddress } from "@/services/addressService";
 import type { AddressSuggestion } from "@/services/addressService";
+import { useT } from "@/hooks/useT";
 
 // 常用地址（地址簿）
 const RECENT_ADDRESSES: AddressSuggestion[] = [
@@ -46,11 +47,13 @@ export default function AddressSearchInput({
   value,
   onChange,
   onSelectAddress,
-  placeholder = "搜索地址",
+  placeholder,
   label,
   onFocus,
   onCancel,
 }: AddressSearchInputProps) {
+  const t = useT();
+  const resolvedPlaceholder = placeholder ?? t.address.searchPlaceholder;
   const [showDropdown, setShowDropdown] = useState(false);
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -182,7 +185,7 @@ export default function AddressSearchInput({
           onChange={(e) => onChange(e.target.value)}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 placeholder:text-gray-400
                      transition-all duration-200 ease-out
                      hover:border-gray-300
@@ -211,7 +214,7 @@ export default function AddressSearchInput({
             // 地址簿 - 显示常用地址
             <div className="py-1">
               <div className="px-4 py-2 text-xs text-gray-500 font-medium">
-                常用地址
+                {t.address.recentAddresses}
               </div>
               {RECENT_ADDRESSES.map((address) => (
                 <button
@@ -253,7 +256,7 @@ export default function AddressSearchInput({
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 mb-3">
                 <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
               </div>
-              <p className="text-sm text-gray-600">搜索中...</p>
+              <p className="text-sm text-gray-600">{t.address.searching}</p>
             </div>
           ) : suggestions.length > 0 ? (
             // 搜索结果
@@ -314,8 +317,8 @@ export default function AddressSearchInput({
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
-              <p className="text-sm text-gray-500">未找到匹配的地址</p>
-              <p className="text-xs text-gray-400 mt-1">请尝试其他关键词</p>
+              <p className="text-sm text-gray-500">{t.address.noResults}</p>
+              <p className="text-xs text-gray-400 mt-1">{t.address.tryOtherKeywords}</p>
             </div>
           )}
         </div>

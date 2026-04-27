@@ -11,6 +11,7 @@ import PriceIncreaseView from "./PriceIncreaseView";
 import AdjustPriceView from "./AdjustPriceView";
 import ContactOperatorModal from "./ContactOperatorModal";
 import ChangeDriverModal from "./ChangeDriverModal";
+import { useT } from "@/hooks/useT";
 
 interface OrderDrawerProps {
   open: boolean;
@@ -18,54 +19,8 @@ interface OrderDrawerProps {
   onClose: () => void;
 }
 
-// 状态配置
-const statusInfo = {
-  calling_driver: {
-    title: "呼叫司机中",
-    description: "正在尽力呼叫附近司机，请稍后",
-    dotColor: "bg-blue-500",
-    showPulse: true,
-  },
-  in_transit: {
-    title: "前往装货地",
-    description: "司机正在前往装货地点",
-    dotColor: "bg-blue-500",
-    showPulse: false,
-  },
-  delivering: {
-    title: "配送中",
-    description: "司机正在配送中，请耐心等待",
-    dotColor: "bg-blue-500",
-    showPulse: false,
-  },
-  completed: {
-    title: "订单已完成",
-    description: "感谢使用，期待下次为您服务",
-    dotColor: "bg-green-500",
-    showPulse: false,
-  },
-  cancelled: {
-    title: "订单已取消",
-    description: "订单已被取消",
-    dotColor: "bg-gray-400",
-    showPulse: false,
-  },
-};
-
-// 格式化时间为 "今天, HH:MM" 或 "昨天, HH:MM" 或完整日期
-function formatPickupTime(date: Date): string {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
-  const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const time = date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", hour12: false });
-
-  if (target.getTime() === today.getTime()) return `今天, ${time}`;
-  if (target.getTime() === yesterday.getTime()) return `昨天, ${time}`;
-  return date.toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" }) + `, ${time}`;
-}
-
 export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) {
+  const t = useT();
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [proofModalOpen, setProofModalOpen] = useState(false);
@@ -75,18 +30,62 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [changeDriverModalOpen, setChangeDriverModalOpen] = useState(false);
 
+  const statusInfo = {
+    calling_driver: {
+      title: t.drawer.statusCallingDriver,
+      description: t.drawer.statusCallingDriverDesc,
+      dotColor: "bg-blue-500",
+      showPulse: true,
+    },
+    in_transit: {
+      title: t.drawer.statusInTransit,
+      description: t.drawer.statusInTransitDesc,
+      dotColor: "bg-blue-500",
+      showPulse: false,
+    },
+    delivering: {
+      title: t.drawer.statusDelivering,
+      description: t.drawer.statusDeliveringDesc,
+      dotColor: "bg-blue-500",
+      showPulse: false,
+    },
+    completed: {
+      title: t.drawer.statusCompleted,
+      description: t.drawer.statusCompletedDesc,
+      dotColor: "bg-green-500",
+      showPulse: false,
+    },
+    cancelled: {
+      title: t.drawer.statusCancelled,
+      description: t.drawer.statusCancelledDesc,
+      dotColor: "bg-gray-400",
+      showPulse: false,
+    },
+  };
+
+  const formatPickupTime = (date: Date): string => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const time = date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", hour12: false });
+
+    if (target.getTime() === today.getTime()) return `${t.drawer.today}, ${time}`;
+    if (target.getTime() === yesterday.getTime()) return `${t.drawer.yesterday}, ${time}`;
+    return date.toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" }) + `, ${time}`;
+  };
+
   // 处理取消订单
   const handleCancelOrder = () => {
     Modal.confirm({
-      title: "确认取消订单？",
+      title: t.drawer.confirmCancelTitle,
       icon: <ExclamationCircleOutlined />,
-      content: "取消后订单将无法恢复，是否确认取消？",
-      okText: "确认取消",
-      cancelText: "返回",
+      content: t.drawer.confirmCancelDesc,
+      okText: t.drawer.confirmCancel,
+      cancelText: t.drawer.back,
       okButtonProps: { danger: true },
       onOk() {
-        // Demo 场景：不改变订单状态，只显示 toast
-        message.success("订单已取消");
+        message.success(t.drawer.statusCancelled);
       },
     });
   };
@@ -167,10 +166,10 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
   // 按状态决定按钮
   const statusButtons: string[] = (() => {
     switch (order.status) {
-      case "calling_driver": return ["加价"];
-      case "in_transit": return ["更换司机", "追踪订单", "调整费用"];
-      case "delivering": return ["追踪订单", "调整费用"];
-      case "completed": return ["追踪订单"];
+      case "calling_driver": return [t.drawer.surcharge];
+      case "in_transit": return [t.drawer.changeDriver, t.drawer.trackOrder, t.drawer.adjustFee];
+      case "delivering": return [t.drawer.trackOrder, t.drawer.adjustFee];
+      case "completed": return [t.drawer.trackOrder];
       default: return [];
     }
   })();
@@ -196,7 +195,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
         <>
         {/* 头部 - 关闭按钮 */}
         <div className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6">
-          <h2 className="text-base font-semibold text-gray-900">订单详情</h2>
+          <h2 className="text-base font-semibold text-gray-900">{t.drawer.title}</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg
@@ -272,16 +271,16 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                 <div className="flex flex-col gap-2 px-4 pb-4 pt-3 border-t border-gray-100">
                   <div className="flex gap-2">
                     {statusButtons.map((btn, i) => {
-                      const isAdjustBtn = btn === "调整费用";
+                      const isAdjustBtn = btn === t.drawer.adjustFee;
                       const isAdjustDisabled = isAdjustBtn && !!hasPriceAdjustment;
 
                       return (
                         <div key={btn} className="relative">
                           <button
                             onClick={() => {
-                              if (btn === "加价") {
+                              if (btn === t.drawer.surcharge) {
                                 setDrawerView("priceIncrease");
-                              } else if (btn === "更换司机") {
+                              } else if (btn === t.drawer.changeDriver) {
                                 setChangeDriverModalOpen(true);
                               } else if (isAdjustBtn) {
                                 if (isAdjustDisabled) {
@@ -307,7 +306,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-10
                                           bg-gray-800 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap
                                           shadow-lg animate-fade-in">
-                              费用调整审核中
+                              {t.adjustPrice.pendingTitle}
                               <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0
                                             border-l-4 border-r-4 border-t-4
                                             border-l-transparent border-r-transparent border-t-gray-800" />
@@ -323,7 +322,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
 
             {/* 路线信息 */}
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-3">路线信息</h4>
+              <h4 className="text-sm font-medium text-gray-900 mb-3">{t.drawer.route}</h4>
               {/* 构建路线点数组：起点 + 途径点 + 终点 */}
               {(() => {
                 const routePoints = [
@@ -385,7 +384,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                             {index === 0 && order.pickupProofPhoto && (order.status === "completed" || order.status === "delivering") && (
                               <div className="mt-2 bg-gray-50 rounded-lg p-3 flex items-center justify-between">
                                 <div>
-                                  <p className="text-sm font-medium text-green-600">已装货</p>
+                                  <p className="text-sm font-medium text-green-600">{t.drawer.pickedUp}</p>
                                   {order.actualPickupTime && (
                                     <p className="text-xs text-gray-400 mt-0.5">
                                       {formatPickupTime(order.actualPickupTime)}
@@ -405,7 +404,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                             {index === routePoints.length - 1 && order.dropoffProofPhoto && order.status === "completed" && (
                               <div className="mt-2 bg-gray-50 rounded-lg p-3 flex items-center justify-between">
                                 <div>
-                                  <p className="text-sm font-medium text-green-600">已卸货</p>
+                                  <p className="text-sm font-medium text-green-600">{t.drawer.delivered}</p>
                                   {order.actualDropoffTime && (
                                     <p className="text-xs text-gray-400 mt-0.5">
                                       {new Date(order.actualDropoffTime).toLocaleString("zh-CN", {
@@ -436,7 +435,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
 
             {/* 车型信息 */}
             <div className="pt-6 border-t border-gray-100">
-              <h4 className="text-sm font-medium text-gray-900 mb-3">车型信息</h4>
+              <h4 className="text-sm font-medium text-gray-900 mb-3">{t.drawer.vehicleInfo}</h4>
               <div className="flex items-center gap-3">
                 <div className="relative w-10 h-10 flex-shrink-0">
                   <Image
@@ -449,7 +448,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-gray-900">{order.vehicle.name}</p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {order.vehicle.weight || "标准载重"}
+                    {order.vehicle.weight || t.drawer.standardLoad}
                   </p>
                 </div>
               </div>
@@ -457,14 +456,14 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
 
             {/* 订单信息 */}
             <div className="pt-6 border-t border-gray-100 space-y-3">
-              <h4 className="text-sm font-medium text-gray-900">订单信息</h4>
+              <h4 className="text-sm font-medium text-gray-900">{t.drawer.orderInfo}</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">订单编号</span>
+                  <span className="text-sm text-gray-400">{t.drawer.orderId}</span>
                   <span className="text-sm text-gray-900">{order.orderId}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">用车时间</span>
+                  <span className="text-sm text-gray-400">{t.drawer.pickupTime}</span>
                   <span className="text-sm text-gray-900">
                     {order.scheduledTime
                       ? order.scheduledTime.toLocaleString("zh-CN", {
@@ -474,23 +473,23 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                           hour: "2-digit",
                           minute: "2-digit",
                         })
-                      : "立即用车"}
+                      : t.drawer.now}
                   </span>
                 </div>
                 {order.driverNote && (
                   <div className="flex justify-between items-start">
-                    <span className="text-sm text-gray-400">订单备注</span>
+                    <span className="text-sm text-gray-400">{t.drawer.driverNote}</span>
                     <span className="text-sm text-gray-900 text-right max-w-[200px]">
                       {order.driverNote}
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">支付方式</span>
-                  <span className="text-sm text-gray-900">账期支付</span>
+                  <span className="text-sm text-gray-400">{t.drawer.paymentMethod}</span>
+                  <span className="text-sm text-gray-900">{t.drawer.creditAccount}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">下单日期</span>
+                  <span className="text-sm text-gray-400">{t.drawer.orderDate}</span>
                   <span className="text-sm text-gray-900">
                     {order.createdAt.toLocaleString("zh-CN", {
                       year: "numeric",
@@ -506,35 +505,35 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
 
             {/* 费用明细 */}
             <div className="pt-6 border-t border-gray-100 space-y-3 pb-24">
-              <h4 className="text-sm font-medium text-gray-900">费用明细</h4>
+              <h4 className="text-sm font-medium text-gray-900">{t.drawer.priceBreakdown}</h4>
 
               {/* 费用调整审核中提示栏 */}
               {hasPriceAdjustment && (
                 <div className="flex items-start gap-2 bg-orange-50 border border-orange-100 rounded-lg p-3">
                   <InfoCircleOutlined className="text-orange-500 text-sm mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-orange-700 leading-relaxed">
-                    费用调整至 <span className="font-semibold">฿{(hasPriceAdjustment.adjustedPrice).toFixed(0)}</span>，正在审核中
+                    {t.drawer.feeAdjusted((hasPriceAdjustment.adjustedPrice).toFixed(0))}
                   </p>
                 </div>
               )}
 
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">运费</span>
+                  <span className="text-sm text-gray-400">{t.drawer.deliveryFee}</span>
                   <span className="font-price text-sm text-gray-900">
                     ฿{order.basePrice.toFixed(0)}
                   </span>
                 </div>
                 {additionalServicesTotal > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-400">额外服务</span>
+                    <span className="text-sm text-gray-400">{t.drawer.addons}</span>
                     <span className="font-price text-sm text-gray-900">
                       ฿{additionalServicesTotal.toFixed(0)}
                     </span>
                   </div>
                 )}
                 <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-900">总计</span>
+                  <span className="text-sm font-medium text-gray-900">{t.drawer.total}</span>
                   <span className="font-price text-lg font-bold text-gray-900">
                     ฿{order.totalPrice.toFixed(0)}
                   </span>
@@ -556,7 +555,7 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                        text-gray-700 font-medium text-sm hover:bg-gray-50
                        transition-colors cursor-pointer"
             >
-              取消订单
+              {t.drawer.cancelOrder}
             </button>
           </div>
         )}

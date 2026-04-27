@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { Input, Modal } from 'antd';
 import { mockUserProfile } from '@/data/mockData';
+import { useT } from '@/hooks/useT';
 
 export default function ProfilePage() {
+  const t = useT();
   const [profile, setProfile] = useState(mockUserProfile);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -17,17 +19,17 @@ export default function ProfilePage() {
 
   const handleChangePassword = () => {
     Modal.info({
-      title: '修改密码',
-      content: '修改密码功能开发中...',
+      title: t.settings.profile.changePassword,
+      content: t.settings.profile.editPhoneDesc,
     });
   };
 
   const handleDeleteAccount = () => {
     Modal.confirm({
-      title: '删除账户',
-      content: '确定要删除账户吗？此操作无法撤销。',
-      okText: '确认删除',
-      cancelText: '取消',
+      title: t.settings.profile.deleteAccount,
+      content: t.settings.profile.deleteConfirm,
+      okText: t.settings.profile.deleteConfirmOk,
+      cancelText: t.settings.profile.cancel,
       okButtonProps: { danger: true },
       onOk() {
         console.log('删除账户');
@@ -38,19 +40,19 @@ export default function ProfilePage() {
   return (
     <div>
       <h1 className="text-lg font-semibold text-gray-900 mb-6">
-        个人资料
+        {t.settings.profile.title}
       </h1>
 
       <div className="space-y-6 max-w-2xl">
         {/* 名字 */}
         <div>
           <label className="block text-sm text-gray-700 mb-2">
-            名字
+            {t.settings.profile.firstName}
           </label>
           <Input
             value={profile.firstName}
             onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
-            placeholder="请输入名字"
+            placeholder={t.settings.profile.firstNamePlaceholder}
             className="h-11"
           />
         </div>
@@ -58,12 +60,12 @@ export default function ProfilePage() {
         {/* 姓氏 */}
         <div>
           <label className="block text-sm text-gray-700 mb-2">
-            姓氏
+            {t.settings.profile.lastName}
           </label>
           <Input
             value={profile.lastName}
             onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
-            placeholder="请输入姓氏"
+            placeholder={t.settings.profile.lastNamePlaceholder}
             className="h-11"
           />
         </div>
@@ -71,7 +73,7 @@ export default function ProfilePage() {
         {/* 电话号码 */}
         <div>
           <label className="block text-sm text-gray-700 mb-2">
-            电话号码
+            {t.settings.profile.phone}
           </label>
           <div className="flex items-center gap-3">
             <span className="flex-1 text-gray-900">{maskedPhone}</span>
@@ -79,7 +81,7 @@ export default function ProfilePage() {
               onClick={() => setShowPhoneModal(true)}
               className="text-blue-600 hover:text-blue-700 text-sm cursor-pointer"
             >
-              编辑
+              {t.settings.profile.edit}
             </button>
           </div>
         </div>
@@ -87,7 +89,7 @@ export default function ProfilePage() {
         {/* 邮箱 */}
         <div>
           <label className="block text-sm text-gray-700 mb-2">
-            登录邮箱
+            {t.settings.profile.email}
           </label>
           <div className="flex items-center gap-3">
             <span className="flex-1 text-gray-900">{maskedEmail}</span>
@@ -95,7 +97,7 @@ export default function ProfilePage() {
               onClick={() => setShowEmailModal(true)}
               className="text-blue-600 hover:text-blue-700 text-sm cursor-pointer"
             >
-              编辑
+              {t.settings.profile.edit}
             </button>
           </div>
         </div>
@@ -103,7 +105,7 @@ export default function ProfilePage() {
         {/* 修改密码 */}
         <div className="pt-4 border-t border-gray-200">
           <label className="block text-sm text-gray-700 mb-2">
-            密码
+            {t.settings.profile.password}
           </label>
           <div className="flex items-center gap-3">
             <span className="flex-1 text-gray-900">••••••••</span>
@@ -111,7 +113,7 @@ export default function ProfilePage() {
               onClick={handleChangePassword}
               className="text-blue-600 hover:text-blue-700 text-sm cursor-pointer"
             >
-              修改密码
+              {t.settings.profile.changePassword}
             </button>
           </div>
         </div>
@@ -119,7 +121,7 @@ export default function ProfilePage() {
         {/* 删除账户 */}
         <div className="pt-4 border-t border-gray-200">
           <label className="block text-sm text-gray-700 mb-2">
-            账户
+            {t.settings.profile.account}
           </label>
           <div className="flex items-center gap-3">
             <span className="flex-1"></span>
@@ -127,7 +129,7 @@ export default function ProfilePage() {
               onClick={handleDeleteAccount}
               className="text-red-600 hover:text-red-700 text-sm cursor-pointer"
             >
-              删除账户
+              {t.settings.profile.deleteAccount}
             </button>
           </div>
         </div>
@@ -135,22 +137,22 @@ export default function ProfilePage() {
 
       {/* 编辑手机号模态框 */}
       <Modal
-        title="编辑电话号码"
+        title={t.settings.profile.editPhoneTitle}
         open={showPhoneModal}
         onCancel={() => setShowPhoneModal(false)}
         footer={null}
       >
-        <p className="text-gray-600">编辑电话号码功能开发中...</p>
+        <p className="text-gray-600">{t.settings.profile.editPhoneDesc}</p>
       </Modal>
 
       {/* 编辑邮箱模态框 */}
       <Modal
-        title="编辑邮箱"
+        title={t.settings.profile.editEmailTitle}
         open={showEmailModal}
         onCancel={() => setShowEmailModal(false)}
         footer={null}
       >
-        <p className="text-gray-600">编辑邮箱功能开发中...</p>
+        <p className="text-gray-600">{t.settings.profile.editEmailDesc}</p>
       </Modal>
     </div>
   );

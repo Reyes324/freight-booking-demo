@@ -1,39 +1,41 @@
 'use client';
 
 import { Form, Input, Select, Button, message } from 'antd';
-
-const businessTypeOptions = [
-  { label: '电商', value: 'ecommerce' },
-  { label: '物流', value: 'logistics' },
-  { label: '餐饮', value: 'food' },
-  { label: '零售', value: 'retail' },
-  { label: '制造业', value: 'manufacturing' },
-  { label: '其他', value: 'other' },
-];
-
-const monthlyVolumeOptions = [
-  { label: '0-50 单', value: '0-50' },
-  { label: '51-100 单', value: '51-100' },
-  { label: '101-500 单', value: '101-500' },
-  { label: '500+ 单', value: '500+' },
-];
+import { useT } from '@/hooks/useT';
 
 export default function BusinessPage() {
+  const t = useT();
   const [form] = Form.useForm();
+
+  const businessTypeOptions = [
+    { label: t.settings.business.ecommerce, value: 'ecommerce' },
+    { label: t.settings.business.logistics, value: 'logistics' },
+    { label: t.settings.business.food, value: 'food' },
+    { label: t.settings.business.retail, value: 'retail' },
+    { label: t.settings.business.manufacturing, value: 'manufacturing' },
+    { label: t.settings.business.other, value: 'other' },
+  ];
+
+  const monthlyVolumeOptions = [
+    { label: t.settings.business.vol050, value: '0-50' },
+    { label: t.settings.business.vol51100, value: '51-100' },
+    { label: t.settings.business.vol101500, value: '101-500' },
+    { label: t.settings.business.vol500plus, value: '500+' },
+  ];
 
   const handleSubmit = (values: any) => {
     console.log('提交企业账户申请:', values);
-    message.success('企业账户申请已提交！');
+    message.success(t.settings.business.submit);
     form.resetFields();
   };
 
   return (
     <div>
       <h1 className="text-lg font-semibold text-gray-900 mb-2">
-        升级企业账户
+        {t.settings.business.title}
       </h1>
       <p className="text-sm text-gray-500 mb-6">
-        请填写您的企业信息
+        {t.settings.business.subtitle}
       </p>
 
       <div className="max-w-2xl">
@@ -46,10 +48,10 @@ export default function BusinessPage() {
           {/* 姓名 */}
           <Form.Item
             name="name"
-            label="姓名"
-            rules={[{ required: true, message: '请输入姓名' }]}
+            label={t.settings.business.name}
+            rules={[{ required: true, message: t.settings.business.errorName }]}
           >
-            <Input placeholder="请输入您的姓名" />
+            <Input placeholder={t.settings.business.namePlaceholder} />
           </Form.Item>
 
           {/* 公司名称 */}
@@ -57,25 +59,25 @@ export default function BusinessPage() {
             name="companyName"
             label={
               <span>
-                公司名称
+                {t.settings.business.companyName}
                 <span className="ml-2 text-xs text-gray-400 font-normal">
-                  （正式公司或企业名称，提交后无法修改）
+                  {t.settings.business.companyNameNote}
                 </span>
               </span>
             }
-            rules={[{ required: true, message: '请输入公司名称' }]}
+            rules={[{ required: true, message: t.settings.business.errorCompany }]}
           >
-            <Input placeholder="请输入公司全称" />
+            <Input placeholder={t.settings.business.companyNamePlaceholder} />
           </Form.Item>
 
           {/* 业务类型 */}
           <Form.Item
             name="businessType"
-            label="业务类型"
-            rules={[{ required: true, message: '请选择业务类型' }]}
+            label={t.settings.business.businessType}
+            rules={[{ required: true, message: t.settings.business.errorType }]}
           >
             <Select
-              placeholder="请选择业务类型"
+              placeholder={t.settings.business.businessTypePlaceholder}
               options={businessTypeOptions}
             />
           </Form.Item>
@@ -83,11 +85,11 @@ export default function BusinessPage() {
           {/* 每月预计使用量 */}
           <Form.Item
             name="monthlyVolume"
-            label="每月预计使用量"
-            rules={[{ required: true, message: '请选择每月预计使用量' }]}
+            label={t.settings.business.monthlyVolume}
+            rules={[{ required: true, message: t.settings.business.errorVolume }]}
           >
             <Select
-              placeholder="请选择每月预计使用量"
+              placeholder={t.settings.business.monthlyVolumePlaceholder}
               options={monthlyVolumeOptions}
             />
           </Form.Item>
@@ -100,7 +102,7 @@ export default function BusinessPage() {
               size="large"
               className="w-full h-12 bg-blue-600 hover:bg-blue-700"
             >
-              免费添加企业账户
+              {t.settings.business.submit}
             </Button>
           </Form.Item>
         </Form>

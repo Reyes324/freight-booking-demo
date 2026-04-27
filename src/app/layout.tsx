@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import AntdConfigProvider from "@/components/AntdConfigProvider";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -35,11 +36,21 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* Figma 捕获模式：?cap 锁定 1440 宽度，消除 sub-pixel 小数 */}
+        <Script
+          id="figma-cap-mode"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `if (new URLSearchParams(location.search).has('cap')) document.documentElement.classList.add('cap-mode');`,
+          }}
+        />
       </head>
       <body className="antialiased bg-white text-gray-900">
-        <AntdConfigProvider>
-          {children}
-        </AntdConfigProvider>
+        <LanguageProvider>
+          <AntdConfigProvider>
+            {children}
+          </AntdConfigProvider>
+        </LanguageProvider>
 
         {/* 全局加载高德地图 JS API - 只加载一次 */}
         <Script

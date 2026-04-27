@@ -10,37 +10,37 @@ import {
   BellOutlined,
   ShopOutlined,
   InfoCircleOutlined,
-  LogoutOutlined,
 } from '@ant-design/icons';
-
-const menuGroups = [
-  {
-    title: '用户账户',
-    items: [
-      { id: 'profile', label: '个人资料', path: '/settings/profile', icon: <UserOutlined /> },
-      { id: 'orders', label: '订单设置', path: '/settings/orders', icon: <FileTextOutlined /> },
-      { id: 'location', label: '位置和语言', path: '/settings/location', icon: <GlobalOutlined /> },
-      { id: 'notification', label: '通知设置', path: '/settings/notification', icon: <BellOutlined /> },
-      { id: 'business', label: '企业账户', path: '/settings/business', icon: <ShopOutlined /> },
-    ],
-  },
-  {
-    title: '关于我们',
-    items: [
-      { id: 'terms', label: '条款和政策', path: '/settings/terms', icon: <InfoCircleOutlined /> },
-    ],
-  },
-];
+import { useT } from '@/hooks/useT';
 
 export default function SettingsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useT();
   const pathname = usePathname();
 
+  const menuGroups = [
+    {
+      title: t.settings.layout.userAccount,
+      items: [
+        { id: 'profile', label: t.settings.profile.title, path: '/settings/profile', icon: <UserOutlined /> },
+        { id: 'orders', label: t.settings.orders.title, path: '/settings/orders', icon: <FileTextOutlined /> },
+        { id: 'location', label: t.settings.location.title, path: '/settings/location', icon: <GlobalOutlined /> },
+        { id: 'notification', label: t.settings.notification.title, path: '/settings/notification', icon: <BellOutlined /> },
+        { id: 'business', label: t.settings.business.title, path: '/settings/business', icon: <ShopOutlined /> },
+      ],
+    },
+    {
+      title: t.settings.layout.aboutUs,
+      items: [
+        { id: 'terms', label: t.settings.terms.title, path: '/settings/terms', icon: <InfoCircleOutlined /> },
+      ],
+    },
+  ];
+
   const handleLogout = () => {
-    // TODO: 实现退出登录逻辑
     console.log('退出登录');
   };
 
@@ -91,7 +91,7 @@ export default function SettingsLayout({
                          hover:bg-red-50 transition-all duration-200 cursor-pointer
                          border border-red-200 text-center"
             >
-              退出登录
+              {t.settings.layout.logout}
             </button>
           </div>
         </aside>

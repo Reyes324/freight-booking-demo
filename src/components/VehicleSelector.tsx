@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { InfoCircleOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { vehicles, type Vehicle } from "@/data/mockData";
+import { useT } from "@/hooks/useT";
 
 interface VehicleSelectorProps {
   selectedVehicle: Vehicle | null;
@@ -13,6 +14,7 @@ export default function VehicleSelector({
   selectedVehicle,
   onSelect,
 }: VehicleSelectorProps) {
+  const t = useT();
   const current = selectedVehicle ?? vehicles[0];
   const selectedIndex = vehicles.findIndex((v) => v.id === current.id);
 
@@ -30,7 +32,7 @@ export default function VehicleSelector({
     <div>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold text-gray-900">服务类型</h2>
+        <h2 className="text-sm font-semibold text-gray-900">{t.vehicleSelector.serviceType}</h2>
         <a
           href="https://www.lalamove.com/zh-hk/all-vehicle-pricing-detail"
           target="_blank"
@@ -41,7 +43,7 @@ export default function VehicleSelector({
           onMouseLeave={(e) => e.currentTarget.style.color = '#2257D4'}
         >
           <InfoCircleOutlined className="text-base" />
-          更多详情
+          {t.vehicleSelector.moreDetails}
         </a>
       </div>
 
@@ -59,7 +61,7 @@ export default function VehicleSelector({
                   : "border-gray-200 text-gray-700 hover:border-gray-400"
               }`}
             >
-              {vehicle.name}
+              {t.vehicles[vehicle.id as keyof typeof t.vehicles]?.name ?? vehicle.name}
             </button>
           );
         })}
@@ -94,14 +96,14 @@ export default function VehicleSelector({
               {current.dimensions && current.weight && (
                 <span className="text-gray-300">|</span>
               )}
-              {current.weight && <span>载重 {current.weight}</span>}
+              {current.weight && <span>{t.vehicleSelector.load} {t.vehicles[current.id as keyof typeof t.vehicles]?.weight ?? current.weight}</span>}
             </div>
           )}
 
           {/* Description */}
           {current.description && (
             <p className="text-xs text-gray-400 max-w-xs leading-relaxed">
-              {current.description}
+              {t.vehicles[current.id as keyof typeof t.vehicles]?.description ?? current.description}
             </p>
           )}
         </div>

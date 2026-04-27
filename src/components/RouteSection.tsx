@@ -6,6 +6,7 @@ import type { AddressDetail } from "@/data/mockData";
 import AddressSearchInput from "./AddressSearchInput";
 import AddressDetailsPopover from "./AddressDetailsPopover";
 import MobileAddressFlow from "./MobileAddressFlow";
+import { useT } from "@/hooks/useT";
 
 interface RouteSectionProps {
   pickupAddress: AddressDetail | null;
@@ -50,6 +51,7 @@ export default function RouteSection({
   const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const [listParent] = useAutoAnimate();
+  const t = useT();
 
   const isMobile = () => typeof window !== "undefined" && window.innerWidth < 1024;
 
@@ -71,9 +73,9 @@ export default function RouteSection({
 
   // Helper functions
   const getPlaceholder = (index: number) => {
-    if (index === 0) return "装货地址";
-    if (index === addresses.length - 1) return "卸货地址";
-    return "途经地址";
+    if (index === 0) return t.route.pickupPlaceholder;
+    if (index === addresses.length - 1) return t.route.dropoffPlaceholder;
+    return t.route.waypointPlaceholder;
   };
 
   const updateAddress = (index: number, address: AddressDetail) => {
@@ -158,7 +160,7 @@ export default function RouteSection({
   return (
     <div>
       <h2 className="text-sm font-semibold text-gray-900 mb-3">
-        装卸点
+        {t.route.title}
       </h2>
 
       <div className="border border-gray-200/60 rounded-xl p-4 bg-white">
@@ -369,7 +371,7 @@ export default function RouteSection({
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            添加卸货地
+            {t.route.addDropoff}
           </button>
         </div>
       </div>

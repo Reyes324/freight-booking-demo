@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { Switch, Modal } from 'antd';
 import { mockOrderSettings } from '@/data/mockData';
+import { useT } from '@/hooks/useT';
 
 export default function OrdersPage() {
+  const t = useT();
   const [settings, setSettings] = useState(mockOrderSettings);
   const [showEmailModal, setShowEmailModal] = useState(false);
 
@@ -14,7 +16,7 @@ export default function OrdersPage() {
   return (
     <div>
       <h1 className="text-lg font-semibold text-gray-900 mb-6">
-        订单设置
+        {t.settings.orders.title}
       </h1>
 
       <div className="space-y-8 max-w-2xl">
@@ -23,10 +25,10 @@ export default function OrdersPage() {
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
               <h3 className="text-sm font-medium text-gray-900 mb-1">
-                电子收据
+                {t.settings.orders.receipt}
               </h3>
               <p className="text-sm text-gray-500">
-                接收电子收据
+                {t.settings.orders.receiptDesc}
               </p>
             </div>
             <Switch
@@ -41,7 +43,7 @@ export default function OrdersPage() {
         {/* 接收收据的邮箱 */}
         <div>
           <label className="block text-sm text-gray-700 mb-2">
-            接收收据的邮箱
+            {t.settings.orders.receiptEmail}
           </label>
           <div className="flex items-center gap-3">
             <span className="flex-1 text-sm text-gray-900">{maskedEmail}</span>
@@ -49,7 +51,7 @@ export default function OrdersPage() {
               onClick={() => setShowEmailModal(true)}
               className="text-blue-600 hover:text-blue-700 text-sm cursor-pointer"
             >
-              编辑
+              {t.settings.orders.edit}
             </button>
           </div>
         </div>
@@ -59,10 +61,10 @@ export default function OrdersPage() {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <h3 className="text-sm font-medium text-gray-900 mb-1">
-                配送证明
+                {t.settings.orders.deliveryProof}
               </h3>
               <p className="text-sm text-gray-500">
-                配送完成时的签名或照片证明
+                {t.settings.orders.deliveryProofDesc}
               </p>
             </div>
             <Switch
@@ -77,12 +79,12 @@ export default function OrdersPage() {
 
       {/* 编辑邮箱模态框 */}
       <Modal
-        title="编辑收据邮箱"
+        title={t.settings.orders.editEmailTitle}
         open={showEmailModal}
         onCancel={() => setShowEmailModal(false)}
         footer={null}
       >
-        <p className="text-gray-600">编辑收据邮箱功能开发中...</p>
+        <p className="text-gray-600">{t.settings.orders.editEmailDesc}</p>
       </Modal>
     </div>
   );

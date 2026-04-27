@@ -111,6 +111,10 @@ type Theme = 'stripe' | 'linear' | 'revolut' | 'notion' | 'wise' | 'apple';
 
 export default function LoginPage() {
   const router = useRouter();
+
+  // 检测设计模式（用于 Figma 捕获）
+  const [isDesignMode, setIsDesignMode] = useState(false);
+
   const [currentLang, setCurrentLang] = useState<Language>('zh');
   const [currentTheme, setCurrentTheme] = useState<Theme>('stripe');
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
@@ -128,11 +132,24 @@ export default function LoginPage() {
     if (savedLanguage && (savedLanguage === "zh" || savedLanguage === "en")) {
       setCurrentLang(savedLanguage as Language);
     }
+
+    // 检测设计模式（用于 Figma Code to Canvas 捕获）
+    const searchParams = new URLSearchParams(window.location.search);
+    const designMode = searchParams.get('designMode') === 'true';
+    setIsDesignMode(designMode);
+
+    // 设计模式下强制展开语言下拉菜单，方便捕获
+    if (designMode) {
+      setLangDropdownOpen(true);
+    }
   }, []);
 
   // 关闭下拉菜单（点击外部时）
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
+      // 设计模式下不关闭下拉菜单
+      if (isDesignMode) return;
+
       const target = e.target as HTMLElement;
       // 检查点击是否在语言菜单内
       if (!target.closest('.lang-bar') && !target.closest('.lang-trigger') && !target.closest('.lang-dropdown')) {
@@ -141,7 +158,7 @@ export default function LoginPage() {
     };
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
-  }, []);
+  }, [isDesignMode]);
 
   // 切换语言
   const applyLang = (lang: Language) => {
@@ -150,7 +167,10 @@ export default function LoginPage() {
     if (lang === 'zh' || lang === 'en') {
       localStorage.setItem("appLanguage", lang);
     }
-    setLangDropdownOpen(false);
+    // 设计模式下保持下拉菜单打开
+    if (!isDesignMode) {
+      setLangDropdownOpen(false);
+    }
   };
 
   // 切换主题
@@ -200,7 +220,10 @@ export default function LoginPage() {
           className="lang-trigger"
           onClick={(e) => {
             e.stopPropagation();
-            setLangDropdownOpen(!langDropdownOpen);
+            // 设计模式下保持菜单打开
+            if (!isDesignMode) {
+              setLangDropdownOpen(!langDropdownOpen);
+            }
             setThemeDropdownOpen(false);
           }}
         >
@@ -1042,7 +1065,7 @@ function getThemeDesc(theme: Theme): string {
 function getLangFlag(lang: Language): string {
   const flags = {
     zh: '🇨🇳',
-    en: '🌐',
+    en: '🌏',  // 亚太地区地球，更符合东南亚市场定位
     id: '🇮🇩',
     vi: '🇻🇳',
     ms: '🇲🇾',

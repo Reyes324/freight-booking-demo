@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LeftOutlined, InfoCircleOutlined, CheckCircleFilled } from "@ant-design/icons";
 import type { Order } from "@/data/mockData";
+import { useT } from "@/hooks/useT";
 
 interface AdjustPriceViewProps {
   order: Order;
@@ -11,6 +12,7 @@ interface AdjustPriceViewProps {
 }
 
 export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPriceViewProps) {
+  const t = useT();
   const [inputValue, setInputValue] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
@@ -49,7 +51,7 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
           >
             <LeftOutlined className="text-sm" />
           </button>
-          <h2 className="text-base font-semibold text-gray-900 ml-1">调整费用</h2>
+          <h2 className="text-base font-semibold text-gray-900 ml-1">{t.adjustPrice.title}</h2>
         </div>
 
         {/* 成功提示 */}
@@ -57,19 +59,19 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
           <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
             <CheckCircleFilled className="text-3xl text-blue-600" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">费用调整审核中</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.adjustPrice.pendingTitle}</h3>
           <p className="text-sm text-gray-500 text-center leading-relaxed">
-            您提交的费用调整申请正在审核中，<br />审核结果将通过消息通知您。
+            {t.adjustPrice.pendingDesc}
           </p>
           <div className="mt-6 bg-gray-50 rounded-xl p-4 w-full max-w-[300px]">
             <div className="flex justify-between mb-2">
-              <span className="text-sm text-gray-500">原订单总价</span>
+              <span className="text-sm text-gray-500">{t.adjustPrice.originalTotal}</span>
               <span className="font-price text-sm text-gray-900">
                 ฿ {order.totalPrice.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-gray-200">
-              <span className="text-sm font-medium text-gray-900">调整至</span>
+              <span className="text-sm font-medium text-gray-900">{t.adjustPrice.adjustedTo}</span>
               <span className="font-price text-sm font-bold text-blue-600">
                 ฿ {adjustedPrice.toFixed(2)}
               </span>
@@ -84,7 +86,7 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
             className="w-full h-11 rounded-lg font-semibold text-sm transition-colors cursor-pointer
                      bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
           >
-            返回订单详情
+            {t.adjustPrice.backToOrder}
           </button>
         </div>
       </div>
@@ -106,7 +108,7 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
         >
           <LeftOutlined className="text-sm" />
         </button>
-        <h2 className="text-base font-semibold text-gray-900 ml-1">调整费用</h2>
+        <h2 className="text-base font-semibold text-gray-900 ml-1">{t.adjustPrice.title}</h2>
       </div>
 
       {/* 内容 */}
@@ -116,15 +118,15 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
           <div className="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-lg p-3">
             <InfoCircleOutlined className="text-blue-600 text-sm mt-0.5 flex-shrink-0" />
             <p className="text-sm text-blue-700 leading-relaxed">
-              每笔订单仅支持调整一次费用，提交后需等待审核。
+              {t.adjustPrice.noteDesc}
             </p>
           </div>
 
           {/* 当前订单总价 */}
           <div>
-            <h4 className="text-sm font-medium text-gray-900 mb-3">当前订单总价</h4>
+            <h4 className="text-sm font-medium text-gray-900 mb-3">{t.adjustPrice.currentTotal}</h4>
             <div className="bg-gray-50 rounded-lg p-4 flex items-center justify-between">
-              <span className="text-sm text-gray-500">订单总价</span>
+              <span className="text-sm text-gray-500">{t.adjustPrice.orderTotal}</span>
               <span className="font-price text-lg font-bold text-gray-900">
                 ฿ {order.totalPrice.toFixed(2)}
               </span>
@@ -133,7 +135,7 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
 
           {/* 调整后金额输入 */}
           <div>
-            <h4 className="text-sm font-medium text-gray-900 mb-3">调整后金额</h4>
+            <h4 className="text-sm font-medium text-gray-900 mb-3">{t.adjustPrice.adjustedAmount}</h4>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 select-none">
                 ฿
@@ -142,7 +144,7 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
                 type="number"
                 min="0"
                 step="0.01"
-                placeholder="输入调整后的总费用"
+                placeholder={t.adjustPrice.adjustedPlaceholder}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 className="w-full h-11 pl-12 pr-3 border border-gray-300 rounded-lg text-sm
@@ -153,8 +155,8 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
             {adjustedPrice > 0 && adjustedPrice !== order.totalPrice && (
               <p className="text-xs text-gray-400 mt-2">
                 {adjustedPrice > order.totalPrice
-                  ? `将增加 ฿ ${(adjustedPrice - order.totalPrice).toFixed(2)}`
-                  : `将减少 ฿ ${(order.totalPrice - adjustedPrice).toFixed(2)}`
+                  ? t.adjustPrice.willIncrease((adjustedPrice - order.totalPrice).toFixed(2))
+                  : t.adjustPrice.willDecrease((order.totalPrice - adjustedPrice).toFixed(2))
                 }
               </p>
             )}
@@ -173,7 +175,7 @@ export default function AdjustPriceView({ order, onBack, onSubmit }: AdjustPrice
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                     }`}
         >
-          提交调整申请
+          {t.adjustPrice.submit}
         </button>
       </div>
     </div>

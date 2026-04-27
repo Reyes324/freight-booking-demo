@@ -8,39 +8,34 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import { OrderStorage } from "@/lib/orderStorage";
 import { vehicleServicesMap, isServiceGroup, currencyConfig } from "@/data/mockData";
 import type { OrderDraft } from "@/data/mockData";
+import { useT } from "@/hooks/useT";
 
 type PricingOption = {
   id: "priority" | "standard" | "discount";
-  title: string;
-  subtitle: string;
   price: number;
   badge?: boolean;
 };
-
-const pricingOptions: PricingOption[] = [
-  {
-    id: "priority",
-    title: "优先订单",
-    subtitle: "加快配对司机送货",
-    price: 350.0,
-    badge: true,
-  },
-  {
-    id: "standard",
-    title: "标准订单",
-    subtitle: "加快配对司机送货",
-    price: 220.0,
-  },
-];
 
 interface PricingFooterProps {
   orderDraft?: OrderDraft;
   onNext?: () => void;
 }
 
+const rawPricingOptions: PricingOption[] = [
+  { id: "priority", price: 350.0, badge: true },
+  { id: "standard", price: 220.0 },
+];
+
 export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps) {
+  const t = useT();
   const [selectedOption, setSelectedOption] = useState<"priority" | "standard" | "discount">("standard");
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+
+  const pricingOptions = rawPricingOptions.map((o) => ({
+    ...o,
+    title: o.id === "priority" ? t.pricing.priority : t.pricing.standard,
+    subtitle: o.id === "priority" ? t.pricing.prioritySubtitle : t.pricing.standardSubtitle,
+  }));
 
   const handleNext = () => {
     if (!orderDraft || !onNext) return;
@@ -56,7 +51,7 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
 
     // 1. 运费（基础价格）
     items.push({
-      label: "运费",
+      label: t.pricing.deliveryFee,
       price: orderDraft.basePrice,
     });
 
@@ -88,14 +83,14 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
       // 如果有额外服务，添加总和项
       if (additionalServicesTotal > 0) {
         items.push({
-          label: "额外服务",
+          label: t.pricing.addons,
           price: additionalServicesTotal,
         });
       }
     }
 
     return items;
-  }, [orderDraft]);
+  }, [orderDraft, t]);
 
   // 费用明细内容
   const priceBreakdown = (
@@ -109,7 +104,7 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
         </div>
       ))}
       {priceBreakdownItems.length === 0 && (
-        <div className="text-sm text-gray-400 text-center py-2">暂无费用明细</div>
+        <div className="text-sm text-gray-400 text-center py-2">{t.pricing.noPriceBreakdown}</div>
       )}
     </div>
   );
@@ -172,7 +167,7 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
                 {isSelected && (
                   <Popover
                     content={priceBreakdown}
-                    title="费用明细"
+                    title={t.pricing.priceBreakdownTitle}
                     trigger="click"
                     placement="top"
                   >
@@ -195,7 +190,7 @@ export default function PricingFooter({ orderDraft, onNext }: PricingFooterProps
                  disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span className="text-white text-base font-medium group-hover:scale-105 transition-transform">
-          下一步
+          {t.pricing.next}
         </span>
       </button>
     </div>

@@ -1,26 +1,27 @@
+"use client";
+
 import { Tag } from 'antd';
 import type { OrderStatus } from '@/data/mockData';
-
-const statusText: Record<OrderStatus, string> = {
-  calling_driver: '呼叫司机中',
-  in_transit: '前往装货地',
-  delivering: '配送中',
-  completed: '已完成',
-  cancelled: '已取消',
-};
+import { useT } from '@/hooks/useT';
 
 const statusColor: Record<OrderStatus, string> = {
-  calling_driver: '#FF6600',     // 呼叫司机中 - 橙色
-  in_transit: '#2257D4',         // 前往装货地 - 品牌主色
-  delivering: '#2257D4',         // 配送中 - 品牌主色
-  completed: 'default',          // 已完成 - 黑灰色
-  cancelled: '#F23041',          // 已取消 - 设计系统失败色
+  calling_driver: '#FF6600',
+  in_transit: '#2257D4',
+  delivering: '#2257D4',
+  completed: 'default',
+  cancelled: '#F23041',
 };
 
-export function getStatusConfig(status: OrderStatus) {
+export function getStatusConfig(status: OrderStatus, t: ReturnType<typeof useT>) {
   return {
     color: statusColor[status],
-    text: statusText[status],
+    text: {
+      calling_driver: t.orders.statusCalling,
+      in_transit: t.orders.statusInTransit,
+      delivering: t.orders.statusDelivering,
+      completed: t.orders.statusCompleted,
+      cancelled: t.orders.statusCancelled,
+    }[status],
   };
 }
 
@@ -29,9 +30,18 @@ interface OrderStatusTagProps {
 }
 
 export default function OrderStatusTag({ status }: OrderStatusTagProps) {
+  const t = useT();
+  const labels: Record<OrderStatus, string> = {
+    calling_driver: t.orders.statusCalling,
+    in_transit: t.orders.statusInTransit,
+    delivering: t.orders.statusDelivering,
+    completed: t.orders.statusCompleted,
+    cancelled: t.orders.statusCancelled,
+  };
+
   return (
     <Tag color={statusColor[status]}>
-      {statusText[status]}
+      {labels[status]}
     </Tag>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { serviceOptions, type ServiceOption } from "@/data/mockData";
+import { useT } from "@/hooks/useT";
 
 interface ServiceOptionsProps {
   selectedOption: ServiceOption | null;
@@ -13,6 +14,7 @@ export default function ServiceOptions({
   onSelect,
   visible,
 }: ServiceOptionsProps) {
+  const t = useT();
   if (!visible) return null;
 
   return (
@@ -61,7 +63,7 @@ export default function ServiceOptions({
 
       {/* Next Step Button */}
       <button className="w-full h-12 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors duration-200">
-        下一步
+        {t.serviceOptions.next}
       </button>
     </div>
   );

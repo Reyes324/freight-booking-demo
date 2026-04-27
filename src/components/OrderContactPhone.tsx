@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useT } from "@/hooks/useT";
 
 interface OrderContactPhoneProps {
   value: string;
@@ -17,6 +18,7 @@ const COUNTRY_CODES = [
 ];
 
 export default function OrderContactPhone({ value, onChange, error }: OrderContactPhoneProps) {
+  const t = useT();
   const [selectedCode, setSelectedCode] = useState("+66");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -51,7 +53,7 @@ export default function OrderContactPhone({ value, onChange, error }: OrderConta
 
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-900 mb-3">订单联系电话</label>
+      <label className="block text-sm font-semibold text-gray-900 mb-3">{t.contact.label}</label>
 
       <div className={`w-full h-11 rounded-lg border bg-white flex items-center overflow-hidden transition-all ${
         error

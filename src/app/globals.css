@@ -37,6 +37,18 @@ body {
   box-sizing: border-box;
 }
 
+/* Figma 捕获模式：?cap 锁定 1440 宽度，让 flex/grid 分配出整数 px，消除小数 */
+html.cap-mode,
+html.cap-mode body {
+  width: 1440px !important;
+  min-width: 1440px !important;
+  max-width: 1440px !important;
+  overflow-x: hidden !important;
+}
+html.cap-mode * {
+  max-width: none;
+}
+
 /* Custom animations for smooth interactions */
 @keyframes fadeIn {
   from {

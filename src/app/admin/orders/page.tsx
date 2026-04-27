@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Table, Input, Button, Card, Tag, Select, Tooltip, Alert } from 'antd';
 import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
@@ -52,6 +52,18 @@ function FeeTooltip({ breakdown, currency }: { breakdown: FeeBreakdown; currency
 }
 
 export default function AdminOrdersPage() {
+  // 捕获模式：用于 Figma Code to Canvas
+  // 访问 ?cap 可强制显示所有 Tooltip，方便捕获交互状态
+  const [captureMode, setCaptureMode] = useState(false);
+
+  // 客户端检测 URL 参数
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setCaptureMode(params.has('cap'));
+    }
+  }, []);
+
   const [orderNoSearch, setOrderNoSearch] = useState('');
   const [addressSearch, setAddressSearch] = useState('');
   const [enterpriseFilter, setEnterpriseFilter] = useState<string | null>(null);
@@ -169,7 +181,10 @@ export default function AdminOrdersPage() {
       key: 'supplierCode',
       width: 100,
       render: (v: string, r) => (
-        <Tooltip title={r.supplierName}>
+        <Tooltip
+          title={r.supplierName}
+          open={captureMode ? true : undefined}
+        >
           <span className="cursor-default">{v}</span>
         </Tooltip>
       ),
@@ -182,7 +197,10 @@ export default function AdminOrdersPage() {
       width: 200,
       ellipsis: true,
       render: (_, r) => (
-        <Tooltip title={`${r.pickupAddress}\n${r.pickupContact}`}>
+        <Tooltip
+          title={`${r.pickupAddress}\n${r.pickupContact}`}
+          open={captureMode ? true : undefined}
+        >
           <div>
             <div className="truncate text-sm">{r.pickupAddress}</div>
             <div className="truncate text-xs text-gray-400">{r.pickupContact}</div>
@@ -196,7 +214,10 @@ export default function AdminOrdersPage() {
       width: 200,
       ellipsis: true,
       render: (_, r) => (
-        <Tooltip title={`${r.dropoffAddress}\n${r.dropoffContact}`}>
+        <Tooltip
+          title={`${r.dropoffAddress}\n${r.dropoffContact}`}
+          open={captureMode ? true : undefined}
+        >
           <div>
             <div className="truncate text-sm">{r.dropoffAddress}</div>
             <div className="truncate text-xs text-gray-400">{r.dropoffContact}</div>
@@ -250,6 +271,7 @@ export default function AdminOrdersPage() {
         <Tooltip
           title={<FeeTooltip breakdown={r.lliFeeBreakdown} currency={r.currency} />}
           placement="left"
+          open={captureMode ? true : undefined}
         >
           <div className="cursor-default">
             <div className="font-medium">
@@ -271,6 +293,7 @@ export default function AdminOrdersPage() {
         <Tooltip
           title={<FeeTooltip breakdown={r.llmFeeBreakdown} currency={r.currency} />}
           placement="left"
+          open={captureMode ? true : undefined}
         >
           <div className="cursor-default">
             <div className="font-medium">
@@ -291,6 +314,18 @@ export default function AdminOrdersPage() {
 
   return (
     <div>
+      {/* 捕获模式提示 */}
+      {captureMode && (
+        <Alert
+          message="📸 Figma 捕获模式 (URL 加了 ?cap)"
+          description="所有气泡已强制显示，现在可以直接捕获到 Figma。完成后删除 ?cap 即可恢复正常。"
+          type="success"
+          showIcon
+          closable
+          className="mb-4"
+        />
+      )}
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-gray-900">订单记录</h1>
         <Button icon={<DownloadOutlined />} onClick={handleExport}>

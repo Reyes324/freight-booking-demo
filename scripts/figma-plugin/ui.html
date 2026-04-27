@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 0; padding: 16px; background: #fff; }
+  h3 { margin: 0 0 8px; font-size: 14px; color: #111; }
+  p  { margin: 0 0 16px; font-size: 12px; color: #666; line-height: 1.5; }
+  button {
+    width: 100%; padding: 10px; border: none; border-radius: 6px;
+    background: #2257D4; color: #fff; font-size: 14px; font-weight: 500;
+    cursor: pointer;
+  }
+  button:disabled { background: #9CA3AF; cursor: not-allowed; }
+  #log {
+    margin-top: 12px; padding: 10px; background: #F9FAFB; border-radius: 6px;
+    font-size: 11px; color: #374151; max-height: 200px; overflow-y: auto;
+    display: none; white-space: pre-wrap; line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<h3>导入设计 Token</h3>
+<p>将创建 3 个 Variable Collection：<br>颜色（38变量）/ 字体数值（21变量）/ 间距与形状（20变量）</p>
+<button id="btn" onclick="run()">开始导入</button>
+<div id="log"></div>
+
+<script>
+  const log = document.getElementById('log');
+  const btn = document.getElementById('btn');
+
+  function run() {
+    btn.disabled = true;
+    btn.textContent = '导入中…';
+    log.style.display = 'block';
+    log.textContent = '';
+    parent.postMessage({ pluginMessage: { type: 'RUN' } }, '*');
+  }
+
+  window.onmessage = (event) => {
+    const msg = event.data.pluginMessage;
+    if (!msg) return;
+    if (msg.type === 'LOG') {
+      log.textContent += msg.text + '\n';
+      log.scrollTop = log.scrollHeight;
+    }
+    if (msg.type === 'DONE') {
+      btn.textContent = '✅ 导入完成！';
+      btn.style.background = '#00A178';
+    }
+    if (msg.type === 'ERROR') {
+      btn.textContent = '❌ 出错了，查看日志';
+      btn.style.background = '#EF4444';
+      btn.disabled = false;
+    }
+  };
+</script>
+</body>
+</html>

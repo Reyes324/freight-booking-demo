@@ -8,6 +8,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import zhCN from "antd/locale/zh_CN";
 import { useState } from "react";
+import { useT } from "@/hooks/useT";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -21,6 +22,7 @@ const BANGKOK_TZ = "Asia/Bangkok";
 
 export default function DateTimePicker({ value, onChange }: DateTimePickerProps) {
   const [open, setOpen] = useState(false);
+  const t = useT();
 
   const handleChange = (date: Dayjs | null) => {
     if (date) {
@@ -45,12 +47,12 @@ export default function DateTimePicker({ value, onChange }: DateTimePickerProps)
   // 自定义显示文本
   const displayText = value
     ? dayjs(value).tz(BANGKOK_TZ).format("YYYY-MM-DD HH:mm")
-    : "立即用车";
+    : t.dateTime.now;
 
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-900 mb-3">
-        用车时间 <span className="text-gray-500 font-normal">(曼谷时间 GMT+7)</span>
+        {t.dateTime.label} <span className="text-gray-500 font-normal">({t.dateTime.timezone})</span>
       </label>
 
       <div className="relative">
@@ -96,7 +98,7 @@ export default function DateTimePicker({ value, onChange }: DateTimePickerProps)
                 size="large"
                 onClick={handleNow}
               >
-                立即用车
+                {t.dateTime.now}
               </Button>
             </div>
           )}

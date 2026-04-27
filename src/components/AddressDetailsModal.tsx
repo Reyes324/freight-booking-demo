@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { AddressDetail } from "@/data/mockData";
+import { useT } from "@/hooks/useT";
 
 interface AddressDetailsModalProps {
   isOpen: boolean;
@@ -20,13 +21,13 @@ export default function AddressDetailsModal({
   initialData,
   coordinates,
 }: AddressDetailsModalProps) {
+  const t = useT();
   const [contactName, setContactName] = useState(initialData?.contactName || "");
   const [phone, setPhone] = useState(initialData?.phone || "");
   const [unit, setUnit] = useState(initialData?.unit || "");
 
   useEffect(() => {
     if (isOpen) {
-      // Reset form when modal opens
       setContactName(initialData?.contactName || "");
       setPhone(initialData?.phone || "");
       setUnit(initialData?.unit || "");
@@ -63,7 +64,7 @@ export default function AddressDetailsModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between px-6 pt-6 pb-4">
-            <h2 className="text-lg font-semibold text-gray-900">填写地址详情</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t.address.detailsTitle}</h2>
             <button
               onClick={onClose}
               className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-150"
@@ -76,26 +77,24 @@ export default function AddressDetailsModal({
 
           {/* Content */}
           <div className="px-6 pb-6 space-y-4">
-            {/* Selected Address (read-only) */}
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                选择的地址
+                {t.address.selectedAddress}
               </label>
               <div className="px-3.5 py-2.5 bg-gray-50 rounded-lg border border-gray-100">
                 <p className="text-sm text-gray-700">{addressText}</p>
               </div>
             </div>
 
-            {/* Contact Name */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                联系人姓名
+                {t.address.contactName}
               </label>
               <input
                 type="text"
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
-                placeholder="请输入联系人姓名"
+                placeholder={t.address.contactNamePlaceholder}
                 className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            transition-all duration-200 ease-out
                            hover:border-gray-300
@@ -103,16 +102,15 @@ export default function AddressDetailsModal({
               />
             </div>
 
-            {/* Phone */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                联系人手机号
+                {t.address.contactPhone}
               </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="请输入联系人手机号"
+                placeholder={t.address.contactPhonePlaceholder}
                 className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            transition-all duration-200 ease-out
                            hover:border-gray-300
@@ -120,16 +118,15 @@ export default function AddressDetailsModal({
               />
             </div>
 
-            {/* Unit (optional) */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                地址备注
+                {t.address.addressNote}
               </label>
               <input
                 type="text"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                placeholder="例如：3楼A室，请按门铃"
+                placeholder={t.address.addressNotePlaceholder}
                 className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            transition-all duration-200 ease-out
                            hover:border-gray-300
@@ -145,14 +142,14 @@ export default function AddressDetailsModal({
               className="flex-1 h-11 px-4 rounded-lg border border-gray-200 text-sm font-medium text-gray-700
                          hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150"
             >
-              取消
+              {t.address.cancel}
             </button>
             <button
               onClick={handleSubmit}
               className="flex-1 h-11 px-4 rounded-lg text-sm font-semibold text-white bg-blue-600
                          hover:bg-blue-700 active:bg-blue-800 transition-all duration-150 ease-out"
             >
-              确认
+              {t.address.confirm}
             </button>
           </div>
         </div>
@@ -171,63 +168,59 @@ export default function AddressDetailsModal({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h3 className="text-base font-semibold text-gray-900 flex-1">填写地址详情</h3>
+          <h3 className="text-base font-semibold text-gray-900 flex-1">{t.address.detailsTitle}</h3>
         </div>
 
         {/* Content - Scrollable */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-          {/* Selected Address */}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1.5">
-              选择的地址
+              {t.address.selectedAddress}
             </label>
             <div className="px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-100">
               <p className="text-sm text-gray-700">{addressText}</p>
             </div>
           </div>
 
-          {/* Contact Name */}
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1.5">
-              联系人姓名
+              {t.address.contactName}
             </label>
             <input
               type="text"
               value={contactName}
               onChange={(e) => setContactName(e.target.value)}
-              placeholder="请输入联系人姓名"
+              placeholder={t.address.contactNamePlaceholder}
               className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                          transition-all duration-200 ease-out
                          focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
             />
           </div>
 
-          {/* Phone */}
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1.5">
-              联系人手机号
+              {t.address.contactPhone}
             </label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="请输入联系人手机号"
+              placeholder={t.address.contactPhonePlaceholder}
               className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                          transition-all duration-200 ease-out
                          focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
             />
           </div>
 
-          {/* Unit */}
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1.5">
-              地址备注
+              {t.address.addressNote}
             </label>
             <input
               type="text"
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
-              placeholder="例如：3楼A室，请按门铃"
+              placeholder={t.address.addressNotePlaceholder}
               className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                          transition-all duration-200 ease-out
                          focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
@@ -242,14 +235,14 @@ export default function AddressDetailsModal({
             className="flex-1 h-12 px-4 rounded-lg border border-gray-200 text-base font-medium text-gray-700
                        active:bg-gray-100 transition-colors duration-150"
           >
-            取消
+            {t.address.cancel}
           </button>
           <button
             onClick={handleSubmit}
             className="flex-1 h-12 px-4 rounded-lg text-base font-semibold text-white bg-blue-600
                        active:bg-blue-700 transition-all duration-150 ease-out"
           >
-            确认
+            {t.address.confirm}
           </button>
         </div>
       </div>

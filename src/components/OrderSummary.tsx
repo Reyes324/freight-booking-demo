@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { AddressDetail, Vehicle } from "@/data/mockData";
+import { useT } from "@/hooks/useT";
 
 interface OrderSummaryProps {
   pickup: AddressDetail;
@@ -18,11 +19,12 @@ export default function OrderSummary({
   pricingOption,
   totalPrice,
 }: OrderSummaryProps) {
-  const optionLabel = pricingOption === "priority" ? "优先订单" : "标准订单";
+  const t = useT();
+  const optionLabel = pricingOption === "priority" ? t.orderSummary.priority : t.orderSummary.standard;
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-900 mb-3">订单摘要</h2>
+      <h2 className="text-sm font-semibold text-gray-900 mb-3">{t.orderSummary.title}</h2>
 
       <div className="border border-gray-200/60 rounded-xl p-3.5 space-y-2.5 bg-white">
         {/* 路线信息 */}

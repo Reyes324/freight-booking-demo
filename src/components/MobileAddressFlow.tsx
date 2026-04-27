@@ -5,6 +5,7 @@ import { searchAddress } from "@/services/addressService";
 import type { AddressSuggestion } from "@/services/addressService";
 import type { AddressDetail } from "@/data/mockData";
 import MapView from "./MapView";
+import { useT } from "@/hooks/useT";
 
 interface MobileAddressFlowProps {
   isOpen: boolean;
@@ -46,13 +47,14 @@ export default function MobileAddressFlow({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout>(undefined);
+  const t = useT();
 
   const title =
     addressType === "pickup"
-      ? "选择装货地址"
+      ? t.address.selectPickup
       : addressType === "dropoff"
-        ? "选择卸货地址"
-        : "选择途经地址";
+        ? t.address.selectDropoff
+        : t.address.selectWaypoint;
 
   // Reset state when opened
   useEffect(() => {
@@ -220,7 +222,7 @@ export default function MobileAddressFlow({
                 type="text"
                 value={searchValue}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                placeholder="搜索地址"
+                placeholder={t.address.searchPlaceholder}
                 className="w-full h-11 pl-9 pr-3.5 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-900 placeholder:text-gray-400
                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white"
               />
@@ -259,7 +261,7 @@ export default function MobileAddressFlow({
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 mb-3">
                   <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
                 </div>
-                <p className="text-sm text-gray-600">搜索中...</p>
+                <p className="text-sm text-gray-600">{t.address.searching}</p>
               </div>
             ) : suggestions.length > 0 ? (
               <div className="py-1">
@@ -318,12 +320,12 @@ export default function MobileAddressFlow({
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-                <p className="text-sm text-gray-500">未找到匹配的地址</p>
-                <p className="text-xs text-gray-400 mt-1">请尝试其他关键词</p>
+                <p className="text-sm text-gray-500">{t.address.noResults}</p>
+                <p className="text-xs text-gray-400 mt-1">{t.address.tryOtherKeywords}</p>
               </div>
             ) : (
               <div className="py-12 px-4 text-center">
-                <p className="text-sm text-gray-400">输入地址开始搜索</p>
+                <p className="text-sm text-gray-400">{t.address.typeToSearch}</p>
               </div>
             )}
           </div>
@@ -341,7 +343,7 @@ export default function MobileAddressFlow({
             {/* Selected address */}
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                选择的地址
+                {t.address.selectedAddress}
               </label>
               <div className="px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-100">
                 <p className="text-sm text-gray-700 leading-snug">
@@ -353,13 +355,13 @@ export default function MobileAddressFlow({
             {/* Contact Name */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                联系人姓名
+                {t.address.contactName}
               </label>
               <input
                 type="text"
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
-                placeholder="请输入联系人姓名"
+                placeholder={t.address.contactNamePlaceholder}
                 className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
               />
@@ -368,13 +370,13 @@ export default function MobileAddressFlow({
             {/* Phone */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                联系人手机号
+                {t.address.contactPhone}
               </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="请输入联系人手机号"
+                placeholder={t.address.contactPhonePlaceholder}
                 className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
               />
@@ -383,13 +385,13 @@ export default function MobileAddressFlow({
             {/* Unit */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                地址备注
+                {t.address.addressNote}
               </label>
               <input
                 type="text"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                placeholder="例如：3楼A室，请按门铃"
+                placeholder={t.address.addressNotePlaceholder}
                 className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
               />
@@ -403,14 +405,14 @@ export default function MobileAddressFlow({
               className="flex-1 h-12 rounded-lg border border-gray-200 text-base font-medium text-gray-700
                          active:bg-gray-100 transition-colors"
             >
-              取消
+              {t.address.cancel}
             </button>
             <button
               onClick={handleConfirm}
               className="flex-1 h-12 rounded-lg text-base font-semibold text-white bg-blue-600
                          active:bg-blue-700 transition-colors"
             >
-              确认
+              {t.address.confirm}
             </button>
           </div>
         </>

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useT } from "@/hooks/useT";
 
 interface Country {
   id: string;
@@ -30,16 +32,10 @@ const LANGUAGES: Language[] = [
 export default function RegionLanguageSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<string>("thailand");
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("zh");
+  const { lang, setLang } = useLanguage();
+  const t = useT();
+  const selectedLanguage = lang;
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // 初始化时从 localStorage 读取语言设置
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem("appLanguage");
-    if (savedLanguage && (savedLanguage === "zh" || savedLanguage === "en")) {
-      setSelectedLanguage(savedLanguage);
-    }
-  }, []);
 
   // 点击外部关闭
   useEffect(() => {
@@ -111,17 +107,14 @@ export default function RegionLanguageSelector() {
           {/* 语言选择 */}
           <div className="p-3 border-b border-gray-100">
             <div className="text-xs font-medium text-gray-500 mb-2 px-2">
-              语言
+              {t.regionSelector.languageLabel}
             </div>
             <div className="space-y-0.5">
               {LANGUAGES.map((language) => (
                 <button
                   key={language.id}
                   onClick={() => {
-                    setSelectedLanguage(language.id);
-                    // 保存到 localStorage
-                    localStorage.setItem("appLanguage", language.id);
-                    // 选择语言后关闭弹窗
+                    setLang(language.id as "zh" | "en");
                     setTimeout(() => setIsOpen(false), 150);
                   }}
                   className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg
@@ -157,7 +150,7 @@ export default function RegionLanguageSelector() {
           {/* 国家选择 */}
           <div className="p-3">
             <div className="text-xs font-medium text-gray-500 mb-2 px-2">
-              国家
+              {t.regionSelector.countryLabel}
             </div>
             <div className="space-y-0.5">
               {COUNTRIES.map((country) => (
@@ -175,7 +168,7 @@ export default function RegionLanguageSelector() {
                   }`}
                 >
                   <span className="flex-1 text-left text-sm">
-                    {country.flag} {country.name}
+                    {country.flag} {t.countries[country.id as keyof typeof t.countries] ?? country.name}
                   </span>
                   {selectedCountry === country.id && (
                     <svg

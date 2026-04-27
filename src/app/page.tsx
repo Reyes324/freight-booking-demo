@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useT } from "@/hooks/useT";
 import Navbar from "@/components/Navbar";
 import RouteSection from "@/components/RouteSection";
 import VehicleSelector from "@/components/VehicleSelector";
@@ -24,6 +25,7 @@ type ViewMode = "configure" | "confirm";
 
 export default function OrderPage() {
   const router = useRouter();
+  const t = useT();
   const [currentStep, setCurrentStep] = useState<ViewMode>("configure");
   const [pickupAddress, setPickupAddress] = useState<AddressDetail | null>(null);
   const [dropoffAddress, setDropoffAddress] = useState<AddressDetail | null>(null);
@@ -137,14 +139,14 @@ export default function OrderPage() {
     // 校验联系电话
     setContactPhoneError("");
     if (!contactPhone || !contactPhone.trim()) {
-      setContactPhoneError("请输入联系电话");
+      setContactPhoneError(t.order.phoneRequired);
       return;
     }
 
     // 提取电话号码部分（去掉区号）
     const phoneNumberPart = contactPhone.split(" ").slice(1).join(" ").trim();
     if (!phoneNumberPart) {
-      setContactPhoneError("请输入电话号码");
+      setContactPhoneError(t.order.phoneNumberRequired);
       return;
     }
 
@@ -167,7 +169,7 @@ export default function OrderPage() {
           console.log("selectedServices.itemIds:", orderDraft.selectedServices.itemIds);
           if (orderDraft.selectedServices.itemIds.includes(lastService.id)) {
             console.log("🚨 触发错误提示！");
-            setAlertMessage("订单提交失败：该附加服务暂不支持，请重新选择");
+            setAlertMessage(t.order.errorServiceUnsupported);
             setShowAlert(true);
             return;
           }
@@ -179,7 +181,7 @@ export default function OrderPage() {
           console.log("groupSelections:", groupSelections);
           if (groupSelections && groupSelections.length > 0) {
             console.log("🚨 触发错误提示！");
-            setAlertMessage("订单提交失败：该附加服务暂不支持，请重新选择");
+            setAlertMessage(t.order.errorServiceUnsupported);
             setShowAlert(true);
             return;
           }
@@ -232,7 +234,7 @@ export default function OrderPage() {
           {/* 测试按钮（地图左侧） */}
           <button
             onClick={() => {
-              setAlertMessage("订单提交失败：该附加服务暂不支持，请重新选择");
+              setAlertMessage(t.order.errorServiceUnsupported);
               setShowAlert(true);
             }}
             className="absolute top-4 left-4 px-3 py-1.5
@@ -242,7 +244,7 @@ export default function OrderPage() {
                        border border-gray-200
                        transition-all cursor-pointer z-10"
           >
-            测试报错
+            {t.order.testError}
           </button>
         </div>
 
@@ -274,10 +276,10 @@ export default function OrderPage() {
                 {/* 页面标题 */}
                 <div className="pb-4 border-b border-gray-100">
                   <h1 className="text-lg font-semibold text-gray-900">
-                    下单叫车
+                    {t.order.title}
                   </h1>
                   <p className="text-sm text-gray-500 mt-1.5">
-                    填写装卸货信息，快速匹配司机
+                    {t.order.subtitle}
                   </p>
                 </div>
 
@@ -335,7 +337,7 @@ export default function OrderPage() {
                     />
                   </svg>
                 </button>
-                <h1 className="text-base font-semibold text-gray-900 ml-1">确认订单</h1>
+                <h1 className="text-base font-semibold text-gray-900 ml-1">{t.order.confirmTitle}</h1>
               </div>
 
               {/* 报错栏（固定悬浮在导航栏下方，不占空间） */}

@@ -1,0 +1,8 @@
+{
+  "name": "企业国际版 · 导入设计 Token",
+  "id": "enterprise-design-tokens",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"]
+}

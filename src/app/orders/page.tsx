@@ -8,8 +8,10 @@ import Navbar from '@/components/Navbar';
 import OrderStatusTag from '@/components/OrderStatusTag';
 import OrderDrawer from '@/components/OrderDrawer';
 import { mockOrders, type Order } from '@/data/mockData';
+import { useT } from '@/hooks/useT';
 
 export default function OrdersPage() {
+  const t = useT();
   const [searchText, setSearchText] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -27,7 +29,7 @@ export default function OrdersPage() {
   // 表格列定义
   const columns: ColumnsType<Order> = [
     {
-      title: '下单时间',
+      title: t.orders.orderTime,
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 150,
@@ -36,7 +38,7 @@ export default function OrdersPage() {
       ),
     },
     {
-      title: '订单编号',
+      title: t.orders.orderId,
       dataIndex: 'orderId',
       key: 'orderId',
       width: 150,
@@ -45,14 +47,14 @@ export default function OrdersPage() {
       ),
     },
     {
-      title: '状态',
+      title: t.orders.status,
       dataIndex: 'status',
       key: 'status',
       width: 120,
       render: (status) => <OrderStatusTag status={status} />,
     },
     {
-      title: '装货时间',
+      title: t.orders.pickupTime,
       dataIndex: 'scheduledTime',
       key: 'scheduledTime',
       width: 150,
@@ -61,7 +63,7 @@ export default function OrdersPage() {
       ),
     },
     {
-      title: '路线',
+      title: t.orders.route,
       key: 'route',
       render: (_, record) => (
         <div className="flex flex-col gap-1">
@@ -72,7 +74,7 @@ export default function OrdersPage() {
       ellipsis: true,
     },
     {
-      title: '司机',
+      title: t.orders.driver,
       dataIndex: 'driver',
       key: 'driver',
       width: 150,
@@ -88,19 +90,19 @@ export default function OrdersPage() {
       ),
     },
     {
-      title: '车型',
+      title: t.orders.vehicle,
       dataIndex: 'vehicle',
       key: 'vehicle',
       width: 150,
       render: (vehicle) => (
         <div>
           <p className="text-sm text-gray-900">{vehicle.name}</p>
-          <p className="text-xs text-gray-400">{vehicle.weight || '标准载重'}</p>
+          <p className="text-xs text-gray-400">{vehicle.weight || t.drawer.standardLoad}</p>
         </div>
       ),
     },
     {
-      title: '价格',
+      title: t.orders.price,
       dataIndex: 'totalPrice',
       key: 'totalPrice',
       width: 150,
@@ -143,13 +145,13 @@ export default function OrdersPage() {
       <div className="p-6">
         {/* 标题栏 */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-lg font-semibold text-gray-900">订单记录</h1>
+          <h1 className="text-lg font-semibold text-gray-900">{t.orders.title}</h1>
         </div>
 
         {/* 搜索栏 */}
         <div className="mb-4">
           <Input
-            placeholder="搜索订单信息（订单号、地址、车型）"
+            placeholder={t.orders.searchPlaceholder}
             prefix={<SearchOutlined className="text-gray-400" />}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -167,7 +169,7 @@ export default function OrdersPage() {
             pagination={{
               pageSize: 10,
               showSizeChanger: false,
-              showTotal: (total) => `共 ${total} 条订单`,
+              showTotal: (total) => t.orders.totalOrders(total),
             }}
             onRow={(record) => ({
               onClick: () => {

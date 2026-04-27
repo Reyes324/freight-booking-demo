@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { LeftOutlined } from "@ant-design/icons";
 import type { Order } from "@/data/mockData";
 import { vehicleServicesMap, isServiceGroup } from "@/data/mockData";
+import { useT } from "@/hooks/useT";
 
 interface PriceIncreaseViewProps {
   order: Order;
@@ -12,6 +13,7 @@ interface PriceIncreaseViewProps {
 }
 
 export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceIncreaseViewProps) {
+  const t = useT();
   const [inputValue, setInputValue] = useState("");
   const [isExiting, setIsExiting] = useState(false);
 
@@ -76,7 +78,7 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
         >
           <LeftOutlined className="text-sm" />
         </button>
-        <h2 className="text-base font-semibold text-gray-900 ml-1">加价</h2>
+        <h2 className="text-base font-semibold text-gray-900 ml-1">{t.priceIncrease.title}</h2>
       </div>
 
       {/* 内容 */}
@@ -84,7 +86,7 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
         <div className="p-4 lg:p-6 space-y-6">
           {/* 加价金额输入 */}
           <div>
-            <h4 className="text-sm font-medium text-gray-900 mb-3">加价金额</h4>
+            <h4 className="text-sm font-medium text-gray-900 mb-3">{t.priceIncrease.amountLabel}</h4>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 select-none">
                 ฿
@@ -93,7 +95,7 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
                 type="number"
                 min="0"
                 step="1"
-                placeholder="输入加价金额"
+                placeholder={t.priceIncrease.amountPlaceholder}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 className={`w-full h-11 pl-12 pr-3 border rounded-lg text-sm outline-none transition-colors
@@ -105,24 +107,24 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
             </div>
             {showError && (
               <p className="mt-2 text-sm text-red-500">
-                不能小于上次的加价金额【{MIN_INCREASE}元】
+                {t.priceIncrease.minAmountError(String(MIN_INCREASE))}
               </p>
             )}
           </div>
 
           {/* 费用明细 */}
           <div>
-            <h4 className="text-sm font-medium text-gray-900 mb-3">费用明细</h4>
+            <h4 className="text-sm font-medium text-gray-900 mb-3">{t.priceIncrease.priceBreakdown}</h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">运费</span>
+                <span className="text-sm text-gray-500">{t.priceIncrease.deliveryFee}</span>
                 <span className="font-price text-sm text-gray-900">
                   ฿ {order.basePrice.toFixed(2)}
                 </span>
               </div>
               {additionalServicesTotal > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">额外服务</span>
+                  <span className="text-sm text-gray-500">{t.priceIncrease.addons}</span>
                   <span className="font-price text-sm text-gray-900">
                     ฿ {additionalServicesTotal.toFixed(2)}
                   </span>
@@ -130,14 +132,14 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
               )}
               {increaseAmount > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">加价</span>
+                  <span className="text-sm text-gray-500">{t.priceIncrease.surcharge}</span>
                   <span className="font-price text-sm text-blue-600">
                     ฿ {increaseAmount.toFixed(2)}
                   </span>
                 </div>
               )}
               <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
-                <span className="text-sm font-medium text-gray-900">总计</span>
+                <span className="text-sm font-medium text-gray-900">{t.priceIncrease.total}</span>
                 <span className="font-price text-lg font-bold text-gray-900">
                   ฿ {total.toFixed(2)}
                 </span>
@@ -158,7 +160,7 @@ export default function PriceIncreaseView({ order, onBack, onConfirm }: PriceInc
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                     }`}
         >
-          确认加价
+          {t.priceIncrease.confirm}
         </button>
       </div>
     </div>

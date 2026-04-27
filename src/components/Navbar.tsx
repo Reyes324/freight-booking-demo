@@ -6,16 +6,21 @@ import Image from "next/image";
 import { LogoutOutlined } from "@ant-design/icons";
 import { Popconfirm } from "antd";
 import { shadow } from "@/styles/design-tokens";
-
-const tabs = [
-  { id: "order", label: "下单叫车", path: "/" },
-  { id: "history", label: "订单记录", path: "/orders" },
-  { id: "wallet", label: "账期余额", path: "/wallet" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useT } from "@/hooks/useT";
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { lang } = useLanguage();
+  const t = useT();
+
+  const tabs = [
+    { id: "order", label: t.nav.bookARide, path: "/" },
+    { id: "history", label: t.nav.orderHistory, path: "/orders" },
+    { id: "wallet", label: t.nav.accountBalance, path: "/wallet" },
+  ];
+
   const activeTab = tabs.find(tab => tab.path === pathname)?.id || "";
 
   // 退出登录处理
@@ -44,11 +49,11 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center cursor-pointer">
           <Image
-            src="/logo-complete.png"
-            alt="货拉拉 · 企业国际版"
+            src={lang === "en" ? "/logo-complete-en.png" : "/logo-complete.png"}
+            alt="LALA i LOGISTICS"
             width={569}
             height={73}
-            className="h-5 lg:h-5.5 w-auto"
+            className={lang === "en" ? "h-12 lg:h-14 w-auto" : "h-5 lg:h-5.5 w-auto"}
             priority
           />
         </Link>
@@ -89,11 +94,11 @@ export default function Navbar() {
         {/* 功能图标 */}
         <div className="flex items-center gap-2">
           <Popconfirm
-            title="确认退出登录"
-            description="退出后需要重新登录才能继续使用"
+            title={t.nav.confirmLogout}
+            description={t.nav.confirmLogoutDesc}
             onConfirm={handleLogout}
-            okText="确认退出"
-            cancelText="取消"
+            okText={t.nav.confirmLogoutOk}
+            cancelText={t.common.cancel}
             okButtonProps={{ danger: true }}
           >
             <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer">

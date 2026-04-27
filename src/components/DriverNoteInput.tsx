@@ -1,11 +1,15 @@
 "use client";
 
+import { useT } from "@/hooks/useT";
+
 interface DriverNoteInputProps {
   value: string;
   onChange: (value: string) => void;
 }
 
 export default function DriverNoteInput({ value, onChange }: DriverNoteInputProps) {
+  const t = useT();
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= 500) {
       onChange(e.target.value);
@@ -17,14 +21,14 @@ export default function DriverNoteInput({ value, onChange }: DriverNoteInputProp
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-900 mb-3">
-        向司机留言
-        <span className="text-xs text-gray-400 font-normal ml-2">(选填)</span>
+        {t.driverNote.label}
+        <span className="text-xs text-gray-400 font-normal ml-2">{t.driverNote.optional}</span>
       </label>
       <div className="relative">
         <textarea
           value={value}
           onChange={handleChange}
-          placeholder="如有特殊要求,可在此留言给司机"
+          placeholder={t.driverNote.placeholder}
           className={`w-full px-3.5 py-2.5 rounded-lg border resize-none
                     text-sm text-gray-900 placeholder:text-gray-400
                     transition-all

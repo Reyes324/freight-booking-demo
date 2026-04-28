@@ -124,15 +124,6 @@ export default function TransactionsPage() {
         />
         <Select
 
-          placeholder="筛选企业"
-          allowClear
-          value={enterpriseFilter}
-          onChange={setEnterpriseFilter}
-          style={{ width: 160 }}
-          options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
-        />
-        <Select
-
           placeholder="筛选类型"
           allowClear
           value={typeFilter}

@@ -1,32 +1,28 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Tabs, Table, Input, Button, Card, DatePicker, Tag, Tooltip, Progress, Alert } from 'antd';
-import { ArrowLeftOutlined, SearchOutlined, DownloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Tabs, Table, Input, Card, DatePicker, Tag, Tooltip, Alert, Select } from 'antd';
+import { ArrowLeftOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import {
   enterprises,
   creditTransactions,
   adminOrders,
-  getMonthlyRate,
-  getCurrentMonth,
   type CreditTransaction,
   type AdminOrder,
   type FeeBreakdown,
 } from '@/data/adminMockData';
-import * as XLSX from 'xlsx';
 
 // 参考汇率（日常运营使用，月末按官方挂牌汇率结算）
 const REFERENCE_RATES: Record<string, number> = {
-  'THB': 5.00,  // 1 CNY = 5.00 THB
-  'HKD': 1.10,  // 1 CNY = 1.10 HKD
-  'MYR': 0.65,  // 1 CNY = 0.65 MYR
-  'SGD': 0.19,  // 1 CNY = 0.19 SGD
+  'THB': 5.00,
+  'HKD': 1.10,
+  'MYR': 0.65,
+  'SGD': 0.19,
 };
 
-// 转换为CNY（仅供参考）
 function toCNY(amount: number, currency: string): number {
   const rate = REFERENCE_RATES[currency] || 1;
   return amount / rate;
@@ -66,18 +62,30 @@ const { RangePicker } = DatePicker;
 
 function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency: string }) {
   const enterprise = enterprises.find((e) => e.id === enterpriseId);
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState<string | null>(null);
+
   const transactions = useMemo(
-    () => creditTransactions.filter((t) => t.enterpriseId === enterpriseId && t.orderId !== null), // 只显示订单交易
+    () => creditTransactions.filter((t) => t.enterpriseId === enterpriseId && t.orderId !== null),
     [enterpriseId]
   );
 
+  const filtered = useMemo(() => {
+    let result = transactions;
+    if (typeFilter) {
+      result = result.filter((t) => t.description === typeFilter);
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter((t) => t.orderId && t.orderId.toLowerCase().includes(q));
+    }
+    return result;
+  }, [transactions, typeFilter, search]);
+
   const remaining = (enterprise?.creditLimit ?? 0) - (enterprise?.usedCredit ?? 0);
 
-  // 获取当月汇率
-  const currentMonth = getCurrentMonth();
-  const monthlyRate = getMonthlyRate(currentMonth);
-  const localCurrency = enterprise?.localCurrency || 'HKD';
-  const exchangeRate = monthlyRate?.rates[`CNY/${localCurrency}` as keyof typeof monthlyRate.rates];
+
+  const transactionTypes = ['订单支付', '订单退款'];
 
   const columns: ColumnsType<CreditTransaction> = [
     { title: '日期', dataIndex: 'date', key: 'date', width: 180 },
@@ -115,55 +123,44 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
       <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
         <div className="text-sm text-gray-500 mb-2">当前余额</div>
 
-        {/* 人民币余额 */}
         <div className="flex items-baseline gap-2 mb-4">
           <span className="text-3xl font-bold text-gray-900">
-            ¥ {remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            CNY {remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </span>
           <span className="text-gray-400">/</span>
           <span className="text-gray-400">
-            ¥ {enterprise?.creditLimit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            CNY {enterprise?.creditLimit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </span>
         </div>
 
-        {/* 使用百分比 */}
-        <div className="mb-4">
-          <div className="flex justify-between text-sm text-gray-500 mb-1">
-            <span>已使用 {((enterprise?.usedCredit ?? 0) / (enterprise?.creditLimit ?? 1) * 100).toFixed(1)}%</span>
-          </div>
-          <Progress
-            percent={((enterprise?.usedCredit ?? 0) / (enterprise?.creditLimit ?? 1) * 100)}
-            showInfo={false}
-            strokeColor="#2257D4"
-          />
+<div className="pt-4 border-t border-gray-100">
+          <div className="text-xs text-gray-500">人民币金额按订单发生当日参考汇率估算，仅用于额度控制。实际结算以每月月末汇率为准。</div>
         </div>
-
-        {/* 汇率信息 */}
-        {monthlyRate && exchangeRate && (
-          <div className="pt-4 border-t border-gray-100">
-            <div className="text-xs text-gray-500 mb-1">参考汇率（实际结算以月末挂牌汇率为准）</div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-mono text-gray-900">
-                1 CNY = {exchangeRate} {localCurrency}
-              </span>
-              <Tooltip title={`${monthlyRate.rateDate} 参考汇率`}>
-                <InfoCircleOutlined className="text-gray-400 cursor-help" />
-              </Tooltip>
-            </div>
-            <div className="text-xs text-gray-400 mt-1">
-              剩余额度约 {localCurrency} {(remaining * exchangeRate).toLocaleString(undefined, { maximumFractionDigits: 0 })}（参考）
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Transactions */}
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-base font-medium text-gray-900">交易明细</h3>
+      <h3 className="text-base font-medium text-gray-900 mb-4">交易明细</h3>
+
+      {/* Filters */}
+      <div className="flex items-center gap-3 mb-4 flex-wrap">
+        <Input
+          placeholder="搜索订单号"
+          prefix={<SearchOutlined className="text-gray-400" />}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          allowClear
+          style={{ width: 200 }}
+        />
+        <Select
+          placeholder="筛选类型"
+          allowClear
+          value={typeFilter}
+          onChange={setTypeFilter}
+          style={{ width: 140 }}
+          options={transactionTypes.map((t) => ({ value: t, label: t }))}
+        />
         <RangePicker />
       </div>
 
-      {/* Alert提示 */}
       <Alert
         title="人民币换算金额仅供参考，实际账期结算以每月末挂牌汇率为准"
         type="info"
@@ -174,64 +171,69 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
       <Card>
         <Table
           columns={columns}
-          dataSource={transactions}
+          dataSource={filtered}
           rowKey="id"
-          pagination={{ pageSize: 10 }}
+          pagination={{
+            pageSize: 15,
+            showTotal: (total) => `共 ${total} 条流水`,
+          }}
         />
       </Card>
     </div>
   );
 }
 
-function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; enterpriseName: string }) {
+function OrdersTab({ enterpriseId }: { enterpriseId: string }) {
+  const [orderNoSearch, setOrderNoSearch] = useState('');
+  const [addressSearch, setAddressSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [countryFilter, setCountryFilter] = useState<string | null>(null);
+  const [supplierFilter, setSupplierFilter] = useState<string | null>(null);
+
   const orders = useMemo(
     () => adminOrders.filter((o) => o.enterpriseId === enterpriseId),
     [enterpriseId]
   );
 
-  const handleExport = () => {
-    const data = orders.map((o) => ({
-      '下单日期': o.orderDate,
-      '企业客户': enterpriseName,
-      '供应商': o.supplierCode,
-      '国家': o.country,
-      '车型': o.vehicleType,
-      '起始地址': o.pickupAddress,
-      '起始联系人': o.pickupContact,
-      '目的地址': o.dropoffAddress,
-      '目的联系人': o.dropoffContact,
-      'LLI单号': o.orderId,
-      '供应商单号': o.supplierOrderId,
-      '司机信息': o.driverInfo,
-      '订单状态': o.status,
-      '币种': o.currency,
-      '参考汇率': `1 CNY = ${REFERENCE_RATES[o.currency] || '-'} ${o.currency}`,
-      'LLI账单金额': o.lliAmount,
-      'LLI账单-CNY换算': toCNY(o.lliAmount, o.currency).toFixed(2),
-      'LLM账单金额': o.llmAmount,
-      'LLM账单-CNY换算': toCNY(o.llmAmount, o.currency).toFixed(2),
-    }));
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, '订单记录');
-    XLSX.writeFile(wb, `${enterpriseName}_订单记录.xlsx`);
-  };
+  const filtered = useMemo(() => {
+    let result = orders;
+    if (statusFilter) result = result.filter((o) => o.status === statusFilter);
+    if (countryFilter) result = result.filter((o) => o.country === countryFilter);
+    if (supplierFilter) result = result.filter((o) => o.supplierCode === supplierFilter);
+    if (orderNoSearch.trim()) {
+      const q = orderNoSearch.toLowerCase();
+      result = result.filter(
+        (o) => o.orderId.toLowerCase().includes(q) || o.supplierOrderId.toLowerCase().includes(q)
+      );
+    }
+    if (addressSearch.trim()) {
+      const q = addressSearch.toLowerCase();
+      result = result.filter(
+        (o) => o.pickupAddress.toLowerCase().includes(q) || o.dropoffAddress.toLowerCase().includes(q)
+      );
+    }
+    return result;
+  }, [orders, statusFilter, countryFilter, supplierFilter, orderNoSearch, addressSearch]);
+
+  const countries = [...new Set(orders.map((o) => o.country))];
+  const statuses = [...new Set(orders.map((o) => o.status))];
+  const suppliers = [...new Set(orders.map((o) => o.supplierCode))];
 
   const statusConfig: Record<string, { color: string }> = {
-    '正在呼叫司机': { color: 'orange' },
-    '前往装货地': { color: 'cyan' },
-    '配送中': { color: 'blue' },
-    '已完成': { color: 'green' },
-    '已取消': { color: 'red' },
-    '已过期': { color: 'default' },
+    '正在呼叫司机': { color: '#2257D4' },
+    '前往装货地': { color: '#2257D4' },
+    '配送中': { color: '#2257D4' },
+    '已完成': { color: 'default' },
+    '已取消': { color: '#F23041' },
   };
 
   const columns: ColumnsType<AdminOrder> = [
     {
-      title: '下单日期',
+      title: '下单时间',
       dataIndex: 'orderDate',
       key: 'orderDate',
       width: 110,
+      sorter: (a, b) => a.orderDate.localeCompare(b.orderDate),
       render: (v: string) => v.slice(5, 16),
     },
     {
@@ -276,6 +278,13 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
       ),
     },
     {
+      title: '装货时间',
+      dataIndex: 'pickupTime',
+      key: 'pickupTime',
+      width: 110,
+      render: (v: string) => v.slice(5, 16),
+    },
+    {
       title: 'LLI单号',
       dataIndex: 'orderId',
       key: 'orderId',
@@ -307,6 +316,7 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
       title: 'LLI账单金额',
       key: 'lliAmount',
       width: 150,
+      sorter: (a, b) => a.lliAmount - b.lliAmount,
       render: (_, r) => (
         <Tooltip
           title={<FeeTooltip breakdown={r.lliFeeBreakdown} currency={r.currency} />}
@@ -327,6 +337,7 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
       title: 'LLM账单金额',
       key: 'llmAmount',
       width: 150,
+      sorter: (a, b) => a.llmAmount - b.llmAmount,
       render: (_, r) => (
         <Tooltip
           title={<FeeTooltip breakdown={r.llmFeeBreakdown} currency={r.currency} />}
@@ -347,19 +358,50 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      {/* Filters */}
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
         <Input
-          placeholder="搜索订单"
+          placeholder="搜索单号"
           prefix={<SearchOutlined className="text-gray-400" />}
+          value={orderNoSearch}
+          onChange={(e) => setOrderNoSearch(e.target.value)}
           allowClear
-          style={{ width: 300 }}
+          style={{ width: 200 }}
         />
-        <Button icon={<DownloadOutlined />} onClick={handleExport}>
-          导出 Excel
-        </Button>
+        <Input
+          placeholder="搜索地址"
+          prefix={<SearchOutlined className="text-gray-400" />}
+          value={addressSearch}
+          onChange={(e) => setAddressSearch(e.target.value)}
+          allowClear
+          style={{ width: 200 }}
+        />
+        <Select
+          placeholder="供应商"
+          allowClear
+          value={supplierFilter}
+          onChange={setSupplierFilter}
+          style={{ width: 130 }}
+          options={suppliers.map((s) => ({ value: s, label: s }))}
+        />
+        <Select
+          placeholder="国家"
+          allowClear
+          value={countryFilter}
+          onChange={setCountryFilter}
+          style={{ width: 120 }}
+          options={countries.map((c) => ({ value: c, label: c }))}
+        />
+        <Select
+          placeholder="状态"
+          allowClear
+          value={statusFilter}
+          onChange={setStatusFilter}
+          style={{ width: 130 }}
+          options={statuses.map((s) => ({ value: s, label: s }))}
+        />
       </div>
 
-      {/* Alert提示 */}
       <Alert
         title="人民币换算金额仅供参考，实际账期结算以每月末挂牌汇率为准"
         type="info"
@@ -370,9 +412,12 @@ function OrdersTab({ enterpriseId, enterpriseName }: { enterpriseId: string; ent
       <Card>
         <Table
           columns={columns}
-          dataSource={orders}
+          dataSource={filtered}
           rowKey="orderId"
-          pagination={{ pageSize: 10 }}
+          pagination={{
+            pageSize: 15,
+            showTotal: (total) => `共 ${total} 条订单`,
+          }}
           scroll={{ x: 1900 }}
           size="small"
         />
@@ -402,7 +447,6 @@ export default function EnterpriseDetailPage() {
 
   return (
     <div>
-      {/* Back */}
       <Link
         href="/admin/enterprises"
         className="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-700 text-sm mb-6"
@@ -411,7 +455,6 @@ export default function EnterpriseDetailPage() {
         返回企业列表
       </Link>
 
-      {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-900">
           {enterprise.name}
@@ -423,7 +466,6 @@ export default function EnterpriseDetailPage() {
         </div>
       </div>
 
-      {/* Tabs */}
       <Tabs
         defaultActiveKey={defaultTab}
         items={[
@@ -435,7 +477,7 @@ export default function EnterpriseDetailPage() {
           {
             key: 'orders',
             label: '订单记录',
-            children: <OrdersTab enterpriseId={id} enterpriseName={enterprise.name} />,
+            children: <OrdersTab enterpriseId={id} />,
           },
         ]}
       />

@@ -131,13 +131,13 @@ export default function EnterprisesPage() {
       render: (_, r) => (
         <div className="flex gap-3 whitespace-nowrap">
           <a
-            className="text-blue-600 hover:text-blue-800 cursor-pointer"
+            className="text-[#2257D4] hover:text-[#1C47AC] cursor-pointer"
             onClick={() => router.push(`/admin/enterprises/${r.id}/edit`)}
           >
             更改资料
           </a>
           <a
-            className="text-blue-600 hover:text-blue-800 cursor-pointer"
+            className="text-[#2257D4] hover:text-[#1C47AC] cursor-pointer"
             onClick={() => router.push(`/admin/enterprises/${r.id}`)}
           >
             订单交易

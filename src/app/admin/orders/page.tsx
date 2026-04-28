@@ -153,7 +153,7 @@ export default function AdminOrdersPage() {
   };
 
   const statusConfig: Record<string, { color: string }> = {
-    '正在呼叫司机': { color: '#FF6600' },
+    '正在呼叫司机': { color: '#2257D4' },  // Brand/Primary（橙色 #FF6600 不在规范内）
     '前往装货地': { color: '#2257D4' },
     '配送中': { color: '#2257D4' },
     '已完成': { color: 'default' },
@@ -352,15 +352,6 @@ export default function AdminOrdersPage() {
           onChange={(e) => setAddressSearch(e.target.value)}
           allowClear
           style={{ width: 200 }}
-        />
-        <Select
-
-          placeholder="企业客户"
-          allowClear
-          value={enterpriseFilter}
-          onChange={setEnterpriseFilter}
-          style={{ width: 140 }}
-          options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
         />
         <Select
 

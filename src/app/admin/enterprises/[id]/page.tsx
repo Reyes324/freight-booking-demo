@@ -240,7 +240,7 @@ function OrdersTab({ enterpriseId }: { enterpriseId: string }) {
       title: '供应商',
       dataIndex: 'supplierCode',
       key: 'supplierCode',
-      width: 100,
+      width: 140,
       render: (v: string, r) => (
         <Tooltip title={r.supplierName}>
           <span className="cursor-default">{v}</span>
@@ -381,7 +381,7 @@ function OrdersTab({ enterpriseId }: { enterpriseId: string }) {
           allowClear
           value={supplierFilter}
           onChange={setSupplierFilter}
-          style={{ width: 130 }}
+          style={{ width: 160 }}
           options={suppliers.map((s) => ({ value: s, label: s }))}
         />
         <Select

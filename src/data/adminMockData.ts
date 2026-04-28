@@ -236,7 +236,7 @@ export const creditTransactions: CreditTransaction[] = [
 export const adminOrders: AdminOrder[] = [
   // Viettel Post orders (越南 → LLM-VN)
   {
-    orderId: 'LLI-20260320-001', supplierOrderId: 'LLM-VN-88001', supplierCode: 'LLM-VN', supplierName: 'Lalamove Vietnam',
+    orderId: 'LLI-20260320-001', supplierOrderId: 'LLM-VN-88001', supplierCode: 'LLM（越南）', supplierName: 'LLM（越南）',
     enterpriseId: 'E001', orderDate: '2026-03-20 14:30', pickupTime: '2026-03-20 15:00', country: '越南', vehicleType: 'Van',
     pickupAddress: 'Hoàn Kiếm, Hà Nội', pickupContact: 'Nguyễn Văn A +84 246 123 456',
     dropoffAddress: 'Quận 1, TP.HCM', dropoffContact: 'Trần Thị B +84 283 987 654',
@@ -246,7 +246,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'VND',
   },
   {
-    orderId: 'LLI-20260318-003', supplierOrderId: 'LLM-VN-88002', supplierCode: 'LLM-VN', supplierName: 'Lalamove Vietnam',
+    orderId: 'LLI-20260318-003', supplierOrderId: 'LLM-VN-88002', supplierCode: 'LLM（越南）', supplierName: 'LLM（越南）',
     enterpriseId: 'E001', orderDate: '2026-03-18 09:45', pickupTime: '2026-03-18 10:15', country: '越南', vehicleType: 'Motorcycle',
     pickupAddress: 'Ba Đình, Hà Nội', pickupContact: 'Phạm Minh +84 246 123 456',
     dropoffAddress: 'Cầu Giấy, Hà Nội', dropoffContact: 'Lê Hoa +84 901 234 567',
@@ -256,7 +256,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'VND',
   },
   {
-    orderId: 'LLI-20260324-005', supplierOrderId: 'LLM-VN-88005', supplierCode: 'LLM-VN', supplierName: 'Lalamove Vietnam',
+    orderId: 'LLI-20260324-005', supplierOrderId: 'LLM-VN-88005', supplierCode: 'LLM（越南）', supplierName: 'LLM（越南）',
     enterpriseId: 'E001', orderDate: '2026-03-24 08:30', pickupTime: '2026-03-24 09:00', country: '越南', vehicleType: 'Pickup Truck',
     pickupAddress: 'Đống Đa, Hà Nội', pickupContact: 'Lý Quốc +84 246 123 456',
     dropoffAddress: 'Thanh Xuân, Hà Nội', dropoffContact: 'Đỗ Hùng +84 934 567 890',
@@ -267,7 +267,7 @@ export const adminOrders: AdminOrder[] = [
   },
   // 顺丰国际 orders (泰国 → LLM-TH)
   {
-    orderId: 'LLI-20260321-101', supplierOrderId: 'LLM-TH-99001', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    orderId: 'LLI-20260321-101', supplierOrderId: 'LLM-TH-99001', supplierCode: 'LLM（泰国）', supplierName: 'LLM（泰国）',
     enterpriseId: 'E002', orderDate: '2026-03-21 09:30', pickupTime: '2026-03-21 10:00', country: '泰国', vehicleType: 'Van',
     pickupAddress: 'Sukhumvit Rd, Khlong Toei', pickupContact: 'Somchai +66 812 345 67',
     dropoffAddress: 'Silom Rd, Bang Rak', dropoffContact: 'Nattaya +66 823 456 78',
@@ -277,7 +277,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'THB',
   },
   {
-    orderId: 'LLI-20260320-102', supplierOrderId: 'LLM-TH-99002', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    orderId: 'LLI-20260320-102', supplierOrderId: 'LLM-TH-99002', supplierCode: 'LLM（泰国）', supplierName: 'LLM（泰国）',
     enterpriseId: 'E002', orderDate: '2026-03-20 15:45', pickupTime: '2026-03-20 16:15', country: '泰国', vehicleType: 'Motorcycle',
     pickupAddress: 'Ratchadaphisek Rd, Din Daeng', pickupContact: 'Pradit +66 812 345 67',
     dropoffAddress: 'Phahonyothin Rd, Chatuchak', dropoffContact: 'Wanida +66 834 567 89',
@@ -287,7 +287,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'THB',
   },
   {
-    orderId: 'LLI-20260324-104', supplierOrderId: 'LLM-TH-99004', supplierCode: 'LLM-TH', supplierName: 'Lalamove Thailand',
+    orderId: 'LLI-20260324-104', supplierOrderId: 'LLM-TH-99004', supplierCode: 'LLM（泰国）', supplierName: 'LLM（泰国）',
     enterpriseId: 'E002', orderDate: '2026-03-24 10:00', pickupTime: '2026-03-24 10:30', country: '泰国', vehicleType: 'Pickup Truck',
     pickupAddress: 'Rama IV Rd, Pathum Wan', pickupContact: 'Kittisak +66 812 345 67',
     dropoffAddress: 'Lat Phrao Rd, Wang Thonglang', dropoffContact: 'Siriporn +66 845 678 90',
@@ -297,7 +297,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'THB',
   },
   {
-    orderId: 'LLI-20260323-105', supplierOrderId: 'GRAB-TH-55001', supplierCode: 'GRAB-TH', supplierName: 'Grab Thailand',
+    orderId: 'LLI-20260323-105', supplierOrderId: 'GRAB-TH-55001', supplierCode: 'LLM（泰国）', supplierName: 'LLM（泰国）',
     enterpriseId: 'E002', orderDate: '2026-03-23 16:30', pickupTime: '2026-03-23 17:00', country: '泰国', vehicleType: '4-Door Car',
     pickupAddress: 'Wireless Rd, Lumphini', pickupContact: 'Tanawat +66 812 345 67',
     dropoffAddress: 'Thonglor Soi 13', dropoffContact: 'Parichat +66 867 890 12',
@@ -308,7 +308,7 @@ export const adminOrders: AdminOrder[] = [
   },
   // 极兔快递 orders (马来西亚 → LLM-MY)
   {
-    orderId: 'LLI-20260322-201', supplierOrderId: 'LLM-MY-77001', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    orderId: 'LLI-20260322-201', supplierOrderId: 'LLM-MY-77001', supplierCode: 'LLM（马来西亚）', supplierName: 'LLM（马来西亚）',
     enterpriseId: 'E003', orderDate: '2026-03-22 10:00', pickupTime: '2026-03-22 10:30', country: '马来西亚', vehicleType: 'Van',
     pickupAddress: 'Jalan Bukit Bintang, KL', pickupContact: 'Ahmad +60 12 345 6789',
     dropoffAddress: 'Jalan Ampang, KL', dropoffContact: 'Mei Ling +60 13 456 7890',
@@ -318,7 +318,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'MYR',
   },
   {
-    orderId: 'LLI-20260321-202', supplierOrderId: 'LLM-MY-77002', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    orderId: 'LLI-20260321-202', supplierOrderId: 'LLM-MY-77002', supplierCode: 'LLM（马来西亚）', supplierName: 'LLM（马来西亚）',
     enterpriseId: 'E003', orderDate: '2026-03-21 14:30', pickupTime: '2026-03-21 15:00', country: '马来西亚', vehicleType: 'Pickup Truck',
     pickupAddress: 'Petaling Jaya, Selangor', pickupContact: 'Raj +60 12 345 6789',
     dropoffAddress: 'Shah Alam, Selangor', dropoffContact: 'Siti +60 14 567 8901',
@@ -328,7 +328,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'MYR',
   },
   {
-    orderId: 'LLI-20260319-203', supplierOrderId: 'LLM-MY-77003', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    orderId: 'LLI-20260319-203', supplierOrderId: 'LLM-MY-77003', supplierCode: 'LLM（马来西亚）', supplierName: 'LLM（马来西亚）',
     enterpriseId: 'E003', orderDate: '2026-03-19 09:00', pickupTime: '2026-03-19 09:30', country: '马来西亚', vehicleType: 'Small Truck',
     pickupAddress: 'Subang Jaya, Selangor', pickupContact: 'Wei +60 12 345 6789',
     dropoffAddress: 'Klang, Selangor', dropoffContact: 'Hafiz +60 15 678 9012',
@@ -338,7 +338,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'MYR',
   },
   {
-    orderId: 'LLI-20260324-204', supplierOrderId: 'LLM-MY-77004', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    orderId: 'LLI-20260324-204', supplierOrderId: 'LLM-MY-77004', supplierCode: 'LLM（马来西亚）', supplierName: 'LLM（马来西亚）',
     enterpriseId: 'E003', orderDate: '2026-03-24 15:00', pickupTime: '2026-03-24 15:30', country: '马来西亚', vehicleType: 'Van',
     pickupAddress: 'Bangsar South, KL', pickupContact: 'Tan +60 12 345 6789',
     dropoffAddress: 'Mont Kiara, KL', dropoffContact: 'Aisha +60 16 789 0123',
@@ -348,7 +348,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'MYR',
   },
   {
-    orderId: 'LLI-20260317-205', supplierOrderId: 'LLM-MY-77005', supplierCode: 'LLM-MY', supplierName: 'Lalamove Malaysia',
+    orderId: 'LLI-20260317-205', supplierOrderId: 'LLM-MY-77005', supplierCode: 'LLM（马来西亚）', supplierName: 'LLM（马来西亚）',
     enterpriseId: 'E003', orderDate: '2026-03-17 11:30', pickupTime: '2026-03-17 12:00', country: '马来西亚', vehicleType: 'Motorcycle',
     pickupAddress: 'KLCC, KL', pickupContact: 'Danny +60 12 345 6789',
     dropoffAddress: 'Mid Valley, KL', dropoffContact: 'Priya +60 17 890 1234',
@@ -359,7 +359,7 @@ export const adminOrders: AdminOrder[] = [
   },
   // JNE Express orders (印尼 → LLM-ID)
   {
-    orderId: 'LLI-20260322-302', supplierOrderId: 'LLM-ID-66002', supplierCode: 'LLM-ID', supplierName: 'Lalamove Indonesia',
+    orderId: 'LLI-20260322-302', supplierOrderId: 'LLM-ID-66002', supplierCode: 'LLM（印尼）', supplierName: 'LLM（印尼）',
     enterpriseId: 'E004', orderDate: '2026-03-22 08:45', pickupTime: '2026-03-22 09:15', country: '印尼', vehicleType: 'Van',
     pickupAddress: 'Jl. Sudirman, Jakarta Pusat', pickupContact: 'Budi +62 21 2345678',
     dropoffAddress: 'Jl. Gatot Subroto, Jakarta Selatan', dropoffContact: 'Siti +62 812 3456 7890',
@@ -369,7 +369,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'IDR',
   },
   {
-    orderId: 'LLI-20260323-303', supplierOrderId: 'LLM-ID-66003', supplierCode: 'LLM-ID', supplierName: 'Lalamove Indonesia',
+    orderId: 'LLI-20260323-303', supplierOrderId: 'LLM-ID-66003', supplierCode: 'LLM（印尼）', supplierName: 'LLM（印尼）',
     enterpriseId: 'E004', orderDate: '2026-03-23 11:20', pickupTime: '2026-03-23 11:50', country: '印尼', vehicleType: 'Small Truck',
     pickupAddress: 'Jl. Thamrin, Jakarta Pusat', pickupContact: 'Agus +62 21 2345678',
     dropoffAddress: 'Jl. Kuningan, Jakarta Selatan', dropoffContact: 'Dewi +62 812 9876 5432',
@@ -379,7 +379,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'IDR',
   },
   {
-    orderId: 'LLI-20260324-304', supplierOrderId: 'LLM-ID-66004', supplierCode: 'LLM-ID', supplierName: 'Lalamove Indonesia',
+    orderId: 'LLI-20260324-304', supplierOrderId: 'LLM-ID-66004', supplierCode: 'LLM（印尼）', supplierName: 'LLM（印尼）',
     enterpriseId: 'E004', orderDate: '2026-03-24 14:00', pickupTime: '2026-03-24 14:30', country: '印尼', vehicleType: 'Motorcycle',
     pickupAddress: 'Monas, Jakarta Pusat', pickupContact: 'Eko +62 21 2345678',
     dropoffAddress: 'Kota Tua, Jakarta Barat', dropoffContact: 'Maya +62 815 6789 0123',
@@ -389,7 +389,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'IDR',
   },
   {
-    orderId: 'LLI-20260324-305', supplierOrderId: 'GRAB-ID-44001', supplierCode: 'GRAB-ID', supplierName: 'Grab Indonesia',
+    orderId: 'LLI-20260324-305', supplierOrderId: 'GRAB-ID-44001', supplierCode: 'LLM（印尼）', supplierName: 'LLM（印尼）',
     enterpriseId: 'E004', orderDate: '2026-03-24 16:45', pickupTime: '2026-03-24 17:15', country: '印尼', vehicleType: '4-Door Car',
     pickupAddress: 'SCBD, Jakarta Selatan', pickupContact: 'Andi +62 21 2345678',
     dropoffAddress: 'Kemang, Jakarta Selatan', dropoffContact: 'Rina +62 816 7890 1234',
@@ -399,7 +399,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'IDR',
   },
   {
-    orderId: 'LLI-20260315-306', supplierOrderId: 'LLM-ID-66005', supplierCode: 'LLM-ID', supplierName: 'Lalamove Indonesia',
+    orderId: 'LLI-20260315-306', supplierOrderId: 'LLM-ID-66005', supplierCode: 'LLM（印尼）', supplierName: 'LLM（印尼）',
     enterpriseId: 'E004', orderDate: '2026-03-15 09:30', pickupTime: '2026-03-15 10:00', country: '印尼', vehicleType: 'Van',
     pickupAddress: 'Tanjung Priok, Jakarta Utara', pickupContact: 'Hadi +62 21 2345678',
     dropoffAddress: 'Cengkareng, Jakarta Barat', dropoffContact: 'Lina +62 817 8901 2345',
@@ -409,7 +409,7 @@ export const adminOrders: AdminOrder[] = [
     currency: 'IDR',
   },
   {
-    orderId: 'LLI-20260310-307', supplierOrderId: 'LLM-ID-66006', supplierCode: 'LLM-ID', supplierName: 'Lalamove Indonesia',
+    orderId: 'LLI-20260310-307', supplierOrderId: 'LLM-ID-66006', supplierCode: 'LLM（印尼）', supplierName: 'LLM（印尼）',
     enterpriseId: 'E004', orderDate: '2026-03-10 13:15', pickupTime: '2026-03-10 13:45', country: '印尼', vehicleType: 'Pickup Truck',
     pickupAddress: 'Blok M, Jakarta Selatan', pickupContact: 'Yanto +62 21 2345678',
     dropoffAddress: 'Pondok Indah, Jakarta Selatan', dropoffContact: 'Siska +62 818 9012 3456',

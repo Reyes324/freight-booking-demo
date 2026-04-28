@@ -13,6 +13,8 @@ interface RouteSectionProps {
   dropoffAddress: AddressDetail | null;
   onPickupChange: (address: AddressDetail) => void;
   onDropoffChange: (address: AddressDetail) => void;
+  addressErrors?: boolean[];
+  onAddressInteract?: (index: number) => void;
 }
 
 export default function RouteSection({
@@ -20,6 +22,8 @@ export default function RouteSection({
   dropoffAddress,
   onPickupChange,
   onDropoffChange,
+  addressErrors,
+  onAddressInteract,
 }: RouteSectionProps) {
   // Dynamic address list (minimum 2: pickup + dropoff)
   const [addresses, setAddresses] = useState<(AddressDetail | null)[]>([
@@ -209,10 +213,11 @@ export default function RouteSection({
                     <div className="flex items-center gap-2">
                       {/* Filled address display */}
                       <div
-                        className="flex-1 min-h-[44px] px-3.5 py-2.5 rounded-lg border border-gray-200 bg-white
-                                   hover:border-gray-300 transition-colors duration-200 ease-out cursor-pointer
-                                   flex items-center"
+                        className={`flex-1 min-h-[44px] px-3.5 py-2.5 rounded-lg border bg-white
+                                   transition-colors duration-200 ease-out cursor-pointer flex items-center
+                                   ${addressErrors?.[index] ? 'border-red-400 hover:border-red-400' : 'border-gray-200 hover:border-gray-300'}`}
                         onClick={() => {
+                          onAddressInteract?.(index);
                           if (isMobile()) {
                             openMobileFlow(index);
                             return;

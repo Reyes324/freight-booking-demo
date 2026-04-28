@@ -25,16 +25,25 @@ export default function AddressDetailsModal({
   const [contactName, setContactName] = useState(initialData?.contactName || "");
   const [phone, setPhone] = useState(initialData?.phone || "");
   const [unit, setUnit] = useState(initialData?.unit || "");
+  const [errors, setErrors] = useState<{ contactName?: string; phone?: string }>({});
 
   useEffect(() => {
     if (isOpen) {
       setContactName(initialData?.contactName || "");
       setPhone(initialData?.phone || "");
       setUnit(initialData?.unit || "");
+      setErrors({});
     }
   }, [isOpen, initialData]);
 
   const handleSubmit = () => {
+    const newErrors: { contactName?: string; phone?: string } = {};
+    if (!contactName.trim()) newErrors.contactName = "请填写联系人姓名";
+    if (!phone.trim()) newErrors.phone = "请填写手机号码";
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     onConfirm({
       address: addressText,
       contactName: contactName.trim(),
@@ -87,40 +96,42 @@ export default function AddressDetailsModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                {t.address.contactName}
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-900 mb-1.5">
+                {t.address.contactName}<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={contactName}
-                onChange={(e) => setContactName(e.target.value)}
+                onChange={(e) => { setContactName(e.target.value); if (e.target.value.trim()) setErrors((p) => ({ ...p, contactName: undefined })); }}
                 placeholder={t.address.contactNamePlaceholder}
-                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
-                           transition-all duration-200 ease-out
-                           hover:border-gray-300
-                           focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className={`w-full h-11 px-3.5 rounded-lg border bg-white text-base text-gray-900 placeholder:text-gray-400
+                           transition-all duration-200 ease-out hover:border-gray-300
+                           focus:outline-none focus:ring-4 focus:ring-blue-500/10
+                           ${errors.contactName ? 'border-red-400 focus:border-red-400' : 'border-gray-200 focus:border-blue-500'}`}
               />
+              {errors.contactName && <p className="mt-1 text-xs text-red-500">{errors.contactName}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                {t.address.contactPhone}
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-900 mb-1.5">
+                {t.address.contactPhone}<span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => { setPhone(e.target.value); if (e.target.value.trim()) setErrors((p) => ({ ...p, phone: undefined })); }}
                 placeholder={t.address.contactPhonePlaceholder}
-                className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
-                           transition-all duration-200 ease-out
-                           hover:border-gray-300
-                           focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className={`w-full h-11 px-3.5 rounded-lg border bg-white text-base text-gray-900 placeholder:text-gray-400
+                           transition-all duration-200 ease-out hover:border-gray-300
+                           focus:outline-none focus:ring-4 focus:ring-blue-500/10
+                           ${errors.phone ? 'border-red-400 focus:border-red-400' : 'border-gray-200 focus:border-blue-500'}`}
               />
+              {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                {t.address.addressNote}
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-900 mb-1.5">
+                {t.address.addressNote}<span className="text-xs font-normal text-gray-400">（选填）</span>
               </label>
               <input
                 type="text"
@@ -128,8 +139,7 @@ export default function AddressDetailsModal({
                 onChange={(e) => setUnit(e.target.value)}
                 placeholder={t.address.addressNotePlaceholder}
                 className="w-full h-11 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
-                           transition-all duration-200 ease-out
-                           hover:border-gray-300
+                           transition-all duration-200 ease-out hover:border-gray-300
                            focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
               />
             </div>
@@ -183,38 +193,42 @@ export default function AddressDetailsModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1.5">
-              {t.address.contactName}
+            <label className="flex items-center gap-1 text-sm font-medium text-gray-900 mb-1.5">
+              {t.address.contactName}<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={contactName}
-              onChange={(e) => setContactName(e.target.value)}
+              onChange={(e) => { setContactName(e.target.value); if (e.target.value.trim()) setErrors((p) => ({ ...p, contactName: undefined })); }}
               placeholder={t.address.contactNamePlaceholder}
-              className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
+              className={`w-full h-12 px-3.5 rounded-lg border bg-white text-base text-gray-900 placeholder:text-gray-400
                          transition-all duration-200 ease-out
-                         focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                         focus:outline-none focus:ring-4 focus:ring-blue-500/10
+                         ${errors.contactName ? 'border-red-400 focus:border-red-400' : 'border-gray-200 focus:border-blue-500'}`}
             />
+            {errors.contactName && <p className="mt-1 text-xs text-red-500">{errors.contactName}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1.5">
-              {t.address.contactPhone}
+            <label className="flex items-center gap-1 text-sm font-medium text-gray-900 mb-1.5">
+              {t.address.contactPhone}<span className="text-red-500">*</span>
             </label>
             <input
               type="tel"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => { setPhone(e.target.value); if (e.target.value.trim()) setErrors((p) => ({ ...p, phone: undefined })); }}
               placeholder={t.address.contactPhonePlaceholder}
-              className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
+              className={`w-full h-12 px-3.5 rounded-lg border bg-white text-base text-gray-900 placeholder:text-gray-400
                          transition-all duration-200 ease-out
-                         focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                         focus:outline-none focus:ring-4 focus:ring-blue-500/10
+                         ${errors.phone ? 'border-red-400 focus:border-red-400' : 'border-gray-200 focus:border-blue-500'}`}
             />
+            {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1.5">
-              {t.address.addressNote}
+            <label className="flex items-center gap-1 text-sm font-medium text-gray-900 mb-1.5">
+              {t.address.addressNote}<span className="text-xs font-normal text-gray-400">（选填）</span>
             </label>
             <input
               type="text"

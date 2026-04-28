@@ -46,6 +46,7 @@ export default function OrderPage() {
   // 全局提示状态
   const [alertMessage, setAlertMessage] = useState<string>("");
   const [showAlert, setShowAlert] = useState(false);
+  const [addressErrors, setAddressErrors] = useState<boolean[]>([false, false]);
 
   // 防止浏览器 scrollIntoView 静默滚动父容器（checkbox 获取焦点时会触发）
   const leftColRef = useRef<HTMLDivElement>(null);
@@ -115,13 +116,23 @@ export default function OrderPage() {
 
   const handleNext = useCallback(() => {
     if (!orderDraft) return;
-    // 保存配置面板滚动位置
+
+    const pickupMissing = !pickupAddress?.contactName || !pickupAddress?.phone;
+    const dropoffMissing = !dropoffAddress?.contactName || !dropoffAddress?.phone;
+    if (pickupMissing || dropoffMissing) {
+      setAddressErrors([pickupMissing, dropoffMissing]);
+      setAlertMessage(pickupMissing ? "请先完善起始地址的联系人信息" : "请先完善目的地址的联系人信息");
+      setShowAlert(true);
+      return;
+    }
+    setAddressErrors([false, false]);
+
     if (configScrollRef.current) {
       savedScrollTop.current = configScrollRef.current.scrollTop;
     }
     OrderStorage.save(orderDraft);
     setCurrentStep("confirm");
-  }, [orderDraft]);
+  }, [orderDraft, pickupAddress, dropoffAddress, t]);
 
   const handleBack = useCallback(() => {
     setCurrentStep("configure");
@@ -291,8 +302,13 @@ export default function OrderPage() {
                 <RouteSection
                   pickupAddress={pickupAddress}
                   dropoffAddress={dropoffAddress}
-                  onPickupChange={setPickupAddress}
-                  onDropoffChange={setDropoffAddress}
+                  onPickupChange={(a) => { setPickupAddress(a); setAddressErrors((e) => [false, e[1]]); }}
+                  onDropoffChange={(a) => { setDropoffAddress(a); setAddressErrors((e) => [e[0], false]); }}
+                  addressErrors={addressErrors}
+                  onAddressInteract={(index) => {
+                    setAddressErrors((e) => { const n = [...e]; n[index] = false; return n; });
+                    setShowAlert(false);
+                  }}
                 />
 
                 <AdditionalServices

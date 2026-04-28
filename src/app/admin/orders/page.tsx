@@ -247,11 +247,22 @@ export default function AdminOrdersPage() {
       render: (v: string) => <span className="text-xs font-mono">{v}</span>,
     },
     {
-      title: '司机',
-      dataIndex: 'driverInfo',
-      key: 'driverInfo',
-      width: 180,
-      ellipsis: true,
+      title: '司机车牌号',
+      key: 'driverPlate',
+      width: 130,
+      render: (_, r) => {
+        const plate = r.driverInfo?.split(' / ')[0] || '-';
+        return plate === '-' ? <span className="text-gray-400">-</span> : <span className="font-mono text-xs">{plate}</span>;
+      },
+    },
+    {
+      title: '司机手机号',
+      key: 'driverPhone',
+      width: 140,
+      render: (_, r) => {
+        const phone = r.driverInfo?.split(' / ')[1] || '-';
+        return phone ? <span className="text-xs">{phone}</span> : <span className="text-gray-400">-</span>;
+      },
     },
     {
       title: '状态',

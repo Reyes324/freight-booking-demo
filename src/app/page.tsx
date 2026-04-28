@@ -121,7 +121,7 @@ export default function OrderPage() {
     const dropoffMissing = !dropoffAddress?.contactName || !dropoffAddress?.phone;
     if (pickupMissing || dropoffMissing) {
       setAddressErrors([pickupMissing, dropoffMissing]);
-      setAlertMessage(pickupMissing ? "请先完善起始地址的联系人信息" : "请先完善目的地址的联系人信息");
+      setAlertMessage("请先完善地址的联系人信息");
       setShowAlert(true);
       return;
     }

@@ -284,16 +284,6 @@ export default function OrderPage() {
               )}
 
               <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
-                {/* 页面标题 */}
-                <div className="pb-4 border-b border-gray-100">
-                  <h1 className="text-lg font-semibold text-gray-900">
-                    {t.order.title}
-                  </h1>
-                  <p className="text-sm text-gray-500 mt-1.5">
-                    {t.order.subtitle}
-                  </p>
-                </div>
-
                 <VehicleSelector
                   selectedVehicle={selectedVehicle}
                   onSelect={handleVehicleSelect}

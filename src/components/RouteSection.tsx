@@ -48,6 +48,9 @@ export default function RouteSection({
   const [selectedCoords, setSelectedCoords] = useState<{ lat?: number; lng?: number }>({});
   const [currentEditIndex, setCurrentEditIndex] = useState<number>(-1);
 
+  // 记录用户明确取消弹窗（放弃填写联系人）的地址索引
+  const [dismissedIndices, setDismissedIndices] = useState<Set<number>>(new Set());
+
   // Mobile full-screen address flow
   const [mobileFlowOpen, setMobileFlowOpen] = useState(false);
   const [mobileFlowIndex, setMobileFlowIndex] = useState<number>(0);
@@ -67,12 +70,30 @@ export default function RouteSection({
 
   const handleMobileConfirm = (details: AddressDetail) => {
     updateAddress(mobileFlowIndex, details);
+    clearDismissed(mobileFlowIndex);
     setMobileFlowOpen(false);
   };
 
   const openMobileFlow = (index: number) => {
     setMobileFlowIndex(index);
     setMobileFlowOpen(true);
+  };
+
+  const clearDismissed = (index: number) => {
+    setDismissedIndices(prev => {
+      const next = new Set(prev);
+      next.delete(index);
+      return next;
+    });
+  };
+
+  const openPopover = (index: number, addr: AddressDetail) => {
+    setSelectedAddressText(addr.address);
+    setSelectedCoords({ lat: addr.lat, lng: addr.lng });
+    setCurrentEditIndex(index);
+    const updated = [...showPopovers];
+    updated[index] = true;
+    setShowPopovers(updated);
   };
 
   // Helper functions
@@ -111,6 +132,7 @@ export default function RouteSection({
       unit: "",
     };
     updateAddress(index, newAddress);
+    clearDismissed(index);
 
     // 打开详情弹窗供用户选填
     const updatedPopovers = [...showPopovers];
@@ -119,10 +141,10 @@ export default function RouteSection({
   };
 
   const handleConfirm = (index: number) => (details: AddressDetail) => {
-
     const existing = addresses[index];
     const mergedDetails = existing ? { ...existing, ...details } : details;
     updateAddress(index, mergedDetails);
+    clearDismissed(index);
 
     const updated = [...showPopovers];
     updated[index] = false;
@@ -133,8 +155,19 @@ export default function RouteSection({
     setSearchValues(updatedSearch);
   };
 
-  const handleCancel = (index: number) => () => {
+  const handlePopoverClose = (index: number) => {
+    const updated = [...showPopovers];
+    updated[index] = false;
+    setShowPopovers(updated);
 
+    // 用户主动取消弹窗，且联系人信息仍未填写 → 显示红色提示
+    const addr = addresses[index];
+    if (addr && (!addr.contactName || !addr.phone)) {
+      setDismissedIndices(prev => new Set([...prev, index]));
+    }
+  };
+
+  const handleCancel = (index: number) => () => {
     const updated = [...isEditingStates];
     updated[index] = false;
     setIsEditingStates(updated);
@@ -145,7 +178,6 @@ export default function RouteSection({
   };
 
   const addAddress = () => {
-    // Keep animation enabled for add/remove
     setAddresses([...addresses, null]);
     setSearchValues([...searchValues, ""]);
     setShowPopovers([...showPopovers, false]);
@@ -213,9 +245,8 @@ export default function RouteSection({
                     <div className="flex items-center gap-2">
                       {/* Filled address display */}
                       <div
-                        className={`flex-1 min-h-[44px] px-3.5 py-2.5 rounded-lg border bg-white
-                                   transition-colors duration-200 ease-out cursor-pointer flex items-center
-                                   ${addressErrors?.[index] ? 'border-red-400 hover:border-red-400' : 'border-gray-200 hover:border-gray-300'}`}
+                        className="flex-1 min-h-[44px] px-3.5 py-2.5 rounded-lg border border-gray-200 bg-white
+                                   transition-colors duration-200 ease-out cursor-pointer flex items-center hover:border-gray-300"
                         onClick={() => {
                           onAddressInteract?.(index);
                           if (isMobile()) {
@@ -235,17 +266,14 @@ export default function RouteSection({
                           <p className="text-sm text-gray-900 leading-snug">
                             {address.address}
                           </p>
+
+                          {/* 已填联系人：显示联系人信息 + 编辑图标 */}
                           {(address.contactName || address.phone || address.unit) && (
                             <div
                               className="flex items-center gap-1.5 mt-1.5 group cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setSelectedAddressText(address.address);
-                                setSelectedCoords({ lat: address.lat, lng: address.lng });
-                                setCurrentEditIndex(index);
-                                const updated = [...showPopovers];
-                                updated[index] = true;
-                                setShowPopovers(updated);
+                                openPopover(index, address);
                               }}
                             >
                               <p className="text-xs text-gray-500 group-hover:text-gray-700 leading-snug transition-colors">
@@ -264,6 +292,30 @@ export default function RouteSection({
                                   strokeWidth={2}
                                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                 />
+                              </svg>
+                            </div>
+                          )}
+
+                          {/* 用户取消弹窗且未填联系人：框内红色提示，可点击唤起弹窗 */}
+                          {dismissedIndices.has(index) && (!address.contactName || !address.phone) && (
+                            <div
+                              className="flex items-center gap-0.5 mt-1.5 cursor-pointer group"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onAddressInteract?.(index);
+                                openPopover(index, address);
+                              }}
+                            >
+                              <span className="text-xs text-red-500 group-hover:text-red-600 transition-colors">
+                                未填写联系人信息
+                              </span>
+                              <svg
+                                className="w-3 h-3 text-red-500 group-hover:text-red-600 transition-colors flex-shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                               </svg>
                             </div>
                           )}
@@ -333,11 +385,7 @@ export default function RouteSection({
                   {/* Address Details Popover */}
                   <AddressDetailsPopover
                     isOpen={showPopovers[index]}
-                    onClose={() => {
-                      const updated = [...showPopovers];
-                      updated[index] = false;
-                      setShowPopovers(updated);
-                    }}
+                    onClose={() => handlePopoverClose(index)}
                     onConfirm={handleConfirm(index)}
                     addressText={selectedAddressText}
                     initialData={addresses[index] || undefined}
@@ -384,7 +432,13 @@ export default function RouteSection({
       {/* Mobile full-screen address flow */}
       <MobileAddressFlow
         isOpen={mobileFlowOpen}
-        onClose={() => setMobileFlowOpen(false)}
+        onClose={() => {
+          const addr = addresses[mobileFlowIndex];
+          if (addr && (!addr.contactName || !addr.phone)) {
+            setDismissedIndices(prev => new Set([...prev, mobileFlowIndex]));
+          }
+          setMobileFlowOpen(false);
+        }}
         onConfirm={handleMobileConfirm}
         addressType={getMobileAddressType(mobileFlowIndex)}
         initialAddress={addresses[mobileFlowIndex]}

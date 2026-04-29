@@ -94,6 +94,14 @@ export default function EditAdministratorModal({
           rules={[
             { required: true, message: '请输入姓名' },
             { min: 2, max: 20, message: '姓名长度应为 2-20 位' },
+            {
+              validator: (_, value: string) => {
+                if (value && /\p{Emoji_Presentation}/u.test(value)) {
+                  return Promise.reject('不能包含表情符号');
+                }
+                return Promise.resolve();
+              },
+            },
           ]}
         >
           <Input placeholder="请输入姓名" />
@@ -108,6 +116,18 @@ export default function EditAdministratorModal({
             {
               pattern: /^(?=.*[a-zA-Z])(?=.*[0-9])/,
               message: '密码必须包含字母和数字',
+            },
+            {
+              validator: (_, value: string) => {
+                if (!value) return Promise.resolve();
+                if (/[一-鿿㐀-䶿]/.test(value)) {
+                  return Promise.reject('密码不能包含汉字');
+                }
+                if (/\p{Emoji_Presentation}/u.test(value)) {
+                  return Promise.reject('密码不能包含表情符号');
+                }
+                return Promise.resolve();
+              },
             },
           ]}
         >

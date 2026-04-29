@@ -43,6 +43,14 @@ export function getEnterpriseNameRules(excludeId?: string): Rule[] {
     },
     {
       validator: (_, value: string) => {
+        if (value && /\p{Emoji_Presentation}/u.test(value)) {
+          return Promise.reject('不能包含表情符号');
+        }
+        return Promise.resolve();
+      },
+    },
+    {
+      validator: (_, value: string) => {
         if (!value) return Promise.resolve();
         const duplicate = enterprises.find(
           (e) => e.name === value.trim() && e.id !== excludeId
@@ -56,20 +64,13 @@ export function getEnterpriseNameRules(excludeId?: string): Rule[] {
 
 /** 手机号校验规则 */
 export function getPhoneRules(countryCode: string, excludeId?: string): Rule[] {
-  const digits = phoneDigitsMap[countryCode] || { min: 8, max: 11 };
-  const digitDesc = digits.min === digits.max
-    ? `${digits.min} 位`
-    : `${digits.min}-${digits.max} 位`;
-
   return [
     { required: true, message: '请输入手机号' },
     {
       validator: (_, value: string) => {
         if (!value) return Promise.resolve();
         if (!/^\d+$/.test(value)) return Promise.reject('手机号只能包含数字');
-        if (value.length < digits.min || value.length > digits.max) {
-          return Promise.reject(`该地区手机号应为 ${digitDesc}`);
-        }
+        if (value.length > 13) return Promise.reject('手机号最多 13 位');
         return Promise.resolve();
       },
     },
@@ -94,6 +95,18 @@ export const passwordRules: Rule[] = [
   {
     pattern: PASSWORD_PATTERN,
     message: '密码必须包含字母和数字',
+  },
+  {
+    validator: (_, value: string) => {
+      if (!value) return Promise.resolve();
+      if (/[一-鿿㐀-䶿]/.test(value)) {
+        return Promise.reject('密码不能包含汉字');
+      }
+      if (/\p{Emoji_Presentation}/u.test(value)) {
+        return Promise.reject('密码不能包含表情符号');
+      }
+      return Promise.resolve();
+    },
   },
 ];
 

@@ -110,7 +110,7 @@ const zh = {
     vehicle: "车型",
     price: "价格",
     totalOrders: (n: number) => `共 ${n} 条订单`,
-    searchPlaceholder: "搜索订单信息（订单号、地址、车型）",
+    searchPlaceholder: "搜索订单信息（订单号、地址）",
     statusCalling: "呼叫司机中",
     statusInTransit: "前往装货地",
     statusDelivering: "配送中",

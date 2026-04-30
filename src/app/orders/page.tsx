@@ -133,8 +133,7 @@ export default function OrdersPage() {
     return (
       order.orderId.toLowerCase().includes(searchLower) ||
       order.pickup.address.toLowerCase().includes(searchLower) ||
-      order.dropoff.address.toLowerCase().includes(searchLower) ||
-      order.vehicle.name.toLowerCase().includes(searchLower)
+      order.dropoff.address.toLowerCase().includes(searchLower)
     );
   });
 
@@ -151,6 +150,8 @@ export default function OrdersPage() {
         {/* 搜索栏 */}
         <div className="mb-4">
           <Input
+            data-ds="Input"
+            data-ds-label="搜索框"
             placeholder={t.orders.searchPlaceholder}
             prefix={<SearchOutlined className="text-gray-400" />}
             value={searchText}
@@ -161,7 +162,7 @@ export default function OrdersPage() {
         </div>
 
         {/* 表格 */}
-        <Card>
+        <Card data-ds="Table" data-ds-label="订单列表">
           <Table
             columns={columns}
             dataSource={filteredOrders}

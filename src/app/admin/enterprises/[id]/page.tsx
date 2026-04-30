@@ -121,7 +121,7 @@ function CreditTab({ enterpriseId, currency }: { enterpriseId: string; currency:
     <div>
       {/* Balance card */}
       <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
-        <div className="text-sm text-gray-500 mb-2">当前余额</div>
+        <div className="text-sm text-gray-500 mb-2">本月账期余额</div>
 
         <div className="flex items-baseline gap-2 mb-4">
           <span className="text-3xl font-bold text-gray-900">

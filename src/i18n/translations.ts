@@ -74,7 +74,7 @@ const zh = {
     creditAccount: "账期支付",
     creditAccountDesc: "企业账期结算",
     balance: "余额:",
-    rateNote: "人民币金额按今日参考汇率估算，仅用于额度控制。实际结算以每月月末汇率为准。",
+    rateNote: "余额按每笔订单的参考汇率扣减估算得出，实际金额以月末挂牌汇率结算为准",
     default: "默认",
   },
   contact: {
@@ -439,7 +439,7 @@ const en: typeof zh = {
     creditAccount: "Account Payment",
     creditAccountDesc: "Enterprise account settlement",
     balance: "Balance:",
-    rateNote: "CNY amounts are estimated using today's reference rate for credit control. Actual settlement uses month-end exchange rates.",
+    rateNote: "Balance deductions are estimated at the reference exchange rate per order. Actual amounts are settled at the month-end posted exchange rate.",
     default: "Default",
   },
   contact: {

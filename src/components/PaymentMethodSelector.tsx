@@ -1,11 +1,11 @@
 "use client";
 
 import { useT } from "@/hooks/useT";
+import { mockWalletBalance } from "@/data/mockData";
 
 export default function PaymentMethodSelector() {
   const t = useT();
-  // Mock 余额数据（统一以人民币显示）
-  const balance = 46000.00;
+  const balance = mockWalletBalance.balance;
 
   return (
     <div>
@@ -22,7 +22,7 @@ export default function PaymentMethodSelector() {
             <p className="text-sm font-medium text-gray-900">{t.payment.creditAccount}</p>
             <p className="text-xs text-gray-500 mb-1.5">{t.payment.creditAccountDesc}</p>
             <p className="text-sm text-gray-700 mb-2">
-              {t.payment.balance} <span className="font-price font-semibold text-gray-900">CNY {balance.toLocaleString('zh-CN')}</span>
+              {t.payment.balance} <span className="font-price font-semibold text-gray-900">฿{balance.toLocaleString('th-TH', { maximumFractionDigits: 0 })}</span>
             </p>
             <p className="text-xs text-gray-500 leading-relaxed">
               {t.payment.rateNote}

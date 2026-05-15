@@ -10,6 +10,7 @@ import {
   TransactionOutlined,
   UserOutlined,
   LogoutOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import { useCurrentAdmin } from '@/hooks/useAdminAuth';
 import { logout } from '@/utils/adminAuth';
@@ -41,6 +42,12 @@ const systemMenuItems = [
     label: '运营账号管理',
     icon: <UserOutlined />,
     href: '/admin/administrators',
+  },
+  {
+    key: 'configs',
+    label: '配置中心',
+    icon: <SettingOutlined />,
+    href: '/admin/configs',
   },
 ];
 

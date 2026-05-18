@@ -2,11 +2,12 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { Tabs } from 'antd';
-import { CarOutlined, AlertOutlined } from '@ant-design/icons';
+import { CarOutlined, AlertOutlined, DollarOutlined } from '@ant-design/icons';
 
 const tabs = [
-  { key: '/admin/configs/vehicles',    label: '车型数据配置', icon: <CarOutlined /> },
-  { key: '/admin/configs/error-codes', label: 'API 错误码配置', icon: <AlertOutlined /> },
+  { key: '/admin/configs/vehicles',       label: '车型数据配置',  icon: <CarOutlined /> },
+  { key: '/admin/configs/error-codes',    label: 'API 错误码配置', icon: <AlertOutlined /> },
+  { key: '/admin/configs/exchange-rates', label: '本月汇率',       icon: <DollarOutlined /> },
 ];
 
 export default function ConfigsLayout({ children }: { children: React.ReactNode }) {

@@ -58,8 +58,9 @@ function useRows(env: Env) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS[env]);
-      if (stored) {
-        setRows(JSON.parse(stored));
+      const parsed: FlatRow[] = stored ? JSON.parse(stored) : [];
+      if (parsed.length > 0) {
+        setRows(parsed);
       } else {
         const initial = vehicleDataToRows(env === 'production' ? INITIAL_VEHICLE_DATA : INITIAL_VEHICLE_DATA_SANDBOX);
         setRows(initial);

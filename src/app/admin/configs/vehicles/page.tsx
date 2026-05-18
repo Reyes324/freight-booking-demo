@@ -14,8 +14,8 @@ import * as XLSX from 'xlsx';
 import { INITIAL_VEHICLE_DATA, INITIAL_VEHICLE_DATA_SANDBOX, type VehicleData } from '../mock-data';
 
 const STORAGE_KEYS = {
-  production: 'admin_config_vehicles_flat_production',
-  sandbox: 'admin_config_vehicles_flat_sandbox',
+  production: 'admin_config_vehicles_flat_production_v2',
+  sandbox: 'admin_config_vehicles_flat_sandbox_v2',
 } as const;
 type Env = keyof typeof STORAGE_KEYS;
 
@@ -27,10 +27,13 @@ interface FlatRow {
   displayName: string;
   displayNameZh: string;
   imageUrl: string;
+  enDesc: string;
+  zhDesc: string;
   srKey: string;
+  srParentName: string;
+  srParentNameZh: string;
   srName: string;
   srNameZh: string;
-  srDesc: string;
 }
 
 function vehicleDataToRows(data: VehicleData): FlatRow[] {
@@ -39,12 +42,17 @@ function vehicleDataToRows(data: VehicleData): FlatRow[] {
   for (const [market, cities] of Object.entries(data)) {
     for (const [city, vehicles] of Object.entries(cities)) {
       for (const v of vehicles) {
-        const base = { market, city, serviceType: v.key, displayName: v.enName, displayNameZh: v.zhName, imageUrl: v.imageUrl };
+        const base = {
+          market, city, serviceType: v.key,
+          displayName: v.enName, displayNameZh: v.zhName,
+          imageUrl: v.imageUrl,
+          enDesc: v.enDesc, zhDesc: v.zhDesc,
+        };
         if (v.specialRequests.length === 0) {
-          rows.push({ id: `r${i++}`, ...base, srKey: '', srName: '', srNameZh: '', srDesc: '' });
+          rows.push({ id: `r${i++}`, ...base, srKey: '', srParentName: '', srParentNameZh: '', srName: '', srNameZh: '' });
         } else {
           for (const sr of v.specialRequests) {
-            rows.push({ id: `r${i++}`, ...base, srKey: sr.name, srName: sr.enName, srNameZh: sr.zhName, srDesc: sr.parent_enName });
+            rows.push({ id: `r${i++}`, ...base, srKey: sr.name, srParentName: sr.parent_enName, srParentNameZh: sr.parent_zhName, srName: sr.enName, srNameZh: sr.zhName });
           }
         }
       }
@@ -76,21 +84,25 @@ function useRows(env: Env) {
 
 // ─── Field definitions (label + dataIndex) in display order ───────────────────
 const FIELDS: { label: string; key: keyof Omit<FlatRow, 'id'>; required?: boolean }[] = [
-  { label: 'Market',                    key: 'market',        required: true },
-  { label: 'City',                      key: 'city',          required: true },
-  { label: 'API serviceType',           key: 'serviceType',   required: true },
-  { label: 'WebApp Display Name',       key: 'displayName',   required: true },
-  { label: 'WebApp Display Name (ZH)',  key: 'displayNameZh' },
-  { label: 'vehicle image URL',         key: 'imageUrl' },
-  { label: 'API specialRequest',        key: 'srKey' },
-  { label: 'specialRequest Name',       key: 'srName' },
-  { label: 'specialRequest Name (ZH)',  key: 'srNameZh' },
-  { label: 'specialRequest description',key: 'srDesc' },
+  { label: 'Market',              key: 'market',         required: true },
+  { label: 'City',                key: 'city',           required: true },
+  { label: 'API serviceType',     key: 'serviceType',    required: true },
+  { label: '用户展示（英文）',     key: 'displayName',    required: true },
+  { label: '用户展示（中文）',     key: 'displayNameZh' },
+  { label: '图片链接',             key: 'imageUrl' },
+  { label: '车型描述（英文）',     key: 'enDesc' },
+  { label: '车型描述（中文）',     key: 'zhDesc' },
+  { label: 'API specialRequest',  key: 'srKey' },
+  { label: '附加服务分组标题（英文）', key: 'srParentName' },
+  { label: '附加服务分组标题（中文）', key: 'srParentNameZh' },
+  { label: '用户展示（英文）',     key: 'srName' },
+  { label: '用户展示（中文）',     key: 'srNameZh' },
 ];
 
 const EMPTY_ROW: Omit<FlatRow, 'id'> = {
   market: '', city: '', serviceType: '', displayName: '', displayNameZh: '',
-  imageUrl: '', srKey: '', srName: '', srNameZh: '', srDesc: '',
+  imageUrl: '', enDesc: '', zhDesc: '',
+  srKey: '', srParentName: '', srParentNameZh: '', srName: '', srNameZh: '',
 };
 
 // ─── Row Drawer ───────────────────────────────────────────────────────────────
@@ -220,15 +232,19 @@ export default function VehiclesPage() {
 
   const handleExport = () => {
     const data = rows.map(r => ({
-      'Market': r.market, 'City': r.city,
+      'Market': r.market,
+      'City': r.city,
       'API serviceType': r.serviceType,
-      'WebApp Display Name': r.displayName,
-      'WebApp Display Name (ZH)': r.displayNameZh,
-      'vehicle image URL': r.imageUrl,
+      '用户展示（英文）': r.displayName,
+      '用户展示（中文）': r.displayNameZh,
+      '图片链接': r.imageUrl,
+      '车型描述（英文）': r.enDesc,
+      '车型描述（中文）': r.zhDesc,
       'API specialRequest': r.srKey,
-      'specialRequest Name': r.srName,
-      'specialRequest Name (ZH)': r.srNameZh,
-      'specialRequest description': r.srDesc,
+      '附加服务分组标题（英文）': r.srParentName,
+      '附加服务分组标题（中文）': r.srParentNameZh,
+      '用户展示（英文）_SR': r.srName,
+      '用户展示（中文）_SR': r.srNameZh,
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -251,33 +267,42 @@ export default function VehiclesPage() {
     });
   };
 
+  const empty = <span className="text-gray-300">—</span>;
+  const mono = (v: string) => v
+    ? <span className="font-mono text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">{v}</span>
+    : empty;
+
   const columns: ColumnsType<FlatRow> = [
-    { title: 'Market',                    dataIndex: 'market',       key: 'market',       width: 110, fixed: 'left' },
-    { title: 'City',                      dataIndex: 'city',         key: 'city',         width: 120, fixed: 'left' },
-    { title: 'API serviceType',           dataIndex: 'serviceType',  key: 'serviceType',  width: 130,
-      render: v => <span className="font-mono text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">{v}</span> },
-    { title: 'WebApp Display Name',       dataIndex: 'displayName',  key: 'displayName',  width: 160 },
-    { title: 'WebApp Display Name (ZH)',  dataIndex: 'displayNameZh',key: 'displayNameZh',width: 160 },
-    { title: 'vehicle image URL',         dataIndex: 'imageUrl',     key: 'imageUrl',     width: 140,
+    { title: 'Market',              dataIndex: 'market',        key: 'market',        width: 110, fixed: 'left' },
+    { title: 'City',                dataIndex: 'city',          key: 'city',          width: 120, fixed: 'left' },
+    { title: 'API serviceType',     dataIndex: 'serviceType',   key: 'serviceType',   width: 140, render: mono },
+    { title: '用户展示（英文）',     dataIndex: 'displayName',   key: 'displayName',   width: 150 },
+    { title: '用户展示（中文）',     dataIndex: 'displayNameZh', key: 'displayNameZh', width: 120 },
+    { title: '图片链接',             dataIndex: 'imageUrl',      key: 'imageUrl',      width: 130,
       render: v => v ? (
         <Tooltip title={v}>
           <a href={v} target="_blank" rel="noopener noreferrer"
-            className="text-xs text-blue-500 underline font-mono block truncate max-w-[120px]">{v}</a>
+            className="text-xs text-blue-500 underline font-mono block truncate max-w-[110px]">{v}</a>
         </Tooltip>
-      ) : <span className="text-gray-300">—</span> },
-    { title: 'API specialRequest',        dataIndex: 'srKey',        key: 'srKey',        width: 140,
-      render: v => v ? <span className="font-mono text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">{v}</span> : <span className="text-gray-300">—</span> },
-    { title: 'specialRequest Name',       dataIndex: 'srName',       key: 'srName',       width: 180,
-      render: v => v || <span className="text-gray-300">—</span> },
-    { title: 'specialRequest Name (ZH)',  dataIndex: 'srNameZh',     key: 'srNameZh',     width: 160,
-      render: v => v || <span className="text-gray-300">—</span> },
-    { title: 'specialRequest description',dataIndex: 'srDesc',       key: 'srDesc',       width: 180, ellipsis: true,
-      render: v => v || <span className="text-gray-300">—</span> },
+      ) : empty },
+    { title: '车型描述（英文）',     dataIndex: 'enDesc',        key: 'enDesc',        width: 180, ellipsis: true,
+      render: v => v || empty },
+    { title: '车型描述（中文）',     dataIndex: 'zhDesc',        key: 'zhDesc',        width: 150, ellipsis: true,
+      render: v => v || empty },
+    { title: 'API specialRequest',  dataIndex: 'srKey',         key: 'srKey',         width: 160, render: mono },
+    { title: '附加服务分组标题（英文）', dataIndex: 'srParentName',   key: 'srParentName',   width: 160,
+      render: v => v || empty },
+    { title: '附加服务分组标题（中文）', dataIndex: 'srParentNameZh', key: 'srParentNameZh', width: 150,
+      render: v => v || empty },
+    { title: '用户展示（英文）',     dataIndex: 'srName',        key: 'srName',        width: 150,
+      render: v => v || empty },
+    { title: '用户展示（中文）',     dataIndex: 'srNameZh',      key: 'srNameZh',      width: 120,
+      render: v => v || empty },
   ];
 
   const tableProps = {
     size: 'small' as const,
-    scroll: { x: 1700 },
+    scroll: { x: 2100 },
     onRow: (record: FlatRow) => ({ onClick: () => setDrawerRow(record), className: 'cursor-pointer hover:bg-blue-50' }),
   };
 

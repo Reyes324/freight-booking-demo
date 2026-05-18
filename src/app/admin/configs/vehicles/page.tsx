@@ -2,15 +2,14 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import {
-  Button, Upload, Modal, Input, Segmented, message,
-  Table, Form, Space, Popconfirm, Tooltip, Drawer, Descriptions, ConfigProvider,
+  Button, Modal, Input, Segmented, message,
+  Table, Form, Space, Popconfirm, Tooltip, Drawer, ConfigProvider, Tag,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {
-  UploadOutlined, DownloadOutlined, SearchOutlined, CheckCircleFilled,
+  UploadOutlined, DownloadOutlined, SearchOutlined,
   PlusOutlined, EditOutlined, DeleteOutlined, SaveOutlined,
 } from '@ant-design/icons';
-import type { UploadProps } from 'antd';
 import * as XLSX from 'xlsx';
 import { INITIAL_VEHICLE_DATA, INITIAL_VEHICLE_DATA_SANDBOX, type VehicleData } from '../mock-data';
 
@@ -146,24 +145,33 @@ function RowDrawer({ row, onClose, onSave, onDelete }: {
         </Space>
       }
     >
-      {editing ? (
-        <Form form={form} layout="vertical">
+      {/* 查看态：左右布局 */}
+      {!editing && (
+        <div>
           {FIELDS.map(f => (
-            <Form.Item key={f.key} label={f.label} name={f.key}
-              rules={f.required ? [{ required: true, message: `请填写 ${f.label}` }] : []}>
-              {f.key === 'imageUrl' ? <Input.TextArea rows={2} placeholder="https://..." /> : <Input />}
-            </Form.Item>
+            <div key={f.key} className="flex items-start justify-between py-3 border-b border-gray-100 gap-4">
+              <span className="text-xs text-gray-400 shrink-0 pt-0.5">{f.label}</span>
+              <span className="text-sm text-gray-900 text-right break-all">
+                {row?.[f.key] || <span className="text-gray-300">—</span>}
+              </span>
+            </div>
           ))}
-        </Form>
-      ) : (
-        <Descriptions column={1} size="small" bordered
-          items={FIELDS.map(f => ({
-            key: f.key,
-            label: f.label,
-            children: row?.[f.key] || <span className="text-gray-300">—</span>,
-          }))}
-        />
+        </div>
       )}
+
+      {/* 编辑态：表单 */}
+      <Form form={form} layout="vertical" style={{ display: editing ? 'block' : 'none' }}>
+        {FIELDS.map(f => (
+          <Form.Item
+            key={f.key}
+            label={<span className="text-xs text-gray-500">{f.label}</span>}
+            name={f.key}
+            rules={f.required ? [{ required: true, message: `请填写 ${f.label}` }] : []}
+          >
+            {f.key === 'imageUrl' ? <Input.TextArea rows={2} placeholder="https://..." /> : <Input />}
+          </Form.Item>
+        ))}
+      </Form>
     </Drawer>
   );
 }
@@ -228,16 +236,24 @@ export default function VehiclesPage() {
     messageApi.success('导出成功');
   };
 
-  const uploadProps: UploadProps = {
-    accept: '.xlsx,.xls',
-    showUploadList: false,
-    beforeUpload: () => { setImportModal(true); return false; },
+  const handleImportConfirm = () => {
+    Modal.confirm({
+      title: '确认导入？',
+      content: '导入后将覆盖当前配置，此操作不可撤销。',
+      okText: '确认导入替换',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      onOk: () => {
+        setImportModal(false);
+        messageApi.success('导入成功，数据已更新');
+      },
+    });
   };
 
   const columns: ColumnsType<FlatRow> = [
     { title: 'Market',                    dataIndex: 'market',       key: 'market',       width: 110, fixed: 'left' },
-    { title: 'City',                      dataIndex: 'city',         key: 'city',         width: 150, fixed: 'left' },
-    { title: 'API serviceType',           dataIndex: 'serviceType',  key: 'serviceType',  width: 160,
+    { title: 'City',                      dataIndex: 'city',         key: 'city',         width: 120, fixed: 'left' },
+    { title: 'API serviceType',           dataIndex: 'serviceType',  key: 'serviceType',  width: 130,
       render: v => <span className="font-mono text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">{v}</span> },
     { title: 'WebApp Display Name',       dataIndex: 'displayName',  key: 'displayName',  width: 160 },
     { title: 'WebApp Display Name (ZH)',  dataIndex: 'displayNameZh',key: 'displayNameZh',width: 160 },
@@ -248,7 +264,7 @@ export default function VehiclesPage() {
             className="text-xs text-blue-500 underline font-mono block truncate max-w-[120px]">{v}</a>
         </Tooltip>
       ) : <span className="text-gray-300">—</span> },
-    { title: 'API specialRequest',        dataIndex: 'srKey',        key: 'srKey',        width: 180,
+    { title: 'API specialRequest',        dataIndex: 'srKey',        key: 'srKey',        width: 140,
       render: v => v ? <span className="font-mono text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">{v}</span> : <span className="text-gray-300">—</span> },
     { title: 'specialRequest Name',       dataIndex: 'srName',       key: 'srName',       width: 180,
       render: v => v || <span className="text-gray-300">—</span> },
@@ -277,13 +293,10 @@ export default function VehiclesPage() {
           />
         </ConfigProvider>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-400">{markets.length} 个市场 · 共 {rows.length} 行</span>
           <Button size="small" icon={<PlusOutlined />}
-            onClick={() => setDrawerRow({ id: '__new__', ...EMPTY_ROW })}>新增</Button>
-          <Upload {...uploadProps}>
-            <Button size="small" icon={<UploadOutlined />}>上传 Excel 替换</Button>
-          </Upload>
-          <Button size="small" icon={<DownloadOutlined />} onClick={handleExport}>下载当前配置</Button>
+            onClick={() => setDrawerRow({ id: '__new__', ...EMPTY_ROW })}>新增车型数据</Button>
+          <Button size="small" icon={<UploadOutlined />} onClick={() => setImportModal(true)}>上传 Excel 替换</Button>
+          <Button size="small" icon={<DownloadOutlined />} onClick={handleExport}>导出 Excel</Button>
         </div>
       </div>
 
@@ -309,34 +322,65 @@ export default function VehiclesPage() {
         onDelete={handleDelete}
       />
 
-      <Modal open={importModal} onCancel={() => setImportModal(false)} title={null}
-        footer={<Button type="primary" onClick={() => setImportModal(false)}>确认</Button>}
-        width={440} centered>
-        <div className="py-4">
-          <div className="flex items-center gap-3 mb-5">
-            <CheckCircleFilled className="text-green-500 text-3xl" />
-            <div>
-              <div className="text-base font-semibold text-gray-900">
-                导入成功（{env === 'production' ? '正式环境' : '沙盒环境'}）
-              </div>
-              <div className="text-sm text-gray-500 mt-0.5">车型映射数据已全量替换</div>
+      <Modal
+        open={importModal}
+        onCancel={() => setImportModal(false)}
+        title={`Excel 解析预览（${env === 'production' ? '正式环境' : '沙盒环境'}）`}
+        footer={
+          <Space>
+            <Button onClick={() => setImportModal(false)}>取消</Button>
+            <Button type="primary" onClick={handleImportConfirm}>确认导入替换</Button>
+          </Space>
+        }
+        width={520} centered
+      >
+        <div className="py-3 space-y-4 text-sm">
+          <div className="text-gray-500">解析完成，共识别 <span className="font-medium text-gray-900">3,412 行</span>数据，涉及 4 个市场、18 个城市。</div>
+
+          {/* 新增 */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Tag color="success">新增</Tag>
+              <span className="font-medium text-gray-900">8 行</span>
+            </div>
+            <div className="bg-green-50 rounded-lg px-3 py-2 space-y-1.5 text-xs text-gray-600">
+              {[
+                'Indonesia / Jakarta / MOTORCYCLE → 新增车型',
+                'Malaysia / Penang / VAN_500 → 新增城市车型',
+                'Thailand / Phuket / SEDAN → 新增城市车型',
+              ].map((t, i) => <div key={i} className="flex gap-1.5"><span className="text-green-500">+</span>{t}</div>)}
+              <div className="text-gray-400">…及其他 5 行</div>
             </div>
           </div>
-          <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
-            <div className="flex justify-between"><span className="text-gray-600">共导入行数</span><span className="font-medium">3,410 行</span></div>
-            <div className="flex justify-between"><span className="text-gray-600">涉及市场</span><span className="font-medium">4 个</span></div>
-            <div className="flex justify-between"><span className="text-gray-600">涉及城市</span><span className="font-medium">18 个</span></div>
-            <div className="border-t border-gray-200 pt-2 mt-2 space-y-1">
+
+          {/* 删除 */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Tag color="error">删除</Tag>
+              <span className="font-medium text-gray-900">3 行</span>
+            </div>
+            <div className="bg-red-50 rounded-lg px-3 py-2 space-y-1.5 text-xs text-gray-600">
               {[
-                { market: 'Indonesia', rows: 1402 },
-                { market: 'Malaysia',  rows: 623 },
-                { market: 'Thailand',  rows: 891 },
-                { market: 'Vietnam',   rows: 494 },
-              ].map(row => (
-                <div key={row.market} className="flex justify-between text-gray-500">
-                  <span>{row.market}</span><span>{row.rows} 行</span>
-                </div>
-              ))}
+                'Indonesia / Medan / TRUCK_330_EP',
+                'Thailand / Chiang Mai / PICKUP',
+                'Vietnam / Da Nang / MINIVAN',
+              ].map((t, i) => <div key={i} className="flex gap-1.5"><span className="text-red-400">−</span>{t}</div>)}
+            </div>
+          </div>
+
+          {/* 修改 */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Tag color="processing">修改</Tag>
+              <span className="font-medium text-gray-900">12 行</span>
+            </div>
+            <div className="bg-blue-50 rounded-lg px-3 py-2 space-y-1.5 text-xs text-gray-600">
+              {[
+                'Indonesia / Jakarta / SEDAN → displayName: "Sedan" → "Standard Sedan"',
+                'Malaysia / KL / SUV_600 → imageUrl 已更新',
+                'Vietnam / HCM / TRUCK_1000 → specialRequest 描述已更新',
+              ].map((t, i) => <div key={i} className="flex gap-1.5"><span className="text-blue-400">~</span>{t}</div>)}
+              <div className="text-gray-400">…及其他 9 行</div>
             </div>
           </div>
         </div>

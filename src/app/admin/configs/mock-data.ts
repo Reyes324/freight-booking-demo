@@ -2396,6 +2396,18 @@ export const INITIAL_VEHICLE_DATA_SANDBOX: VehicleData = {
         "specialRequests": [
           { "name": "TOLL_FEE_1", "parent_type": "Toll fee", "parent_enName": "Toll fee", "parent_zhName": "过路费", "enName": "Toll Fee (Intra City)", "zhName": "城内过路费" }
         ]
+      },
+      {
+        "key": "TRUCK_330",
+        "enName": "Truck 330",
+        "zhName": "330卡车",
+        "enDesc": "Medium-sized truck for heavier cargo",
+        "zhDesc": "中型卡车，适合较重货物",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/164e1e52-1911-6019-6898-d12b373890c6.png",
+        "specialRequests": [
+          { "name": "EXTRA_HELPER_1", "parent_type": "Helper", "parent_enName": "Helper", "parent_zhName": "搬运工", "enName": "1 Extra Helper", "zhName": "额外搬运工 x1" },
+          { "name": "TOLL_FEE_1", "parent_type": "Toll fee", "parent_enName": "Toll fee", "parent_zhName": "过路费", "enName": "Toll Fee (Intra City)", "zhName": "城内过路费" }
+        ]
       }
     ],
     "Bandung": [
@@ -2408,6 +2420,39 @@ export const INITIAL_VEHICLE_DATA_SANDBOX: VehicleData = {
         "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/1089095e-75a7-93fe-3f4a-17c3e3eb1ff0.png",
         "specialRequests": [
           { "name": "ROUND_TRIP", "parent_type": "", "parent_enName": "", "parent_zhName": "", "enName": "Round Trip", "zhName": "往返" }
+        ]
+      },
+      {
+        "key": "MPV",
+        "enName": "MPV",
+        "zhName": "MPV",
+        "enDesc": "Ideal for delicate goods including electronics",
+        "zhDesc": "适合精密货物配送，包括电子产品",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/162abd3e-8e8b-a94c-9f41-e76e845fa55d.png",
+        "specialRequests": []
+      }
+    ],
+    "Surabaya": [
+      {
+        "key": "MOTORCYCLE",
+        "enName": "Motorcycle",
+        "zhName": "摩托车",
+        "enDesc": "Express delivery for small goods",
+        "zhDesc": "小件货物快速配送",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/1089095e-75a7-93fe-3f4a-17c3e3eb1ff0.png",
+        "specialRequests": [
+          { "name": "THERMAL_BAG_1", "parent_type": "", "parent_enName": "", "parent_zhName": "", "enName": "LALABAG", "zhName": "Lalabag保温袋" }
+        ]
+      },
+      {
+        "key": "VAN",
+        "enName": "Van",
+        "zhName": "厢式货车",
+        "enDesc": "Enclosed cargo space for weather-sensitive goods",
+        "zhDesc": "封闭货舱，适合怕潮湿货物",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/162abd3e-8e8b-a94c-9f41-e76e845fa55d.png",
+        "specialRequests": [
+          { "name": "EXTRA_HELPER_1", "parent_type": "Helper", "parent_enName": "Helper", "parent_zhName": "搬运工", "enName": "1 Extra Helper", "zhName": "额外搬运工 x1" }
         ]
       }
     ]
@@ -2422,7 +2467,8 @@ export const INITIAL_VEHICLE_DATA_SANDBOX: VehicleData = {
         "zhDesc": "小件货物快速配送",
         "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/1089095e-75a7-93fe-3f4a-17c3e3eb1ff0.png",
         "specialRequests": [
-          { "name": "LALABAG_1", "parent_type": "", "parent_enName": "", "parent_zhName": "", "enName": "LalaBag (Thermal Bag)", "zhName": "Lalabag保温袋" }
+          { "name": "LALABAG_1", "parent_type": "", "parent_enName": "", "parent_zhName": "", "enName": "LalaBag (Thermal Bag)", "zhName": "Lalabag保温袋" },
+          { "name": "ROUND_TRIP", "parent_type": "", "parent_enName": "", "parent_zhName": "", "enName": "Round Trip", "zhName": "往返" }
         ]
       },
       {
@@ -2432,6 +2478,143 @@ export const INITIAL_VEHICLE_DATA_SANDBOX: VehicleData = {
         "enDesc": "Open cargo area for large bulky goods",
         "zhDesc": "适合大件货物配送",
         "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/164e1e52-1911-6019-6898-d12b373890c6.png",
+        "specialRequests": []
+      },
+      {
+        "key": "VAN",
+        "enName": "Van",
+        "zhName": "厢式货车",
+        "enDesc": "Enclosed cargo space suitable for fragile goods",
+        "zhDesc": "封闭货舱，适合易碎品",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/162abd3e-8e8b-a94c-9f41-e76e845fa55d.png",
+        "specialRequests": [
+          { "name": "EXTRA_HELPER_1", "parent_type": "Helper", "parent_enName": "Helper", "parent_zhName": "搬运工", "enName": "1 Extra Helper", "zhName": "额外搬运工 x1" }
+        ]
+      }
+    ],
+    "Penang": [
+      {
+        "key": "MOTORCYCLE",
+        "enName": "Motorcycle",
+        "zhName": "摩托车",
+        "enDesc": "Express delivery for small parcels",
+        "zhDesc": "小件货物快速配送",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/1089095e-75a7-93fe-3f4a-17c3e3eb1ff0.png",
+        "specialRequests": []
+      },
+      {
+        "key": "4X4",
+        "enName": "Pickup (4x4)",
+        "zhName": "四驱皮卡",
+        "enDesc": "Open cargo area for large bulky goods",
+        "zhDesc": "适合大件货物配送",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/164e1e52-1911-6019-6898-d12b373890c6.png",
+        "specialRequests": []
+      }
+    ]
+  },
+  "Thailand": {
+    "Bangkok": [
+      {
+        "key": "MOTORCYCLE",
+        "enName": "Motorcycle",
+        "zhName": "摩托车",
+        "enDesc": "Fast delivery through city traffic",
+        "zhDesc": "穿越城市拥堵的快速配送",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/1089095e-75a7-93fe-3f4a-17c3e3eb1ff0.png",
+        "specialRequests": [
+          { "name": "THERMAL_BAG_1", "parent_type": "", "parent_enName": "", "parent_zhName": "", "enName": "Thermal Bag", "zhName": "保温袋" }
+        ]
+      },
+      {
+        "key": "VAN",
+        "enName": "Van",
+        "zhName": "厢式货车",
+        "enDesc": "Enclosed cargo for medium-sized shipments",
+        "zhDesc": "适合中型货物的封闭货舱",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/162abd3e-8e8b-a94c-9f41-e76e845fa55d.png",
+        "specialRequests": [
+          { "name": "EXTRA_HELPER_1", "parent_type": "Helper", "parent_enName": "Helper", "parent_zhName": "搬运工", "enName": "1 Extra Helper", "zhName": "额外搬运工 x1" },
+          { "name": "ROUND_TRIP", "parent_type": "", "parent_enName": "", "parent_zhName": "", "enName": "Round Trip", "zhName": "往返" }
+        ]
+      },
+      {
+        "key": "TRUCK_600",
+        "enName": "Truck 600",
+        "zhName": "600卡车",
+        "enDesc": "Large truck for heavy industrial cargo",
+        "zhDesc": "重型工业货物运输",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/164e1e52-1911-6019-6898-d12b373890c6.png",
+        "specialRequests": [
+          { "name": "EXTRA_HELPER_1", "parent_type": "Helper", "parent_enName": "Helper", "parent_zhName": "搬运工", "enName": "1 Extra Helper", "zhName": "额外搬运工 x1" },
+          { "name": "EXTRA_HELPER_2", "parent_type": "Helper", "parent_enName": "Helper", "parent_zhName": "搬运工", "enName": "2 Extra Helpers", "zhName": "额外搬运工 x2" }
+        ]
+      }
+    ],
+    "Chiang Mai": [
+      {
+        "key": "MOTORCYCLE",
+        "enName": "Motorcycle",
+        "zhName": "摩托车",
+        "enDesc": "Fast delivery through city traffic",
+        "zhDesc": "穿越城市拥堵的快速配送",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/1089095e-75a7-93fe-3f4a-17c3e3eb1ff0.png",
+        "specialRequests": []
+      },
+      {
+        "key": "VAN",
+        "enName": "Van",
+        "zhName": "厢式货车",
+        "enDesc": "Enclosed cargo for medium-sized shipments",
+        "zhDesc": "适合中型货物的封闭货舱",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/162abd3e-8e8b-a94c-9f41-e76e845fa55d.png",
+        "specialRequests": []
+      }
+    ]
+  },
+  "Vietnam": {
+    "Ho Chi Minh City": [
+      {
+        "key": "MOTORCYCLE",
+        "enName": "Motorcycle",
+        "zhName": "摩托车",
+        "enDesc": "Express delivery for small goods",
+        "zhDesc": "小件货物快速配送",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/1089095e-75a7-93fe-3f4a-17c3e3eb1ff0.png",
+        "specialRequests": [
+          { "name": "THERMAL_BAG_1", "parent_type": "", "parent_enName": "", "parent_zhName": "", "enName": "Thermal Bag", "zhName": "保温袋" },
+          { "name": "ROUND_TRIP", "parent_type": "", "parent_enName": "", "parent_zhName": "", "enName": "Round Trip", "zhName": "往返" }
+        ]
+      },
+      {
+        "key": "VAN",
+        "enName": "Van",
+        "zhName": "厢式货车",
+        "enDesc": "Enclosed cargo space for fragile items",
+        "zhDesc": "封闭货舱，适合易碎品",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/162abd3e-8e8b-a94c-9f41-e76e845fa55d.png",
+        "specialRequests": [
+          { "name": "EXTRA_HELPER_1", "parent_type": "Helper", "parent_enName": "Helper", "parent_zhName": "搬运工", "enName": "1 Extra Helper", "zhName": "额外搬运工 x1" }
+        ]
+      }
+    ],
+    "Hanoi": [
+      {
+        "key": "MOTORCYCLE",
+        "enName": "Motorcycle",
+        "zhName": "摩托车",
+        "enDesc": "Express delivery for small goods",
+        "zhDesc": "小件货物快速配送",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/1089095e-75a7-93fe-3f4a-17c3e3eb1ff0.png",
+        "specialRequests": []
+      },
+      {
+        "key": "MPV",
+        "enName": "MPV",
+        "zhName": "MPV",
+        "enDesc": "Suitable for bulky or long items",
+        "zhDesc": "适合大件或长形货物",
+        "imageUrl": "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/162abd3e-8e8b-a94c-9f41-e76e845fa55d.png",
         "specialRequests": []
       }
     ]

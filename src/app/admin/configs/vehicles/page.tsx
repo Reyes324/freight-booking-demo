@@ -3,12 +3,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   Button, Modal, Input, Segmented, message,
-  Table, Form, Space, Popconfirm, Tooltip, Drawer, ConfigProvider, Tag,
+  Table, Space, Tooltip, ConfigProvider, Tag,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {
   UploadOutlined, DownloadOutlined, SearchOutlined,
-  PlusOutlined, EditOutlined, DeleteOutlined, SaveOutlined,
 } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { INITIAL_VEHICLE_DATA, INITIAL_VEHICLE_DATA_SANDBOX, type VehicleData } from '../mock-data';
@@ -78,127 +77,16 @@ function useRows(env: Env) {
       setRows(vehicleDataToRows(env === 'production' ? INITIAL_VEHICLE_DATA : INITIAL_VEHICLE_DATA_SANDBOX));
     }
   }, [env]);
-  const save = (next: FlatRow[]) => { setRows(next); localStorage.setItem(STORAGE_KEYS[env], JSON.stringify(next)); };
-  return { rows, save };
-}
-
-// ─── Field definitions (label + dataIndex) in display order ───────────────────
-const FIELDS: { label: string; key: keyof Omit<FlatRow, 'id'>; required?: boolean }[] = [
-  { label: 'Market',              key: 'market',         required: true },
-  { label: 'City',                key: 'city',           required: true },
-  { label: 'API serviceType',     key: 'serviceType',    required: true },
-  { label: '用户展示（英文）',     key: 'displayName',    required: true },
-  { label: '用户展示（中文）',     key: 'displayNameZh' },
-  { label: '图片链接',             key: 'imageUrl' },
-  { label: '车型描述（英文）',     key: 'enDesc' },
-  { label: '车型描述（中文）',     key: 'zhDesc' },
-  { label: 'API specialRequest',  key: 'srKey' },
-  { label: '附加服务分组标题（英文）', key: 'srParentName' },
-  { label: '附加服务分组标题（中文）', key: 'srParentNameZh' },
-  { label: '用户展示（英文）',     key: 'srName' },
-  { label: '用户展示（中文）',     key: 'srNameZh' },
-];
-
-const EMPTY_ROW: Omit<FlatRow, 'id'> = {
-  market: '', city: '', serviceType: '', displayName: '', displayNameZh: '',
-  imageUrl: '', enDesc: '', zhDesc: '',
-  srKey: '', srParentName: '', srParentNameZh: '', srName: '', srNameZh: '',
-};
-
-// ─── Row Drawer ───────────────────────────────────────────────────────────────
-function RowDrawer({ row, onClose, onSave, onDelete }: {
-  row: FlatRow | null;
-  onClose: () => void;
-  onSave: (updated: FlatRow) => void;
-  onDelete: (id: string) => void;
-}) {
-  const [form] = Form.useForm();
-  const isNew = row?.id === '__new__';
-  const [editing, setEditing] = useState(isNew);
-
-  useEffect(() => {
-    if (row) { form.setFieldsValue(row); setEditing(row.id === '__new__'); }
-    else form.resetFields();
-  }, [row, form]);
-
-  const handleSave = () => {
-    form.validateFields().then(values => {
-      onSave({ ...values, id: isNew ? `r${Date.now()}` : row!.id });
-      onClose();
-    });
-  };
-
-  const handleDelete = () => {
-    if (row) { onDelete(row.id); onClose(); }
-  };
-
-  return (
-    <Drawer
-      open={!!row}
-      onClose={onClose}
-      title={isNew ? '新增' : '详情'}
-      width={480}
-      extra={
-        <Space>
-          {!isNew && !editing && (
-            <>
-              <Popconfirm title="确认删除该行？" okText="删除" cancelText="取消"
-                okButtonProps={{ danger: true }} onConfirm={handleDelete}>
-                <Button danger size="small" icon={<DeleteOutlined />}>删除</Button>
-              </Popconfirm>
-              <Button size="small" icon={<EditOutlined />} onClick={() => setEditing(true)}>编辑</Button>
-            </>
-          )}
-          {editing && !isNew && (
-            <Button size="small" onClick={() => { form.setFieldsValue(row!); setEditing(false); }}>取消</Button>
-          )}
-          {editing && (
-            <Button type="primary" size="small" icon={<SaveOutlined />} onClick={handleSave}>保存</Button>
-          )}
-        </Space>
-      }
-    >
-      {/* 查看态：左右布局 */}
-      {!editing && (
-        <div>
-          {FIELDS.map(f => (
-            <div key={f.key} className="flex items-start justify-between py-3 border-b border-gray-100 gap-4">
-              <span className="text-xs text-gray-400 shrink-0 pt-0.5">{f.label}</span>
-              <span className="text-sm text-gray-900 text-right break-all">
-                {row?.[f.key] || <span className="text-gray-300">—</span>}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* 编辑态：表单 */}
-      <Form form={form} layout="vertical" style={{ display: editing ? 'block' : 'none' }}>
-        {FIELDS.map(f => (
-          <Form.Item
-            key={f.key}
-            label={<span className="text-xs text-gray-500">{f.label}</span>}
-            name={f.key}
-            rules={f.required ? [{ required: true, message: `请填写 ${f.label}` }] : []}
-          >
-            {f.key === 'imageUrl' ? <Input.TextArea rows={2} placeholder="https://..." /> : <Input />}
-          </Form.Item>
-        ))}
-      </Form>
-    </Drawer>
-  );
+  return { rows };
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function VehiclesPage() {
   const [env, setEnv] = useState<Env>('production');
-  const { rows, save } = useRows(env);
+  const { rows } = useRows(env);
   const [keyword, setKeyword] = useState('');
-  const [drawerRow, setDrawerRow] = useState<FlatRow | null>(null);
   const [importModal, setImportModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-
-  const markets = useMemo(() => [...new Set(rows.map(r => r.market))], [rows]);
 
   const filtered = useMemo(() => {
     if (!keyword) return rows;
@@ -213,22 +101,6 @@ export default function VehiclesPage() {
       r.srName.toLowerCase().includes(kw)
     );
   }, [rows, keyword]);
-
-  const handleSave = (updated: FlatRow) => {
-    const exists = rows.find(r => r.id === updated.id);
-    if (exists) {
-      save(rows.map(r => r.id === updated.id ? updated : r));
-      messageApi.success('已更新');
-    } else {
-      save([...rows, updated]);
-      messageApi.success('已新增');
-    }
-  };
-
-  const handleDelete = (id: string) => {
-    save(rows.filter(r => r.id !== id));
-    messageApi.success('已删除');
-  };
 
   const handleExport = () => {
     const data = rows.map(r => ({
@@ -300,12 +172,6 @@ export default function VehiclesPage() {
       render: v => v || empty },
   ];
 
-  const tableProps = {
-    size: 'small' as const,
-    scroll: { x: 2100 },
-    onRow: (record: FlatRow) => ({ onClick: () => setDrawerRow(record), className: 'cursor-pointer hover:bg-blue-50' }),
-  };
-
   return (
     <>
       {contextHolder}
@@ -319,8 +185,6 @@ export default function VehiclesPage() {
           />
         </ConfigProvider>
         <div className="flex items-center gap-2">
-          <Button size="small" icon={<PlusOutlined />}
-            onClick={() => setDrawerRow({ id: '__new__', ...EMPTY_ROW })}>新增车型数据</Button>
           <Button size="small" icon={<UploadOutlined />} onClick={() => setImportModal(true)}>上传 Excel 替换</Button>
           <Button size="small" icon={<DownloadOutlined />} onClick={handleExport}>导出 Excel</Button>
         </div>
@@ -337,15 +201,13 @@ export default function VehiclesPage() {
         />
       </div>
 
-      <Table dataSource={filtered} columns={columns} rowKey="id"
-        {...tableProps}
-        pagination={{ pageSize: 50, hideOnSinglePage: true }} />
-
-      <RowDrawer
-        row={drawerRow}
-        onClose={() => setDrawerRow(null)}
-        onSave={handleSave}
-        onDelete={handleDelete}
+      <Table
+        dataSource={filtered}
+        columns={columns}
+        rowKey="id"
+        size="small"
+        scroll={{ x: 2100 }}
+        pagination={{ pageSize: 50, showTotal: t => `共 ${t} 行`, hideOnSinglePage: true }}
       />
 
       <Modal
@@ -363,7 +225,6 @@ export default function VehiclesPage() {
         <div className="py-3 space-y-4 text-sm">
           <div className="text-gray-500">解析完成，共识别 <span className="font-medium text-gray-900">3,412 行</span>数据，涉及 4 个市场、18 个城市。</div>
 
-          {/* 新增 */}
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Tag color="success">新增</Tag>
@@ -379,7 +240,6 @@ export default function VehiclesPage() {
             </div>
           </div>
 
-          {/* 删除 */}
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Tag color="error">删除</Tag>
@@ -394,7 +254,6 @@ export default function VehiclesPage() {
             </div>
           </div>
 
-          {/* 修改 */}
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Tag color="processing">修改</Tag>
@@ -402,9 +261,9 @@ export default function VehiclesPage() {
             </div>
             <div className="bg-blue-50 rounded-lg px-3 py-2 space-y-1.5 text-xs text-gray-600">
               {[
-                'Indonesia / Jakarta / SEDAN → displayName: "Sedan" → "Standard Sedan"',
-                'Malaysia / KL / SUV_600 → imageUrl 已更新',
-                'Vietnam / HCM / TRUCK_1000 → specialRequest 描述已更新',
+                'Indonesia / Jakarta / SEDAN → 用户展示（英文）: "Sedan" → "Standard Sedan"',
+                'Malaysia / KL / SUV_600 → 图片链接已更新',
+                'Vietnam / HCM / TRUCK_1000 → 附加服务描述已更新',
               ].map((t, i) => <div key={i} className="flex gap-1.5"><span className="text-blue-400">~</span>{t}</div>)}
               <div className="text-gray-400">…及其他 9 行</div>
             </div>

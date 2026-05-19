@@ -53,9 +53,9 @@ export default function ExchangeRatesPage() {
   return (
     <div>
       <div className="mb-5">
-        <div className="text-base font-medium text-gray-900 mb-1">本月汇率</div>
+        <div className="text-base font-medium text-gray-900 mb-1">5月系统估算汇率</div>
         <div className="text-sm text-gray-400">
-          汇率来源：中银挂牌（现汇卖出价）· 生效日期：{EFFECTIVE_DATE}（上月末自然日）
+          汇率来源：中银挂牌（现汇卖出价）· 汇率参考时间：{EFFECTIVE_DATE}
         </div>
       </div>
 

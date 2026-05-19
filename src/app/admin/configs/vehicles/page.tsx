@@ -145,11 +145,11 @@ export default function VehiclesPage() {
     : empty;
 
   const columns: ColumnsType<FlatRow> = [
-    { title: 'Market',              dataIndex: 'market',        key: 'market',        width: 110, fixed: 'left' },
-    { title: 'City',                dataIndex: 'city',          key: 'city',          width: 120, fixed: 'left' },
+    { title: '市场（国家）',          dataIndex: 'market',        key: 'market',        width: 110, fixed: 'left' },
+    { title: '城市',                dataIndex: 'city',          key: 'city',          width: 120, fixed: 'left' },
     { title: 'API serviceType',     dataIndex: 'serviceType',   key: 'serviceType',   width: 140, render: mono },
-    { title: '用户展示（英文）',     dataIndex: 'displayName',   key: 'displayName',   width: 150 },
-    { title: '用户展示（中文）',     dataIndex: 'displayNameZh', key: 'displayNameZh', width: 120 },
+    { title: '车型名（英文）',       dataIndex: 'displayName',   key: 'displayName',   width: 150 },
+    { title: '车型名（中文）',       dataIndex: 'displayNameZh', key: 'displayNameZh', width: 120 },
     { title: '图片链接',             dataIndex: 'imageUrl',      key: 'imageUrl',      width: 130,
       render: v => v ? (
         <Tooltip title={v}>
@@ -162,13 +162,13 @@ export default function VehiclesPage() {
     { title: '车型描述（中文）',     dataIndex: 'zhDesc',        key: 'zhDesc',        width: 150, ellipsis: true,
       render: v => v || empty },
     { title: 'API specialRequest',  dataIndex: 'srKey',         key: 'srKey',         width: 160, render: mono },
-    { title: '附加服务分组标题（英文）', dataIndex: 'srParentName',   key: 'srParentName',   width: 160,
+    { title: '服务标题（英文）',     dataIndex: 'srParentName',   key: 'srParentName',   width: 160,
       render: v => v || empty },
-    { title: '附加服务分组标题（中文）', dataIndex: 'srParentNameZh', key: 'srParentNameZh', width: 150,
+    { title: '服务标题（中文）',     dataIndex: 'srParentNameZh', key: 'srParentNameZh', width: 150,
       render: v => v || empty },
-    { title: '用户展示（英文）',     dataIndex: 'srName',        key: 'srName',        width: 150,
+    { title: '服务描述（英文）',     dataIndex: 'srName',        key: 'srName',        width: 150,
       render: v => v || empty },
-    { title: '用户展示（中文）',     dataIndex: 'srNameZh',      key: 'srNameZh',      width: 120,
+    { title: '服务描述（中文）',     dataIndex: 'srNameZh',      key: 'srNameZh',      width: 120,
       render: v => v || empty },
   ];
 

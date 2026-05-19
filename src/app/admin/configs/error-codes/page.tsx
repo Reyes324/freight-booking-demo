@@ -7,7 +7,7 @@ import {
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {
-  PlusOutlined, UploadOutlined, DownloadOutlined, DeleteOutlined,
+  UploadOutlined, DownloadOutlined, DeleteOutlined,
   SearchOutlined, SaveOutlined, EditOutlined,
 } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
@@ -223,10 +223,6 @@ export default function ErrorCodesPage() {
 
       <div className="flex items-center justify-end mb-3">
         <div className="flex items-center gap-2">
-          <Button size="small" icon={<PlusOutlined />}
-            onClick={() => setDrawerRow({ id: '__new__', category: 'general', ...EMPTY })}>
-            新增错误码
-          </Button>
           <Button size="small" icon={<UploadOutlined />} onClick={() => setImportModal(true)}>上传 Excel 替换</Button>
           <Button size="small" icon={<DownloadOutlined />} onClick={handleExport}>导出 Excel</Button>
         </div>

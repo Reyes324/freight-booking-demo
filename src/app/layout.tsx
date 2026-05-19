@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import AntdConfigProvider from "@/components/AntdConfigProvider";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import NewVersionBanner from "@/components/NewVersionBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased bg-white text-gray-900">
+        <NewVersionBanner />
         <LanguageProvider>
           <AntdConfigProvider>
             {children}

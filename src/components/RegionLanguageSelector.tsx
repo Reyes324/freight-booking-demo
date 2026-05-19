@@ -3,97 +3,17 @@
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useT } from "@/hooks/useT";
-
-interface City {
-  id: string;
-  zhName: string;
-  enName: string;
-}
-
-interface CountryGroup {
-  id: string;
-  flag: string;
-  zhName: string;
-  enName: string;
-  cities: City[];
-}
-
-const COUNTRY_GROUPS: CountryGroup[] = [
-  {
-    id: "thailand",
-    flag: "🇹🇭",
-    zhName: "泰国",
-    enName: "Thailand",
-    cities: [
-      { id: "bangkok",   zhName: "曼谷",   enName: "Bangkok"   },
-      { id: "chonburi",  zhName: "春武里", enName: "Chonburi"  },
-      { id: "khon_kaen", zhName: "孔敬",   enName: "Khon Kaen" },
-    ],
-  },
-  {
-    id: "malaysia",
-    flag: "🇲🇾",
-    zhName: "马来西亚",
-    enName: "Malaysia",
-    cities: [
-      { id: "johor_bahru",   zhName: "新山及周边地区",   enName: "Johor Bahru & Surroundings"    },
-      { id: "kuala_lumpur",  zhName: "吉隆坡",           enName: "Kuala Lumpur"                  },
-      { id: "kuching",       zhName: "古晋",             enName: "Kuching"                       },
-      { id: "malacca",       zhName: "马六甲",           enName: "Malacca"                       },
-      { id: "penang",        zhName: "槟城及周边州属",   enName: "Penang & Surrounding States"   },
-    ],
-  },
-  {
-    id: "indonesia",
-    flag: "🇮🇩",
-    zhName: "印尼",
-    enName: "Indonesia",
-    cities: [
-      { id: "bandung",    zhName: "万隆",   enName: "Bandung"    },
-      { id: "cirebon",    zhName: "井里汶", enName: "Cirebon"    },
-      { id: "jakarta",    zhName: "雅加达", enName: "Jakarta"    },
-      { id: "malang",     zhName: "玛琅",   enName: "Malang"     },
-      { id: "medan",      zhName: "棉兰",   enName: "Medan"      },
-      { id: "semarang",   zhName: "三宝垄", enName: "Semarang"   },
-      { id: "surabaya",   zhName: "泗水",   enName: "Surabaya"   },
-      { id: "yogyakarta", zhName: "日惹",   enName: "Yogyakarta" },
-    ],
-  },
-  {
-    id: "vietnam",
-    flag: "🇻🇳",
-    zhName: "越南",
-    enName: "Vietnam",
-    cities: [
-      { id: "can_tho",      zhName: "芹苴及湄公河三角洲",   enName: "Can Tho & Mekong Delta"           },
-      { id: "da_nang",      zhName: "岘港及中部省份",       enName: "Da Nang & Central Provinces"      },
-      { id: "hanoi",        zhName: "河内及周边地区",       enName: "Hanoi & Surroundings"             },
-      { id: "ho_chi_minh",  zhName: "胡志明市及周边地区",   enName: "Ho Chi Minh City & Surroundings"  },
-      { id: "thai_nguyen",  zhName: "太原及北部地区",       enName: "Thai Nguyen & Northern Areas"     },
-    ],
-  },
-];
+import { COUNTRY_GROUPS, findCity } from "@/data/cities";
 
 const LANGUAGES = [
   { id: "zh", localName: "中文" },
   { id: "en", localName: "English" },
 ];
 
-const DEFAULT_CITY_ID = "bangkok";
-
-function findCity(cityId: string): { city: City; country: CountryGroup } | null {
-  for (const country of COUNTRY_GROUPS) {
-    const city = country.cities.find((c) => c.id === cityId);
-    if (city) return { city, country };
-  }
-  return null;
-}
-
 export default function RegionLanguageSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCityId, setSelectedCityId] = useState(DEFAULT_CITY_ID);
   const [panelPos, setPanelPos] = useState({ top: 0, right: 0 });
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, cityId, setCityId } = useLanguage();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const t = useT();
@@ -126,7 +46,7 @@ export default function RegionLanguageSelector() {
     setIsOpen((v) => !v);
   }
 
-  const selected = findCity(selectedCityId);
+  const selected = findCity(cityId);
   const triggerLabel = selected
     ? `${selected.country.flag} ${lang === "zh" ? selected.city.zhName : selected.city.enName}`
     : "";
@@ -214,12 +134,12 @@ export default function RegionLanguageSelector() {
                   {/* 城市列表 — 子级，缩进 */}
                   <div className="space-y-0.5 pl-3">
                     {country.cities.map((city) => {
-                      const isSelected = selectedCityId === city.id;
+                      const isSelected = cityId === city.id;
                       return (
                         <button
                           key={city.id}
                           onClick={() => {
-                            setSelectedCityId(city.id);
+                            setCityId(city.id);
                             setTimeout(() => setIsOpen(false), 150);
                           }}
                           className={`w-full flex items-center justify-between gap-2 px-2 py-2 rounded-lg

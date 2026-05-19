@@ -12,6 +12,8 @@ import AdjustPriceView from "./AdjustPriceView";
 import ContactOperatorModal from "./ContactOperatorModal";
 import ChangeDriverModal from "./ChangeDriverModal";
 import { useT } from "@/hooks/useT";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { findCity } from "@/data/cities";
 
 interface OrderDrawerProps {
   open: boolean;
@@ -21,7 +23,9 @@ interface OrderDrawerProps {
 
 export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) {
   const t = useT();
+  const { lang, cityId } = useLanguage();
   const [mounted, setMounted] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
   const [visible, setVisible] = useState(false);
   const [proofModalOpen, setProofModalOpen] = useState(false);
   const [drawerView, setDrawerView] = useState<"detail" | "priceIncrease" | "adjustPrice">("detail");
@@ -216,8 +220,12 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="text-base font-semibold text-gray-900">
                     {statusConfig.title}
+                    {(order.status === "calling_driver" || order.status === "in_transit" || order.status === "delivering") && (
+                      <span className="ml-1.5 text-xs font-normal text-gray-400">
+                        （更新于 {lastUpdated.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}）
+                      </span>
+                    )}
                   </h3>
-                  <span className={`w-2 h-2 rounded-full flex-shrink-0 ${statusConfig.dotColor} ${statusConfig.showPulse ? "animate-pulse" : ""}`} />
                 </div>
                 <p className="text-sm text-gray-500">{statusConfig.description}</p>
               </div>
@@ -462,19 +470,32 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
                   <span className="text-sm text-gray-400">{t.drawer.orderId}</span>
                   <span className="text-sm text-gray-900">{order.orderId}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-start">
                   <span className="text-sm text-gray-400">{t.drawer.pickupTime}</span>
-                  <span className="text-sm text-gray-900">
-                    {order.scheduledTime
-                      ? order.scheduledTime.toLocaleString("zh-CN", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
-                      : t.drawer.now}
-                  </span>
+                  <div className="text-right">
+                    <div className="text-sm text-gray-900">
+                      {order.scheduledTime
+                        ? order.scheduledTime.toLocaleString("zh-CN", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : t.drawer.now}
+                    </div>
+                    {(() => {
+                      const info = findCity(cityId);
+                      if (!info) return null;
+                      const cityName = lang === "zh" ? info.city.zhName : info.city.enName;
+                      const gmt = `GMT+${info.country.gmtOffset}`;
+                      return (
+                        <div className="text-xs text-gray-400 mt-0.5">
+                          （{cityName} {gmt}）
+                        </div>
+                      );
+                    })()}
+                  </div>
                 </div>
                 {order.driverNote && (
                   <div className="flex justify-between items-start">

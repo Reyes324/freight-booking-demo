@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import {
-  Button, Modal, Input, Segmented, message,
+  Button, Modal, Select, Segmented, message,
   Table, Space, Tooltip, ConfigProvider, Tag,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {
-  UploadOutlined, DownloadOutlined, SearchOutlined,
+  UploadOutlined, DownloadOutlined,
 } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { INITIAL_VEHICLE_DATA, INITIAL_VEHICLE_DATA_SANDBOX, type VehicleData } from '../mock-data';
@@ -84,23 +84,68 @@ function useRows(env: Env) {
 export default function VehiclesPage() {
   const [env, setEnv] = useState<Env>('production');
   const { rows } = useRows(env);
-  const [keyword, setKeyword] = useState('');
+  const [selectedMarket, setSelectedMarket] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedVehicle, setSelectedVehicle] = useState('');
+  const [selectedSr, setSelectedSr] = useState('');
   const [importModal, setImportModal] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
+  const marketOptions = useMemo(() => {
+    const vals = [...new Set(rows.map(r => r.market))].sort();
+    return [{ label: '全部国家', value: '' }, ...vals.map(v => ({ label: v, value: v }))];
+  }, [rows]);
+
+  const cityOptions = useMemo(() => {
+    const source = selectedMarket ? rows.filter(r => r.market === selectedMarket) : rows;
+    const vals = [...new Set(source.map(r => r.city))].sort();
+    return [{ label: '全部城市', value: '' }, ...vals.map(v => ({ label: v, value: v }))];
+  }, [rows, selectedMarket]);
+
+  const vehicleOptions = useMemo(() => {
+    let source = rows;
+    if (selectedMarket) source = source.filter(r => r.market === selectedMarket);
+    if (selectedCity) source = source.filter(r => r.city === selectedCity);
+    const vals = [...new Set(source.map(r => r.displayNameZh))].sort();
+    return [{ label: '全部车型', value: '' }, ...vals.map(v => ({ label: v, value: v }))];
+  }, [rows, selectedMarket, selectedCity]);
+
+  const srOptions = useMemo(() => {
+    let source = rows;
+    if (selectedMarket) source = source.filter(r => r.market === selectedMarket);
+    if (selectedCity) source = source.filter(r => r.city === selectedCity);
+    if (selectedVehicle) source = source.filter(r => r.displayNameZh === selectedVehicle);
+    const vals = [...new Set(source.map(r => r.srNameZh).filter(Boolean))].sort();
+    return [{ label: '全部附加服务', value: '' }, ...vals.map(v => ({ label: v, value: v }))];
+  }, [rows, selectedMarket, selectedCity, selectedVehicle]);
+
   const filtered = useMemo(() => {
-    if (!keyword) return rows;
-    const kw = keyword.toLowerCase();
-    return rows.filter(r =>
-      r.market.toLowerCase().includes(kw) ||
-      r.city.toLowerCase().includes(kw) ||
-      r.serviceType.toLowerCase().includes(kw) ||
-      r.displayName.toLowerCase().includes(kw) ||
-      r.displayNameZh.toLowerCase().includes(kw) ||
-      r.srKey.toLowerCase().includes(kw) ||
-      r.srName.toLowerCase().includes(kw)
-    );
-  }, [rows, keyword]);
+    return rows.filter(r => {
+      if (selectedMarket && r.market !== selectedMarket) return false;
+      if (selectedCity && r.city !== selectedCity) return false;
+      if (selectedVehicle && r.displayNameZh !== selectedVehicle) return false;
+      if (selectedSr && r.srNameZh !== selectedSr) return false;
+      return true;
+    });
+  }, [rows, selectedMarket, selectedCity, selectedVehicle, selectedSr]);
+
+  const handleMarketChange = (v: string) => {
+    setSelectedMarket(v);
+    setSelectedCity('');
+    setSelectedVehicle('');
+    setSelectedSr('');
+  };
+
+  const handleCityChange = (v: string) => {
+    setSelectedCity(v);
+    setSelectedVehicle('');
+    setSelectedSr('');
+  };
+
+  const handleVehicleChange = (v: string) => {
+    setSelectedVehicle(v);
+    setSelectedSr('');
+  };
 
   const handleExport = () => {
     const data = rows.map(r => ({
@@ -147,29 +192,29 @@ export default function VehiclesPage() {
   const columns: ColumnsType<FlatRow> = [
     { title: '市场（国家）',          dataIndex: 'market',        key: 'market',        width: 110, fixed: 'left' },
     { title: '城市',                dataIndex: 'city',          key: 'city',          width: 120, fixed: 'left' },
-    { title: 'API serviceType',     dataIndex: 'serviceType',   key: 'serviceType',   width: 140, render: mono },
+    { title: 'API serviceType',     dataIndex: 'serviceType',   key: 'serviceType',   width: 110, render: mono },
     { title: '车型名（英文）',       dataIndex: 'displayName',   key: 'displayName',   width: 150 },
-    { title: '车型名（中文）',       dataIndex: 'displayNameZh', key: 'displayNameZh', width: 120 },
-    { title: '图片链接',             dataIndex: 'imageUrl',      key: 'imageUrl',      width: 130,
+    { title: '车型名（中文）',       dataIndex: 'displayNameZh', key: 'displayNameZh', width: 160 },
+    { title: '图片链接',             dataIndex: 'imageUrl',      key: 'imageUrl',      width: 160,
       render: v => v ? (
         <Tooltip title={v}>
           <a href={v} target="_blank" rel="noopener noreferrer"
-            className="text-xs text-blue-500 underline font-mono block truncate max-w-[110px]">{v}</a>
+            className="text-xs text-blue-500 underline font-mono line-clamp-2 break-all">{v}</a>
         </Tooltip>
       ) : empty },
-    { title: '车型描述（英文）',     dataIndex: 'enDesc',        key: 'enDesc',        width: 180, ellipsis: true,
-      render: v => v || empty },
-    { title: '车型描述（中文）',     dataIndex: 'zhDesc',        key: 'zhDesc',        width: 150, ellipsis: true,
-      render: v => v || empty },
+    { title: '车型描述（英文）',     dataIndex: 'enDesc',        key: 'enDesc',        width: 180,
+      render: v => v ? <Tooltip title={v}><span className="line-clamp-2 text-xs cursor-default">{v}</span></Tooltip> : empty },
+    { title: '车型描述（中文）',     dataIndex: 'zhDesc',        key: 'zhDesc',        width: 150,
+      render: v => v ? <Tooltip title={v}><span className="line-clamp-2 text-xs cursor-default">{v}</span></Tooltip> : empty },
     { title: 'API specialRequest',  dataIndex: 'srKey',         key: 'srKey',         width: 160, render: mono },
     { title: '服务标题（英文）',     dataIndex: 'srParentName',   key: 'srParentName',   width: 160,
-      render: v => v || empty },
+      render: v => v ? <Tooltip title={v}><span className="line-clamp-2 text-xs cursor-default">{v}</span></Tooltip> : empty },
     { title: '服务标题（中文）',     dataIndex: 'srParentNameZh', key: 'srParentNameZh', width: 150,
-      render: v => v || empty },
+      render: v => v ? <Tooltip title={v}><span className="line-clamp-2 text-xs cursor-default">{v}</span></Tooltip> : empty },
     { title: '服务描述（英文）',     dataIndex: 'srName',        key: 'srName',        width: 150,
-      render: v => v || empty },
+      render: v => v ? <Tooltip title={v}><span className="line-clamp-2 text-xs cursor-default">{v}</span></Tooltip> : empty },
     { title: '服务描述（中文）',     dataIndex: 'srNameZh',      key: 'srNameZh',      width: 120,
-      render: v => v || empty },
+      render: v => v ? <Tooltip title={v}><span className="line-clamp-2 text-xs cursor-default">{v}</span></Tooltip> : empty },
   ];
 
   return (
@@ -180,7 +225,7 @@ export default function VehiclesPage() {
         <ConfigProvider theme={{ components: { Segmented: { itemSelectedColor: '#2257D4' } } }}>
           <Segmented
             value={env}
-            onChange={k => { setEnv(k as Env); setKeyword(''); }}
+            onChange={k => { setEnv(k as Env); setSelectedMarket(''); setSelectedCity(''); setSelectedVehicle(''); setSelectedSr(''); }}
             options={[{ value: 'production', label: '正式环境' }, { value: 'sandbox', label: '沙盒环境' }]}
           />
         </ConfigProvider>
@@ -190,15 +235,45 @@ export default function VehiclesPage() {
         </div>
       </div>
 
-      <div className="mb-4">
-        <Input
-          prefix={<SearchOutlined className="text-gray-400" />}
-          placeholder="搜索 Market、City、serviceType、Display Name、specialRequest..."
-          value={keyword}
-          onChange={e => setKeyword(e.target.value)}
-          allowClear
-          className="max-w-md"
+      <div className="mb-4 flex items-center gap-3">
+        <Select
+          value={selectedMarket}
+          onChange={handleMarketChange}
+          options={marketOptions}
+          style={{ width: 150 }}
+          size="small"
         />
+        <Select
+          value={selectedCity}
+          onChange={handleCityChange}
+          options={cityOptions}
+          style={{ width: 150 }}
+          size="small"
+        />
+        <Select
+          value={selectedVehicle}
+          onChange={handleVehicleChange}
+          options={vehicleOptions}
+          showSearch
+          optionFilterProp="label"
+          style={{ width: 230 }}
+          size="small"
+        />
+        <Select
+          value={selectedSr}
+          onChange={setSelectedSr}
+          options={srOptions}
+          showSearch
+          optionFilterProp="label"
+          style={{ width: 230 }}
+          size="small"
+        />
+        <Button
+          size="small"
+          onClick={() => { setSelectedMarket(''); setSelectedCity(''); setSelectedVehicle(''); setSelectedSr(''); }}
+        >
+          重置
+        </Button>
       </div>
 
       <Table

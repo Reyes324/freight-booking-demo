@@ -257,6 +257,7 @@ export default function VehiclesPage() {
           showSearch
           optionFilterProp="label"
           style={{ width: 230 }}
+          dropdownStyle={{ minWidth: 320 }}
           size="small"
         />
         <Select
@@ -266,6 +267,7 @@ export default function VehiclesPage() {
           showSearch
           optionFilterProp="label"
           style={{ width: 230 }}
+          dropdownStyle={{ minWidth: 320 }}
           size="small"
         />
         <Button

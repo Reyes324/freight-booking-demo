@@ -1,20 +1,19 @@
 /**
  * 企业国际版 — 设计 Token（唯一真相源）
  *
- * 所有颜色、字号、圆角、阴影、间距都在这里定义。
- * 代码和 Figma Variables 均从此文件同步。
+ * 三层结构：
+ *   Primitive  → brand / neutral 色阶，给 antdTheme 用
+ *   Semantic   → colorTokens，Figma 语义色，业务组件直接引用这层
+ *   Component  → statusColors，组件专属映射
  *
- * 命名规则：
- *   色阶 → brand.50 … brand.950
- *   语义 → semantic.info / success / warning / error / neutral
- *   字号 → typography.xs … typography.3xl
+ * 其余 token：字体、间距、圆角、阴影、图标尺寸、动效、层级
  */
 
 // ═══════════════════════════════════════════
-// 1. 颜色
+// 1. Primitive 色阶（给 antdTheme 用，业务组件不要直接引）
 // ═══════════════════════════════════════════
 
-/** 品牌蓝 — 主色阶 */
+/** 品牌蓝色阶 */
 export const brand = {
   50:  '#EEF2FB',
   100: '#DAE3F7',
@@ -22,14 +21,14 @@ export const brand = {
   300: '#8AA7E5',
   400: '#5C84DC',
   500: '#3468D8',
-  600: '#2257D4',  // ← 主色 Primary
-  700: '#1C47AC',  // ← 主色 Hover
+  600: '#2257D4',  // ← Primary
+  700: '#1C47AC',  // ← Hover
   800: '#163884',
   900: '#112A5E',
   950: '#0B1B3D',
 } as const;
 
-/** 中性灰 — 与 Tailwind gray 对齐 */
+/** 中性灰色阶 */
 export const neutral = {
   0:   '#FFFFFF',
   50:  '#F9FAFB',
@@ -45,36 +44,7 @@ export const neutral = {
   950: '#030712',
 } as const;
 
-/** 语义色 — 状态、反馈 */
-export const semantic = {
-  info: {
-    base:  '#1677FF',
-    light: '#E5EDFF',
-    desc:  '进行中、信息提示',
-  },
-  success: {
-    base:  '#00A178',
-    light: '#DFF3EC',
-    desc:  '已完成、成功',
-  },
-  warning: {
-    base:  '#FAAD14',
-    light: '#FFF7E6',
-    desc:  '警告、注意',
-  },
-  error: {
-    base:  '#EF4444',
-    light: '#FEF2F2',
-    desc:  '错误、验证失败',
-  },
-  disabled: {
-    base:  '#8990A3',
-    light: '#F0F3F7',
-    desc:  '已取消、禁用',
-  },
-} as const;
-
-/** 品牌栏深色（登录页左侧） */
+/** 品牌栏深色（登录页左侧，独立于 16 色语义系统） */
 export const brandDark = {
   start: '#0B1D40',
   end:   '#163A6E',
@@ -82,10 +52,55 @@ export const brandDark = {
 } as const;
 
 // ═══════════════════════════════════════════
-// 2. 字体
+// 2. Semantic 颜色 Token（唯一业务组件用色层）
+//    对应 Figma Variables，共 18 色
 // ═══════════════════════════════════════════
 
-/** 字体族 */
+export const colorTokens = {
+  // ── 品牌色 ──────────────────────────────
+  brandPrimary:     '#2257D4',  // Brand/Primary      主按钮、链接、Tab 选中、进行中状态
+  brandHover:       '#1C47AC',  // Brand/Hover        按钮悬停/按下态
+  brandAccent:      '#FF6600',  // Brand/Accent       呼叫司机标签、运营活动标签、优先订单强调
+  brandAccentLight: '#FFF0E5',  // Brand/AccentLight  呼叫司机标签底色
+
+  // ── 文本与图标（数字越小越深）────────────
+  inkT10: '#0F1229',  // Ink/T10  一级文案：页面标题、弹窗标题、重要数字
+  inkT20: '#252B47',  // Ink/T20  一级图标：导航主图标、功能入口图标
+  inkT30: '#454C66',  // Ink/T30  二级文案：正文、表单标签、列表项
+  inkT40: '#656C85',  // Ink/T40  二级图标：次要功能图标、表单内图标
+  inkT50: '#8990A3',  // Ink/T50  三级文案：placeholder、辅助说明、禁用态文字
+  inkT60: '#ABB2C2',  // Ink/T60  三级图标：装饰性图标、空状态图标
+
+  // ── 边框与背景 ───────────────────────────
+  surfaceBorder:     '#C5CCDB',  // Surface/Border     输入框边框、线性按钮描边
+  surfaceDivider:    '#EBEFF5',  // Surface/Divider    分割线、表格行线
+  surfaceBrandLight: '#EEF2FB',  // Surface/BrandLight 进行中状态标签底色
+  surfaceWhite:      '#FFFFFF',  // Surface/White      卡片背景、输入框背景、弹窗背景
+  surfaceDisabled:   '#F0F3F7',  // Surface/Disabled   禁用/已取消状态底色
+
+  // ── 状态色 ───────────────────────────────
+  statusSuccess:      '#00A178',  // Status/Success      已完成状态文字、成功反馈
+  statusSuccessLight: '#DFF3EC',  // Status/SuccessLight 已完成状态标签底色
+  statusError:        '#F23041',  // Status/Error        已取消状态、错误提示、表单校验
+  statusWarning:      '#F59314',  // Status/Warning      警告提示
+} as const;
+
+// ═══════════════════════════════════════════
+// 3. Component Token — 订单状态色映射
+// ═══════════════════════════════════════════
+
+export const statusColors = {
+  calling_driver: { color: colorTokens.brandAccent,      bg: colorTokens.brandAccentLight },
+  in_transit:     { color: colorTokens.brandPrimary,     bg: colorTokens.surfaceBrandLight },
+  delivering:     { color: colorTokens.brandPrimary,     bg: colorTokens.surfaceBrandLight },
+  completed:      { color: colorTokens.statusSuccess,    bg: colorTokens.statusSuccessLight },
+  cancelled:      { color: colorTokens.inkT50,           bg: colorTokens.surfaceDisabled },
+} as const;
+
+// ═══════════════════════════════════════════
+// 4. 字体
+// ═══════════════════════════════════════════
+
 export const fontFamily = {
   base:    '"PingFang SC", -apple-system, BlinkMacSystemFont, "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif',
   price:   '"Alibaba PuHuiTi 3", "DIN Alternate", "Helvetica Neue", Arial, sans-serif',
@@ -93,18 +108,16 @@ export const fontFamily = {
   english: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
 } as const;
 
-/** 字号层级 — 精简为 7 级 */
 export const fontSize = {
-  xs:   { size: '11px',  lineHeight: '16px',  desc: '徽章、脚注、极小标注' },
-  sm:   { size: '12px',  lineHeight: '18px',  desc: '状态标签、辅助说明' },
-  base: { size: '14px',  lineHeight: '22px',  desc: '正文、表单标签、列表项' },
-  md:   { size: '16px',  lineHeight: '24px',  desc: '按钮文字、导航标签、强调正文' },
-  lg:   { size: '20px',  lineHeight: '28px',  desc: '页面标题、卡片标题' },
-  xl:   { size: '24px',  lineHeight: '32px',  desc: '价格数字、大标题' },
-  '2xl': { size: '28px', lineHeight: '36px',  desc: '品牌大标题（登录页 headline）' },
+  xs:    { size: '11px', lineHeight: '16px', desc: '徽章、脚注、极小标注' },
+  sm:    { size: '12px', lineHeight: '18px', desc: '状态标签、辅助说明' },
+  base:  { size: '14px', lineHeight: '22px', desc: '正文、表单标签、列表项' },
+  md:    { size: '16px', lineHeight: '24px', desc: '按钮文字、导航标签、强调正文' },
+  lg:    { size: '20px', lineHeight: '28px', desc: '页面标题、卡片标题' },
+  xl:    { size: '24px', lineHeight: '32px', desc: '价格数字、大标题' },
+  '2xl': { size: '28px', lineHeight: '36px', desc: '品牌大标题（登录页 headline）' },
 } as const;
 
-/** 字重 */
 export const fontWeight = {
   normal:   400,
   medium:   500,
@@ -112,237 +125,243 @@ export const fontWeight = {
   bold:     700,
 } as const;
 
+export const letterSpacing = {
+  tight:  '-0.3px',  // 标题
+  normal: '0',       // 正文默认
+  wide:   '0.04em',  // 全大写标签、徽章
+} as const;
+
 // ═══════════════════════════════════════════
-// 3. 圆角
+// 5. 圆角
 // ═══════════════════════════════════════════
 
 export const radius = {
-  sm:   '4px',   // 状态标签、小元素
-  md:   '6px',   // 次要按钮
-  base: '8px',   // 输入框、按钮、全局默认（antd borderRadius）
-  lg:   '12px',  // 卡片、面板
-  xl:   '16px',  // 大卡片、登录卡
+  sm:   '4px',    // 状态标签、小元素
+  md:   '6px',    // 次要按钮
+  base: '8px',    // 输入框、按钮、全局默认
+  lg:   '12px',   // 卡片、面板
+  xl:   '16px',   // 大卡片、登录卡
   pill: '9999px', // 胶囊形（标签、徽章）
-  full: '50%',   // 圆形（头像、指示器）
+  full: '50%',    // 圆形（头像、指示器）
 } as const;
 
 // ═══════════════════════════════════════════
-// 4. 阴影
+// 6. 阴影
 // ═══════════════════════════════════════════
 
 export const shadow = {
-  /** 导航栏 — 轻微底边阴影 */
-  navbar: '0 1px 3px 0 rgba(0,0,0,0.08), 0 1px 2px 0 rgba(0,0,0,0.04)',
-
-  /** 卡片 — 标准卡片阴影 */
-  card: '0 0 0 1px rgba(15,23,42,0.06), 0 8px 32px rgba(15,23,42,0.10), 0 2px 8px rgba(15,23,42,0.06)',
-
-  /** 底部浮动栏 — 上方向阴影 */
+  navbar:    '0 1px 3px 0 rgba(0,0,0,0.08), 0 1px 2px 0 rgba(0,0,0,0.04)',
+  card:      '0 0 0 1px rgba(15,23,42,0.06), 0 8px 32px rgba(15,23,42,0.10), 0 2px 8px rgba(15,23,42,0.06)',
   footerBar: '0px -3px 6px 0px rgba(0,0,0,0.06), 0px -6px 16px 0px rgba(0,0,0,0.04), 0px -9px 28px 0px rgba(0,0,0,0.02)',
-
-  /** 弹出层 — DatePicker、Popover 等 */
-  popup: '0 6px 16px 0 rgba(0,0,0,0.08), 0 3px 6px -4px rgba(0,0,0,0.12), 0 9px 28px 8px rgba(0,0,0,0.05)',
-
-  /** 无阴影 */
-  none: 'none',
+  popup:     '0 6px 16px 0 rgba(0,0,0,0.08), 0 3px 6px -4px rgba(0,0,0,0.12), 0 9px 28px 8px rgba(0,0,0,0.05)',
+  none:      'none',
 } as const;
 
 // ═══════════════════════════════════════════
-// 5. 间距
+// 7. 间距（按使用场景分类）
 // ═══════════════════════════════════════════
 
 export const spacing = {
-  0:    '0px',
-  1:    '4px',
-  1.5:  '6px',
-  2:    '8px',
-  2.5:  '10px',
-  3:    '12px',
-  3.5:  '14px',
-  4:    '16px',
-  5:    '20px',
-  6:    '24px',
-  8:    '32px',
-  10:   '40px',
-  12:   '48px',
+  /** 组件内部 padding（inset） */
+  inset: {
+    xs:   '4px',   // 标签内边距、小徽章
+    sm:   '8px',   // 按钮 padding-y、输入框内边距
+    md:   '12px',  // 卡片内边距（小）
+    lg:   '16px',  // 卡片内边距（标准）
+    xl:   '24px',  // 大卡片、弹窗内边距
+    '2xl': '32px', // 页面内容区域内边距
+  },
+  /** 同级元素之间 gap / margin（stack） */
+  stack: {
+    xs:   '4px',   // 图标和文字之间
+    sm:   '8px',   // label 和 input 之间
+    md:   '12px',  // 表单项之间
+    lg:   '16px',  // 卡片内各区块之间
+    xl:   '24px',  // Section 内各组件之间
+    '2xl': '32px', // 大区块之间
+    '3xl': '48px', // 页面级大区块之间
+  },
+  /** 页面级布局间距（layout） */
+  layout: {
+    sm: '24px',  // 移动端页面边距
+    md: '32px',  // 桌面端内容区域间距
+    lg: '48px',  // 大 Section 之间
+    xl: '64px',  // 页面顶部留白
+  },
 } as const;
 
 // ═══════════════════════════════════════════
-// 6. 控件尺寸
+// 8. 图标尺寸
+// ═══════════════════════════════════════════
+
+export const iconSize = {
+  xs: 12,  // 标签内内联图标
+  sm: 16,  // 大多数 UI 图标（SearchOutlined 等）
+  md: 20,  // 标准操作图标（退出、功能入口）
+  lg: 24,  // 功能性大图标
+  xl: 32,  // 空状态图标
+} as const;
+
+// ═══════════════════════════════════════════
+// 9. 控件尺寸
 // ═══════════════════════════════════════════
 
 export const controlHeight = {
-  sm: 32,   // 小控件
-  md: 44,   // 标准输入框、按钮（antd controlHeight）
-  lg: 54,   // 大操作按钮（下单、确认）
+  sm: 32,  // 小控件
+  md: 44,  // 标准输入框、按钮
+  lg: 54,  // 大操作按钮（下单、确认）
 } as const;
 
 // ═══════════════════════════════════════════
-// 7. Ant Design 主题映射
+// 10. 动效
 // ═══════════════════════════════════════════
 
-/** 直接导入给 ConfigProvider 使用 */
+export const motion = {
+  duration: {
+    fast: '100ms',  // hover 态切换
+    base: '200ms',  // 大多数过渡（Ant Design 默认）
+    slow: '300ms',  // Drawer 滑入、页面切换
+  },
+  easing: {
+    default: 'cubic-bezier(0.4, 0, 0.2, 1)',  // 标准缓动
+    in:      'cubic-bezier(0.4, 0, 1, 1)',    // 退出动画
+    out:     'cubic-bezier(0, 0, 0.2, 1)',    // 进入动画
+  },
+} as const;
+
+// ═══════════════════════════════════════════
+// 11. 层级（对齐 Ant Design z-index 规范）
+// ═══════════════════════════════════════════
+
+export const zIndex = {
+  base:     0,
+  navbar:   30,    // 顶部导航（低于所有浮层）
+  sticky:   100,   // 吸顶元素（GlobalAlert）
+  popover:  1030,  // Popover、气泡卡片
+  drawer:   1000,  // 侧边抽屉
+  modal:    1000,  // 弹窗
+  dropdown: 1050,  // 下拉菜单（高于 modal/drawer）
+  toast:    1010,  // message 提示
+  tooltip:  1070,  // Tooltip（最高）
+} as const;
+
+// ═══════════════════════════════════════════
+// 12. Ant Design 主题映射
+// ═══════════════════════════════════════════
+
 export const antdTheme = {
   token: {
     // ===== 品牌色 =====
-    colorPrimary: brand[600],           // 主色：#2257D4
-    colorPrimaryHover: brand[700],      // 主色悬停：#1C47AC
-    colorPrimaryActive: brand[700],     // 主色激活
-    colorPrimaryBg: brand[50],          // 主色背景
-    colorPrimaryBgHover: brand[100],    // 主色背景悬停
-    colorPrimaryBorder: brand[200],     // 主色边框
-    colorPrimaryBorderHover: brand[300],// 主色边框悬停
+    colorPrimary:             brand[600],
+    colorPrimaryHover:        brand[700],
+    colorPrimaryActive:       brand[700],
+    colorPrimaryBg:           brand[50],
+    colorPrimaryBgHover:      brand[100],
+    colorPrimaryBorder:       brand[200],
+    colorPrimaryBorderHover:  brand[300],
 
-    // ===== 链接色（不设置，避免覆盖导航栏）=====
-    // colorLink: brand[600],           // 注释掉，让链接使用默认或手动控制
-    // colorLinkHover: brand[700],
-    // colorLinkActive: brand[700],
-
-    // ===== 成功色 =====
-    colorSuccess: semantic.success.base,      // #00A178
-    colorSuccessBg: semantic.success.light,   // #DFF3EC
-
-    // ===== 警告色 =====
-    colorWarning: semantic.warning.base,      // #FAAD14
-    colorWarningBg: semantic.warning.light,   // #FFF7E6
-
-    // ===== 错误色 =====
-    colorError: semantic.error.base,          // #EF4444
-    colorErrorBg: semantic.error.light,       // #FEF2F2
-
-    // ===== 信息色 =====
-    colorInfo: semantic.info.base,            // #1677FF
-    colorInfoBg: semantic.info.light,         // #E5EDFF
+    // ===== 状态色（统一引用 colorTokens）=====
+    colorSuccess:   colorTokens.statusSuccess,
+    colorSuccessBg: colorTokens.statusSuccessLight,
+    colorWarning:   colorTokens.statusWarning,
+    colorWarningBg: '#FFF7E6',
+    colorError:     colorTokens.statusError,
+    colorErrorBg:   '#FEF2F2',
+    colorInfo:      colorTokens.brandPrimary,
+    colorInfoBg:    colorTokens.surfaceBrandLight,
 
     // ===== 文本色 =====
-    colorText: neutral[900],              // 主文本：#111827
-    colorTextSecondary: neutral[600],     // 次要文本：#4B5563
-    colorTextTertiary: neutral[400],      // 三级文本：#9CA3AF
-    colorTextDisabled: neutral[300],      // 禁用文本：#D1D5DB
+    colorText:         neutral[900],
+    colorTextSecondary: neutral[600],
+    colorTextTertiary:  neutral[400],
+    colorTextDisabled:  neutral[300],
 
     // ===== 边框色 =====
-    colorBorder: neutral[200],            // 边框：#E5E7EB
-    colorBorderSecondary: neutral[100],   // 次要边框：#F3F4F6
+    colorBorder:          neutral[200],
+    colorBorderSecondary: neutral[100],
 
     // ===== 背景色 =====
-    colorBgContainer: neutral[0],         // 容器背景：#FFFFFF
-    colorBgLayout: neutral[50],           // 布局背景：#F9FAFB
-    colorBgElevated: neutral[0],          // 浮层背景：#FFFFFF
+    colorBgContainer: neutral[0],
+    colorBgLayout:    neutral[50],
+    colorBgElevated:  neutral[0],
 
     // ===== 圆角 =====
-    borderRadius: parseInt(radius.base),  // 8px
-    borderRadiusLG: parseInt(radius.lg),  // 12px
-    borderRadiusSM: parseInt(radius.sm),  // 4px
+    borderRadius:   parseInt(radius.base),
+    borderRadiusLG: parseInt(radius.lg),
+    borderRadiusSM: parseInt(radius.sm),
 
     // ===== 字体 =====
-    fontFamily: fontFamily.base,
-    fontSize: parseInt(fontSize.base.size),
-    fontSizeHeading1: parseInt(fontSize['2xl'].size),
-    fontSizeHeading2: parseInt(fontSize.xl.size),
-    fontSizeHeading3: parseInt(fontSize.lg.size),
-    fontSizeHeading4: parseInt(fontSize.md.size),
-    fontSizeHeading5: parseInt(fontSize.base.size),
+    fontFamily:         fontFamily.base,
+    fontSize:           parseInt(fontSize.base.size),
+    fontSizeHeading1:   parseInt(fontSize['2xl'].size),
+    fontSizeHeading2:   parseInt(fontSize.xl.size),
+    fontSizeHeading3:   parseInt(fontSize.lg.size),
+    fontSizeHeading4:   parseInt(fontSize.md.size),
+    fontSizeHeading5:   parseInt(fontSize.base.size),
 
     // ===== 控件高度 =====
-    controlHeight: controlHeight.md,      // 44px
-    controlHeightLG: controlHeight.lg,    // 54px
-    controlHeightSM: controlHeight.sm,    // 32px
+    controlHeight:   controlHeight.md,
+    controlHeightLG: controlHeight.lg,
+    controlHeightSM: controlHeight.sm,
   },
   components: {
-    // ===== 按钮 =====
     Button: {
-      colorPrimary: brand[600],
-      colorPrimaryHover: brand[700],
+      colorPrimary:       brand[600],
+      colorPrimaryHover:  brand[700],
       colorPrimaryActive: brand[700],
       primaryShadow: 'none',
-      dangerShadow: 'none',
+      dangerShadow:  'none',
       defaultShadow: 'none',
     },
-
-    // ===== 开关 =====
     Switch: {
-      colorPrimary: brand[600],
+      colorPrimary:      brand[600],
       colorPrimaryHover: brand[700],
     },
-
-    // ===== 单选框 =====
     Radio: {
       colorPrimary: brand[600],
     },
-
-    // ===== 复选框 =====
     Checkbox: {
-      colorPrimary: brand[600],
+      colorPrimary:      brand[600],
       colorPrimaryHover: brand[700],
     },
-
-    // ===== 输入框 =====
     Input: {
-      controlHeight: controlHeight.md,
+      controlHeight:     controlHeight.md,
       colorPrimaryHover: brand[600],
-      colorPrimary: brand[600],
+      colorPrimary:      brand[600],
     },
-
-    // ===== 选择器 =====
     Select: {
-      controlHeight: controlHeight.md,
-      colorPrimary: brand[600],
+      controlHeight:     controlHeight.md,
+      colorPrimary:      brand[600],
       colorPrimaryHover: brand[600],
     },
-
-    // ===== 日期选择器 =====
     DatePicker: {
-      controlHeight: controlHeight.md,
-      colorPrimary: brand[600],
+      controlHeight:     controlHeight.md,
+      colorPrimary:      brand[600],
       colorPrimaryHover: brand[700],
     },
-
-    // ===== 表单 =====
     Form: {
-      labelColor: neutral[700],
+      labelColor:    neutral[700],
       labelFontSize: parseInt(fontSize.base.size),
     },
-
-    // ===== 表格 =====
     Table: {
       colorPrimary: brand[600],
-      headerBg: neutral[50],
+      headerBg:     neutral[50],
     },
-
-    // ===== 标签页 =====
     Tabs: {
-      colorPrimary: brand[600],
+      colorPrimary:      brand[600],
       colorPrimaryHover: brand[700],
-      inkBarColor: brand[600],
-      itemHoverColor: neutral[700],
+      inkBarColor:       brand[600],
+      itemHoverColor:    neutral[700],
       itemSelectedColor: brand[600],
     },
-
-    // ===== 消息提示 =====
     Message: {
       colorInfo: brand[600],
     },
-
-    // ===== 通知 =====
     Notification: {
       colorInfo: brand[600],
     },
-
-    // ===== 标签 =====
     Tag: {
       colorPrimary: brand[600],
     },
   },
-} as const;
-
-// ═══════════════════════════════════════════
-// 8. 订单状态色映射
-// ═══════════════════════════════════════════
-
-export const statusColors = {
-  calling_driver: { color: semantic.info.base,     bg: semantic.info.light },
-  in_transit:     { color: semantic.info.base,     bg: semantic.info.light },
-  delivering:     { color: semantic.info.base,     bg: semantic.info.light },
-  completed:      { color: semantic.success.base,  bg: semantic.success.light },
-  cancelled:      { color: semantic.disabled.base, bg: semantic.disabled.light },
 } as const;

@@ -40,8 +40,10 @@ export default function OrderStatusTag({ status }: OrderStatusTagProps) {
   };
 
   return (
-    <Tag color={statusColor[status]}>
-      {labels[status]}
-    </Tag>
+    <span data-ds="OrderStatusTag" data-ds-label={`状态：${labels[status]}`} style={{ display: 'inline-block' }}>
+      <Tag color={statusColor[status]}>
+        {labels[status]}
+      </Tag>
+    </span>
   );
 }

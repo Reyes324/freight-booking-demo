@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { Form, Input, InputNumber, Select, Button, message, Modal } from 'antd';
+import { Form, Input, InputNumber, Select, Button, message, Modal, Radio, Alert } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { enterprises } from '@/data/adminMockData';
@@ -82,8 +82,20 @@ export default function EditEnterprisePage() {
             phone: enterprise.phone,
             premiumRate: enterprise.premiumRate,
             creditLimit: enterprise.creditLimit,
+            isParent: enterprise.isParent ?? false,
+            parentQuotaTotal: enterprise.parentQuotaTotal,
           }}
         >
+          <Form.Item
+            label="账号类型"
+            name="isParent"
+          >
+            <Radio.Group>
+              <Radio value={false}>普通账号</Radio>
+              <Radio value={true}>母账号（可创建并管理子账号）</Radio>
+            </Radio.Group>
+          </Form.Item>
+
           {/* 企业ID只读展示 */}
           <Form.Item label="企业ID">
             <Input value={enterprise.id} disabled className="font-mono" />
@@ -152,6 +164,25 @@ export default function EditEnterprisePage() {
               addonBefore="CNY"
               style={{ width: '100%' }}
             />
+          </Form.Item>
+
+          <Form.Item noStyle shouldUpdate={(prev, cur) => prev.isParent !== cur.isParent || prev.creditLimit !== cur.creditLimit}>
+            {({ getFieldValue }) => {
+              if (!getFieldValue('isParent')) return null;
+              const allocated = (enterprise.subAccounts ?? []).reduce((sum, s) => sum + s.quota, 0);
+              const creditLimit = getFieldValue('creditLimit') ?? 0;
+              if (creditLimit < allocated) {
+                return (
+                  <Alert
+                    type="warning"
+                    showIcon
+                    className="mb-6"
+                    message={`当前账期额度（CNY ${creditLimit.toLocaleString('zh-CN')}）低于子账号已分配额度合计（CNY ${allocated.toLocaleString('zh-CN')}），请注意`}
+                  />
+                );
+              }
+              return null;
+            }}
           </Form.Item>
 
           <div className="flex justify-end gap-3 mt-8">

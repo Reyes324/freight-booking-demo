@@ -17,15 +17,20 @@ import PaymentMethodSelector from "@/components/PaymentMethodSelector";
 import OrderContactPhone from "@/components/OrderContactPhone";
 import ConfirmationFooter from "@/components/ConfirmationFooter";
 import { OrderStorage } from "@/lib/orderStorage";
-import { vehicles as vehicleList, vehicleServicesMap, isServiceGroup } from "@/data/mockData";
+import { App } from "antd";
+import { vehicles as vehicleList, vehicleServicesMap, isServiceGroup, getCurrentAccount, mockSubAccounts } from "@/data/mockData";
 import type { Vehicle, AddressDetail, OrderDraft, OrderConfirmation } from "@/data/mockData";
 import GlobalAlert from "@/components/GlobalAlert";
+
+// 参考汇率：1 CNY = 5 THB（与 wallet / orders 页一致）
+const CNY_PER_THB = 1 / 5;
 
 type ViewMode = "configure" | "confirm";
 
 export default function OrderPage() {
   const router = useRouter();
   const t = useT();
+  const { modal } = App.useApp();
   const [currentStep, setCurrentStep] = useState<ViewMode>("configure");
   const [pickupAddress, setPickupAddress] = useState<AddressDetail | null>(null);
   const [dropoffAddress, setDropoffAddress] = useState<AddressDetail | null>(null);
@@ -202,6 +207,22 @@ export default function OrderPage() {
 
     console.log("✅ 验证通过，继续提交...");
 
+    // 子账号额度校验（母子账号 Demo）：余额不足则拦截，不创建订单
+    const account = getCurrentAccount();
+    if (account.accountType === "child") {
+      const childAccount = mockSubAccounts.find((s) => s.id === account.accountId);
+      const orderCostCNY = orderDraft.totalPrice * CNY_PER_THB;
+      if (childAccount && childAccount.balance < orderCostCNY) {
+        modal.info({
+          title: t.order.quotaInsufficientTitle,
+          content: t.order.quotaInsufficientBody,
+          okText: t.order.quotaInsufficientOk,
+          centered: true,
+        });
+        return;
+      }
+    }
+
     setIsSubmitting(true);
 
     const confirmation: OrderConfirmation = {
@@ -230,7 +251,7 @@ export default function OrderPage() {
 
     // 跳转到订单记录页面
     router.push('/orders');
-  }, [orderDraft, contactPhone, scheduledTime, driverNote, router]);
+  }, [orderDraft, contactPhone, scheduledTime, driverNote, router, modal, t]);
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-gray-100">

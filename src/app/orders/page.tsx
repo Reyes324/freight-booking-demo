@@ -1,13 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import { Table, Input, Card } from 'antd';
+import { useEffect, useState } from 'react';
+import { Table, Input, Card, Select } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import Navbar from '@/components/Navbar';
 import OrderStatusTag from '@/components/OrderStatusTag';
 import OrderDrawer from '@/components/OrderDrawer';
-import { mockOrders, type Order } from '@/data/mockData';
+import {
+  mockOrders,
+  mockSubAccounts,
+  getCurrentAccount,
+  type Order,
+  type CurrentAccount,
+} from '@/data/mockData';
 import { useT } from '@/hooks/useT';
 
 export default function OrdersPage() {
@@ -15,6 +21,20 @@ export default function OrdersPage() {
   const [searchText, setSearchText] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [subFilter, setSubFilter] = useState<string | null>(null);
+
+  // 当前账号（挂载后读取）
+  const [account, setAccount] = useState<CurrentAccount | null>(null);
+  useEffect(() => {
+    setAccount(getCurrentAccount());
+  }, []);
+
+  const isParent = account?.accountType === 'parent';
+  const isChild = account?.accountType === 'child';
+
+  // 子账号名称查表
+  const subName = (id?: string) =>
+    id ? mockSubAccounts.find((s) => s.id === id)?.name ?? id : t.orders.parentOwnOrder;
 
   // 格式化完整日期时间（如 2026-03-20 14:30）
   const formatDateTime = (date: Date) => {
@@ -62,6 +82,22 @@ export default function OrdersPage() {
         <span className="text-sm text-gray-900">{formatDateTime(time)}</span>
       ),
     },
+    // 母账号：展示所属子账号列
+    ...(isParent
+      ? [
+          {
+            title: t.orders.subAccountColumn,
+            key: 'subAccount',
+            width: 130,
+            render: (_: unknown, record: Order) =>
+              record.subAccountId ? (
+                <span className="text-sm text-gray-900">{subName(record.subAccountId)}</span>
+              ) : (
+                <span className="text-sm text-gray-900">{t.orders.parentOwnOrder}</span>
+              ),
+          } as ColumnsType<Order>[number],
+        ]
+      : []),
     {
       title: t.orders.route,
       key: 'route',
@@ -126,8 +162,18 @@ export default function OrdersPage() {
     },
   ];
 
-  // 过滤订单
+  // 过滤订单：
+  // - 子账号：数据隔离，只看本账号订单
+  // - 母账号：默认全部，可按子账号筛选
   const filteredOrders = mockOrders.filter((order) => {
+    if (isChild && order.subAccountId !== account?.accountId) return false;
+    if (isParent && subFilter) {
+      if (subFilter === '__parent__') {
+        if (order.subAccountId) return false;
+      } else {
+        if (order.subAccountId !== subFilter) return false;
+      }
+    }
     if (!searchText) return true;
     const searchLower = searchText.toLowerCase();
     return (
@@ -147,8 +193,21 @@ export default function OrdersPage() {
           <h1 className="text-lg font-semibold text-gray-900">{t.orders.title}</h1>
         </div>
 
-        {/* 搜索栏 */}
-        <div className="mb-4">
+        {/* 筛选栏 */}
+        <div className="mb-4 flex items-center gap-3">
+          {isParent && (
+            <Select
+              placeholder="全部账号"
+              allowClear
+              value={subFilter}
+              onChange={setSubFilter}
+              style={{ width: 160 }}
+              options={[
+                { value: '__parent__', label: '母账号' },
+                ...mockSubAccounts.map((s) => ({ value: s.id, label: s.name })),
+              ]}
+            />
+          )}
           <Input
             data-ds="Input"
             data-ds-label="搜索框"
@@ -157,7 +216,7 @@ export default function OrdersPage() {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             allowClear
-            className="max-w-[500px]"
+            className="flex-1"
           />
         </div>
 

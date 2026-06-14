@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { accountPresets } from '@/data/mockData';
 
 // i18n 翻译对象
 const i18n = {
@@ -109,6 +110,14 @@ const themeNames = {
 type Language = 'zh' | 'en';
 type Theme = 'stripe' | 'linear' | 'revolut' | 'notion' | 'wise' | 'apple';
 
+// Demo 演示角色（母子账号原型用，对应 accountPresets 的 key）
+type DemoRole = 'parent' | 'childVN' | 'childTH';
+const demoRoleLabels: Record<DemoRole, { zh: string; en: string }> = {
+  parent: { zh: '母账号管理员', en: 'Parent admin' },
+  childVN: { zh: '越南子账号', en: 'Vietnam sub' },
+  childTH: { zh: '泰国子账号', en: 'Thailand sub' },
+};
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -125,6 +134,8 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [phoneError, setPhoneError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [demoRole, setDemoRole] = useState<DemoRole>('parent');
+  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
 
   // 初始化时从 localStorage 读取应用语言设置
   useEffect(() => {
@@ -155,6 +166,10 @@ export default function LoginPage() {
       if (!target.closest('.lang-bar') && !target.closest('.lang-trigger') && !target.closest('.lang-dropdown')) {
         setLangDropdownOpen(false);
       }
+      // 检查点击是否在演示角色菜单内
+      if (!target.closest('.role-bar')) {
+        setRoleDropdownOpen(false);
+      }
     };
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
@@ -179,32 +194,20 @@ export default function LoginPage() {
     setThemeDropdownOpen(false);
   };
 
-  // 超简单的登录逻辑 - 任何输入都能成功
+  // Demo 登录逻辑 - 手机号/密码留空也可直接登录
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 清除之前的错误
     setPhoneError('');
     setPasswordError('');
-
-    // 验证手机号
-    if (!phoneValue.trim()) {
-      setPhoneError(currentLang === 'zh' ? '请输入手机号' : 'Please enter phone number');
-      return;
-    }
-
-    // 验证密码
-    if (!passwordValue.trim()) {
-      setPasswordError(currentLang === 'zh' ? '请输入密码' : 'Please enter password');
-      return;
-    }
-
     setSubmitting(true);
 
     // 模拟加载
     setTimeout(() => {
       // 设置登录标志
       localStorage.setItem('isLoggedIn', 'true');
+      // Demo：写入所选演示角色的账号信息
+      localStorage.setItem('currentAccount', JSON.stringify(accountPresets[demoRole]));
       // 跳转到首页
       router.push('/');
     }, 800);
@@ -214,6 +217,42 @@ export default function LoginPage() {
 
   return (
     <div data-theme={currentTheme}>
+      {/* Demo 角色切换（浮动，左上角，仅原型演示用） */}
+      <div className="role-bar">
+        <div
+          className="role-trigger"
+          onClick={(e) => {
+            e.stopPropagation();
+            setRoleDropdownOpen(!roleDropdownOpen);
+          }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+            <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span>{currentLang === 'zh' ? '演示角色' : 'Demo'}：{demoRoleLabels[demoRole][currentLang]}</span>
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </div>
+        {roleDropdownOpen && (
+          <div className="role-dropdown">
+            {(Object.keys(demoRoleLabels) as DemoRole[]).map((role) => (
+              <div
+                key={role}
+                className={`role-option ${demoRole === role ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDemoRole(role);
+                  setRoleDropdownOpen(false);
+                }}
+              >
+                {demoRoleLabels[role][currentLang]}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Language Switcher */}
       <div className="lang-bar">
         <div
@@ -977,6 +1016,35 @@ export default function LoginPage() {
           padding: 0; display: flex; transition: color .15s;
         }
         .pwd-toggle:hover { color: var(--text-body); }
+
+        /* ── Demo Role Switcher (floating, bottom-right) ── */
+        .role-bar {
+          position: fixed; bottom: 24px; right: 24px; z-index: 200;
+        }
+        .role-trigger {
+          display: flex; align-items: center; gap: 6px;
+          padding: 7px 13px;
+          background: var(--card-bg); border: 1px dashed var(--input-border);
+          border-radius: 8px; box-shadow: var(--card-shadow);
+          cursor: pointer; font-size: 13px; font-weight: 500;
+          color: var(--text-body); transition: all .15s; user-select: none; white-space: nowrap;
+        }
+        .role-trigger:hover { color: var(--text-title); border-color: var(--focus-border); }
+        .role-dropdown {
+          position: absolute; bottom: calc(100% + 6px); right: 0; left: auto;
+          background: var(--card-bg); border: 1px solid var(--border);
+          border-radius: 10px; box-shadow: var(--card-shadow);
+          overflow: hidden; min-width: 170px;
+        }
+        .role-option {
+          display: flex; align-items: center;
+          padding: 10px 16px; font-size: 13px; color: var(--text-title);
+          cursor: pointer; transition: background .1s;
+          border-bottom: 1px solid var(--border);
+        }
+        .role-option:last-child { border-bottom: none; }
+        .role-option:hover { background: var(--input-bg); }
+        .role-option.active { color: var(--link); font-weight: 500; }
 
         /* ── Submit button ── */
         .btn-submit {

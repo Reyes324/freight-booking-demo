@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Table, Input, Button, Card, Tag, Select, Tooltip, Alert } from 'antd';
+import { Table, Input, Button, Card, Tag, Select, Tooltip, Alert, Empty } from 'antd';
 import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { enterprises, adminOrders, type AdminOrder, type FeeBreakdown } from '@/data/adminMockData';
@@ -70,11 +70,32 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [countryFilter, setCountryFilter] = useState<string | null>(null);
   const [supplierFilter, setSupplierFilter] = useState<string | null>(null);
+  const [subAccountFilter, setSubAccountFilter] = useState<string | null>(null);
 
   const enterpriseMap = useMemo(() => {
     const map: Record<string, string> = {};
     enterprises.forEach((e) => { map[e.id] = e.name; });
     return map;
+  }, []);
+
+  // 子账号名称查表：subAccountId → name
+  const subAccountMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    enterprises.forEach((e) => {
+      (e.subAccounts ?? []).forEach((s) => { map[s.id] = s.name; });
+    });
+    return map;
+  }, []);
+
+  // 所有子账号选项（用于筛选）
+  const allSubAccounts = useMemo(() =>
+    enterprises.flatMap((e) => e.subAccounts ?? []),
+  []);
+
+  const parentEnterpriseIds = useMemo(() => {
+    const set = new Set<string>();
+    enterprises.forEach((e) => { if ((e.subAccounts ?? []).length > 0) set.add(e.id); });
+    return set;
   }, []);
 
   const filtered = useMemo(() => {
@@ -91,6 +112,10 @@ export default function AdminOrdersPage() {
     }
     if (supplierFilter) {
       result = result.filter((o) => o.supplierCode === supplierFilter);
+    }
+    if (subAccountFilter) {
+      if (subAccountFilter === '__parent__') result = result.filter((o) => !o.subAccountId);
+      else result = result.filter((o) => o.subAccountId === subAccountFilter);
     }
     if (orderNoSearch.trim()) {
       const q = orderNoSearch.toLowerCase();
@@ -110,7 +135,7 @@ export default function AdminOrdersPage() {
     }
 
     return result;
-  }, [orderNoSearch, addressSearch, enterpriseFilter, statusFilter, countryFilter, supplierFilter, enterpriseMap]);
+  }, [orderNoSearch, addressSearch, enterpriseFilter, statusFilter, countryFilter, supplierFilter, subAccountFilter, enterpriseMap]);
 
   const handleExport = () => {
     const data = filtered.map((o) => ({
@@ -174,6 +199,19 @@ export default function AdminOrdersPage() {
       key: 'enterprise',
       width: 110,
       render: (_, r) => enterpriseMap[r.enterpriseId] || '-',
+    },
+    {
+      title: '所属账号',
+      key: 'subAccount',
+      width: 130,
+      render: (_, r) =>
+        r.subAccountId ? (
+          <span className="text-sm text-gray-900">{subAccountMap[r.subAccountId] ?? r.subAccountId}</span>
+        ) : parentEnterpriseIds.has(r.enterpriseId) ? (
+          <span className="text-sm text-gray-900">母账号</span>
+        ) : (
+          <span className="text-sm text-gray-400">-</span>
+        ),
     },
     {
       title: '供应商',
@@ -413,6 +451,16 @@ export default function AdminOrdersPage() {
           }}
           scroll={{ x: 1900 }}
           size="small"
+          locale={{
+            emptyText: (
+              <div className="py-8">
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={<span className="text-sm text-neutral-400">暂无订单记录</span>}
+                />
+              </div>
+            ),
+          }}
         />
       </Card>
     </div>

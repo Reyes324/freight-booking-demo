@@ -4,6 +4,8 @@ export const countryCodes = [
   { value: '+84', label: '+84 越南' },
   { value: '+66', label: '+66 泰国' },
   { value: '+62', label: '+62 印尼' },
+  { value: '+65', label: '+65 新加坡' },
+  { value: '+63', label: '+63 菲律宾' },
 ];
 
 // 币种下拉选项（账期管理统一使用 CNY，此选项仅用于显示参考）

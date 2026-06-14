@@ -12,6 +12,22 @@ export interface Enterprise {
   usedCredit: number;       // 人民币金额
   createdAt: string;
   status: 'active' | 'disabled';
+
+  // ── 母子账号（Demo）──
+  isParent?: boolean;            // 是否已开通母账号资格
+  parentQuotaTotal?: number;     // 母账号总额度上限（CNY），开通后填写
+  subAccounts?: AdminSubAccount[]; // 母账号下的子账号（只读展示）
+}
+
+/** 运营后台只读展示的子账号 */
+export interface AdminSubAccount {
+  id: string;
+  name: string;
+  phone: string;
+  quota: number;    // 已分配额度（CNY）
+  balance: number;  // 当前余额（CNY）
+  status: 'active' | 'disabled';
+  createdAt: string;
 }
 
 export interface CreditTransaction {
@@ -20,6 +36,7 @@ export interface CreditTransaction {
   date: string;
   orderId: string | null;
   description: string;
+  subAccountId?: string; // null/undefined = 母账号本部
 
   // 原始交易币种和金额
   localCurrency: string | null;  // "HKD" / "THB" / "MYR" / null（月度重置、额度调整无原币种）
@@ -71,6 +88,7 @@ export interface AdminOrder {
   dropoffContact: string;
   driverInfo: string;
   status: string;
+  subAccountId?: string; // null/undefined = 母账号本部
   lliAmount: number;
   lliFeeBreakdown: FeeBreakdown;
   llmAmount: number;
@@ -119,7 +137,7 @@ export function getCurrentMonth(): string {
 export const enterprises: Enterprise[] = [
   {
     id: 'E001',
-    name: 'Viettel Post',
+    name: '菜鸟物流国际',
     phone: '246123456',
     password: 'Viettel@2026',
     countryCode: '+84',
@@ -131,6 +149,13 @@ export const enterprises: Enterprise[] = [
     usedCredit: 11500,
     createdAt: '2025-11-01',
     status: 'active',
+    // 母子账号 Demo：E001 已开通母账号资格
+    isParent: true,
+    parentQuotaTotal: 15000,
+    subAccounts: [
+      { id: 'SUB-VN', name: '越南子账号', phone: '+84 901234567', quota: 5000, balance: 3200, status: 'active', createdAt: '2026-03-01' },
+      { id: 'SUB-TH', name: '泰国子账号', phone: '+66 812345678', quota: 2000, balance: 320, status: 'disabled', createdAt: '2026-03-12' },
+    ],
   },
   {
     id: 'E002',
@@ -160,7 +185,7 @@ export const enterprises: Enterprise[] = [
     creditLimit: 30000,
     usedCredit: 12800,
     createdAt: '2026-01-08',
-    status: 'active',
+    status: 'disabled',
   },
   {
     id: 'E004',
@@ -181,18 +206,18 @@ export const enterprises: Enterprise[] = [
 
 // ========== Credit Transactions ==========
 export const creditTransactions: CreditTransaction[] = [
-  // Viettel Post（越南）
+  // 菜鸟物流国际（越南，母账号）
   {
     id: 'tx-005', enterpriseId: 'E001', date: '2026-03-12 11:00',
     orderId: 'LLI-20260312-001', description: '订单支付',
     localCurrency: 'VND', localAmount: 585000.00, cnyAmount: -169.57,
-    exchangeRate: 3450, rateDate: '2026-02-28'
+    exchangeRate: 3450, rateDate: '2026-02-28', subAccountId: 'SUB-VN',
   },
   {
     id: 'tx-007', enterpriseId: 'E001', date: '2026-03-14 15:30',
     orderId: 'LLI-20260312-001', description: '订单退款',
     localCurrency: 'VND', localAmount: 585000.00, cnyAmount: 169.57,
-    exchangeRate: 3450, rateDate: '2026-02-28'
+    exchangeRate: 3450, rateDate: '2026-02-28', subAccountId: 'SUB-VN',
   },
 
   // 顺丰国际（泰国）
@@ -234,13 +259,13 @@ export const creditTransactions: CreditTransaction[] = [
 
 // ========== Orders ==========
 export const adminOrders: AdminOrder[] = [
-  // Viettel Post orders (越南 → LLM-VN)
+  // 菜鸟物流国际 orders (越南 → LLM-VN)
   {
     orderId: 'LLI-20260320-001', supplierOrderId: 'LLM-VN-88001', supplierCode: 'LLM（越南）', supplierName: 'LLM（越南）',
     enterpriseId: 'E001', orderDate: '2026-03-20 14:30', pickupTime: '2026-03-20 15:00', country: '越南', vehicleType: 'Van',
     pickupAddress: 'Hoàn Kiếm, Hà Nội', pickupContact: 'Nguyễn Văn A +84 246 123 456',
     dropoffAddress: 'Quận 1, TP.HCM', dropoffContact: 'Trần Thị B +84 283 987 654',
-    driverInfo: '29A-123.45 / +84 912 345 678', status: '已完成',
+    driverInfo: '29A-123.45 / +84 912 345 678', status: '已完成', subAccountId: 'SUB-VN',
     lliAmount: 295000, lliFeeBreakdown: { baseFare: 150000, distanceFee: 100000, serviceFee: 20000, surcharge: 15000, tax: 10000, discount: 0, total: 295000 },
     llmAmount: 256000, llmFeeBreakdown: { baseFare: 130000, distanceFee: 88000, serviceFee: 17000, surcharge: 13000, tax: 8000, discount: 0, total: 256000 },
     currency: 'VND',
@@ -250,7 +275,7 @@ export const adminOrders: AdminOrder[] = [
     enterpriseId: 'E001', orderDate: '2026-03-18 09:45', pickupTime: '2026-03-18 10:15', country: '越南', vehicleType: 'Motorcycle',
     pickupAddress: 'Ba Đình, Hà Nội', pickupContact: 'Phạm Minh +84 246 123 456',
     dropoffAddress: 'Cầu Giấy, Hà Nội', dropoffContact: 'Lê Hoa +84 901 234 567',
-    driverInfo: '29B-567.89 / +84 923 456 789', status: '已完成',
+    driverInfo: '29B-567.89 / +84 923 456 789', status: '已完成', subAccountId: 'SUB-TH',
     lliAmount: 52000, lliFeeBreakdown: { baseFare: 20000, distanceFee: 18000, serviceFee: 5000, surcharge: 4000, tax: 5000, discount: 0, total: 52000 },
     llmAmount: 45000, llmFeeBreakdown: { baseFare: 17000, distanceFee: 15000, serviceFee: 4000, surcharge: 4000, tax: 5000, discount: 0, total: 45000 },
     currency: 'VND',

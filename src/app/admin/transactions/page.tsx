@@ -12,11 +12,31 @@ export default function TransactionsPage() {
   const [search, setSearch] = useState('');
   const [enterpriseFilter, setEnterpriseFilter] = useState<string | null>(null);
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
+  const [subAccountFilter, setSubAccountFilter] = useState<string | null>(null);
 
   const enterpriseMap = useMemo(() => {
     const map: Record<string, { name: string; currency: string }> = {};
     enterprises.forEach((e) => { map[e.id] = { name: e.name, currency: e.currency }; });
     return map;
+  }, []);
+
+  const subAccountMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    enterprises.forEach((e) => {
+      (e.subAccounts ?? []).forEach((s) => { map[s.id] = s.name; });
+    });
+    return map;
+  }, []);
+
+  const allSubAccounts = useMemo(
+    () => enterprises.flatMap((e) => e.subAccounts ?? []),
+    []
+  );
+
+  const parentEnterpriseIds = useMemo(() => {
+    const set = new Set<string>();
+    enterprises.forEach((e) => { if ((e.subAccounts ?? []).length > 0) set.add(e.id); });
+    return set;
   }, []);
 
   const allTransactions = useMemo(() => {
@@ -43,9 +63,13 @@ export default function TransactionsPage() {
         (t) => t.orderId && t.orderId.toLowerCase().includes(q)
       );
     }
+    if (subAccountFilter) {
+      if (subAccountFilter === '__parent__') result = result.filter((t) => !t.subAccountId);
+      else result = result.filter((t) => t.subAccountId === subAccountFilter);
+    }
 
     return result;
-  }, [search, enterpriseFilter, typeFilter, allTransactions]);
+  }, [search, enterpriseFilter, typeFilter, subAccountFilter, allTransactions]);
 
   const totalIncome = useMemo(
     () => filtered.filter((t) => t.cnyAmount > 0).reduce((sum, t) => sum + t.cnyAmount, 0),
@@ -70,6 +94,19 @@ export default function TransactionsPage() {
       dataIndex: 'enterpriseName',
       key: 'enterpriseName',
       width: 120,
+    },
+    {
+      title: '所属账号',
+      key: 'subAccount',
+      width: 130,
+      render: (_, record) =>
+        record.subAccountId ? (
+          <span className="text-sm text-gray-900">{subAccountMap[record.subAccountId] ?? record.subAccountId}</span>
+        ) : parentEnterpriseIds.has(record.enterpriseId) ? (
+          <span className="text-sm text-gray-900">母账号</span>
+        ) : (
+          <span className="text-sm text-gray-400">-</span>
+        ),
     },
     {
       title: '类型',

@@ -60,6 +60,17 @@ export default function EnterprisesPage() {
       render: (name: string) => <span className="whitespace-nowrap">{name}</span>,
     },
     {
+      title: '账号类型',
+      key: 'accountType',
+      width: 100,
+      render: (_, r) =>
+        r.isParent ? (
+          <span className="whitespace-nowrap">母账号</span>
+        ) : (
+          <span className="whitespace-nowrap">普通账号</span>
+        ),
+    },
+    {
       title: '登录手机号',
       key: 'phone',
       width: 160,
@@ -140,7 +151,7 @@ export default function EnterprisesPage() {
             className="text-[#2257D4] hover:text-[#1C47AC] cursor-pointer"
             onClick={() => router.push(`/admin/enterprises/${r.id}`)}
           >
-            订单交易
+            详情
           </a>
         </div>
       ),

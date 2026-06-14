@@ -1,19 +1,31 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { LogoutOutlined } from "@ant-design/icons";
-import { Popconfirm } from "antd";
+import { Popconfirm, Dropdown, Drawer } from "antd";
+import type { MenuProps } from "antd";
+import EnterpriseManagementPanel from "@/components/EnterpriseManagementPanel";
 import { shadow } from "@/styles/design-tokens";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useT } from "@/hooks/useT";
+import { accountPresets, getCurrentAccount, type CurrentAccount } from "@/data/mockData";
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { lang } = useLanguage();
   const t = useT();
+
+  // 当前账号：挂载后从 localStorage 读取，避免 SSR/CSR 不一致
+  const [account, setAccount] = useState<CurrentAccount | null>(null);
+  useEffect(() => {
+    setAccount(getCurrentAccount());
+  }, [pathname]);
+
+  const isParent = account?.accountType === "parent";
+  const [mgmtOpen, setMgmtOpen] = useState(false);
 
   const tabs = [
     { id: "order", label: t.nav.bookARide, path: "/" },
@@ -26,11 +38,28 @@ export default function Navbar() {
   // 退出登录处理
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentAccount');
     router.push('/login');
   };
 
+  // Demo：切换账号（写入 localStorage 后回首页模拟重新登录）
+  const switchAccount = (presetKey: keyof typeof accountPresets) => {
+    localStorage.setItem('currentAccount', JSON.stringify(accountPresets[presetKey]));
+    setAccount(accountPresets[presetKey]);
+    router.push('/');
+  };
+
+  const switchMenu: MenuProps['items'] = [
+    { key: 'parent', label: '母账号管理员', onClick: () => switchAccount('parent') },
+    { key: 'childVN', label: '越南子账号', onClick: () => switchAccount('childVN') },
+    { key: 'childTH', label: '泰国子账号', onClick: () => switchAccount('childTH') },
+  ];
+
   return (
+    <>
     <nav
+      data-ds="Navbar"
+      data-ds-label="顶部导航栏"
       className="h-14 lg:h-16 border-b border-gray-200 bg-white flex items-center justify-between px-4 lg:px-6 relative"
       style={{
         boxShadow: shadow.navbar,
@@ -83,9 +112,25 @@ export default function Navbar() {
 
       {/* Right: User Info + Icons */}
       <div className="flex items-center gap-3">
-        {/* 企业名称（桌面端显示） */}
+        {/* 企业名称（桌面端） */}
         <div className="hidden md:flex items-center gap-2">
-          <span className="text-sm text-gray-600">菜鸟物流国际</span>
+          <span className="text-sm font-medium text-gray-700">{account?.companyName ?? '菜鸟物流国际'}</span>
+          {isParent && (
+            <button
+              onClick={() => setMgmtOpen(true)}
+              className="text-sm text-[#2257D4] hover:text-[#1C47AC] transition-colors cursor-pointer flex items-center gap-0.5"
+            >
+              子账号管理
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+          {account?.subAccountName && (
+            <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+              {account.subAccountName}
+            </span>
+          )}
         </div>
 
         {/* 分隔线（桌面端） */}
@@ -110,5 +155,51 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+
+      {/* 子账号管理 Drawer（仅母账号） */}
+      <Drawer
+        title="子账号管理"
+        placement="right"
+        width={660}
+        open={mgmtOpen}
+        onClose={() => setMgmtOpen(false)}
+        destroyOnClose={false}
+      >
+        <EnterpriseManagementPanel />
+      </Drawer>
+
+      {/* Demo：切换账号悬浮按钮（右下角，与登录页保持一致） */}
+      {account && (
+        <Dropdown menu={{ items: switchMenu }} placement="topRight" trigger={['click']}>
+          <button
+            style={{
+              position: 'fixed',
+              bottom: 24,
+              right: 24,
+              zIndex: 200,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '7px 13px',
+              background: '#fff',
+              border: '1px dashed #d9d9d9',
+              borderRadius: 8,
+              boxShadow: '0 1px 4px rgba(0,0,0,0.10)',
+              cursor: 'pointer',
+              fontSize: 13,
+              fontWeight: 500,
+              color: '#666',
+              whiteSpace: 'nowrap',
+            }}
+            title="演示用：切换母账号 / 子账号"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            切换账号
+          </button>
+        </Dropdown>
+      )}
+    </>
   );
 }

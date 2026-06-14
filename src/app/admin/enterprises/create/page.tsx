@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Form, Input, InputNumber, Select, Button, message, Modal } from 'antd';
+import { Form, Input, InputNumber, Select, Button, message, Modal, Radio } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { countryCodes } from '@/data/enterpriseConstants';
@@ -67,8 +67,18 @@ export default function CreateEnterprisePage() {
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          initialValues={{ countryCode: '+60', premiumRate: 1.00 }}
+          initialValues={{ countryCode: '+60', premiumRate: 1.00, isParent: false }}
         >
+          <Form.Item
+            label="账号类型"
+            name="isParent"
+          >
+            <Radio.Group>
+              <Radio value={false}>普通账号</Radio>
+              <Radio value={true}>母账号（可创建并管理子账号）</Radio>
+            </Radio.Group>
+          </Form.Item>
+
           <Form.Item
             label="企业名称"
             name="name"

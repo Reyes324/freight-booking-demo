@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Table, DatePicker, Empty, Select } from 'antd';
-import { CalendarOutlined } from '@ant-design/icons';
+import { Table, DatePicker, Empty, Select, Button } from 'antd';
+import { CalendarOutlined, DownloadOutlined } from '@ant-design/icons';
+import * as XLSX from 'xlsx';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs, { Dayjs } from 'dayjs';
 import Navbar from '@/components/Navbar';
@@ -171,6 +172,25 @@ export default function WalletPage() {
           <div className="flex items-center justify-between flex-wrap gap-3">
             <h2 className="text-lg font-semibold text-gray-900">{t.wallet.transactions}</h2>
             <div className="flex items-center gap-3">
+              <Button
+                icon={<DownloadOutlined />}
+                onClick={() => {
+                  const rows = filteredTransactions.map((tx) => ({
+                    '日期': dayjs(tx.date).format('YYYY-MM-DD HH:mm'),
+                    '订单号': tx.orderId || '-',
+                    '类型': tx.description,
+                    '金额': `${tx.amount > 0 ? '+' : '-'}฿${Math.abs(tx.amount).toFixed(0)}`,
+                    '金额(CNY)': (Math.abs(tx.amount) / 5).toFixed(2),
+                    ...(isParent ? { '账号名称': tx.subAccountId ? subName(tx.subAccountId) : (account?.companyName ?? '') } : {}),
+                  }));
+                  const ws = XLSX.utils.json_to_sheet(rows);
+                  const wb = XLSX.utils.book_new();
+                  XLSX.utils.book_append_sheet(wb, ws, '交易明细');
+                  XLSX.writeFile(wb, `交易明细_${dayjs().format('YYYYMMDD')}.xlsx`);
+                }}
+              >
+                导出 Excel
+              </Button>
               {isParent && (
                 <Select
                   placeholder="全部账号"

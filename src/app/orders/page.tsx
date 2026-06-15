@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Table, Input, Card, Select } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Table, Input, Card, Select, Button } from 'antd';
+import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
+import * as XLSX from 'xlsx';
 import type { ColumnsType } from 'antd/es/table';
 import Navbar from '@/components/Navbar';
 import OrderStatusTag from '@/components/OrderStatusTag';
@@ -182,6 +183,31 @@ export default function OrdersPage() {
     );
   });
 
+  const exportExcel = () => {
+    const statusLabel: Record<string, string> = {
+      completed: '已完成', in_progress: '配送中', cancelled: '已取消', scheduled: '待取货',
+    };
+    const rows = filteredOrders.map((o) => ({
+      '订单号': o.orderId,
+      '下单时间': formatDateTime(o.createdAt),
+      '状态': statusLabel[o.status] ?? o.status,
+      '取货时间': o.scheduledTime ? formatDateTime(o.scheduledTime) : '-',
+      '取货地址': o.pickup.address,
+      '送货地址': o.dropoff.address,
+      '司机': o.driver?.name ?? '-',
+      '司机电话': o.driver?.phone ?? '-',
+      '车型': o.vehicle.name,
+      '金额(本地货币)': o.totalPrice.toFixed(0),
+      '金额(CNY)': (o.totalPrice / 5).toFixed(0),
+      ...(isParent ? { '账号名称': o.subAccountId ? subName(o.subAccountId) : (account?.companyName ?? '') } : {}),
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '订单记录');
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    XLSX.writeFile(wb, `订单记录_${date}.xlsx`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -190,6 +216,7 @@ export default function OrdersPage() {
         {/* 标题栏 */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-lg font-semibold text-gray-900">{t.orders.title}</h1>
+          <Button icon={<DownloadOutlined />} onClick={exportExcel}>导出 Excel</Button>
         </div>
 
         {/* 筛选栏 */}

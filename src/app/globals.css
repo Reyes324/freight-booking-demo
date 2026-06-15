@@ -37,6 +37,12 @@ body {
   box-sizing: border-box;
 }
 
+/* 子账号行背景，覆盖 Ant Design hover 默认色 */
+.ant-table-row.bg-\[#F9FAFB\] > td,
+.ant-table-row.bg-\[#F9FAFB\]:hover > td {
+  background-color: #F9FAFB !important;
+}
+
 /* Figma 捕获模式：?cap 锁定 1440 宽度，让 flex/grid 分配出整数 px，消除小数 */
 html.cap-mode,
 html.cap-mode body {

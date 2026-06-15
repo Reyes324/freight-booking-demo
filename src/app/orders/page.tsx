@@ -48,6 +48,21 @@ export default function OrdersPage() {
 
   // 表格列定义
   const columns: ColumnsType<Order> = [
+    // 母账号：账号名称列置首
+    ...(isParent
+      ? [
+          {
+            title: t.orders.subAccountColumn,
+            key: 'subAccount',
+            width: 130,
+            render: (_: unknown, record: Order) => (
+              <span className="text-sm text-gray-900">
+                {record.subAccountId ? subName(record.subAccountId) : (account?.companyName ?? t.orders.parentOwnOrder)}
+              </span>
+            ),
+          } as ColumnsType<Order>[number],
+        ]
+      : []),
     {
       title: t.orders.orderTime,
       dataIndex: 'createdAt',
@@ -82,22 +97,6 @@ export default function OrdersPage() {
         <span className="text-sm text-gray-900">{formatDateTime(time)}</span>
       ),
     },
-    // 母账号：展示所属子账号列
-    ...(isParent
-      ? [
-          {
-            title: t.orders.subAccountColumn,
-            key: 'subAccount',
-            width: 130,
-            render: (_: unknown, record: Order) =>
-              record.subAccountId ? (
-                <span className="text-sm text-gray-900">{subName(record.subAccountId)}</span>
-              ) : (
-                <span className="text-sm text-gray-900">{t.orders.parentOwnOrder}</span>
-              ),
-          } as ColumnsType<Order>[number],
-        ]
-      : []),
     {
       title: t.orders.route,
       key: 'route',

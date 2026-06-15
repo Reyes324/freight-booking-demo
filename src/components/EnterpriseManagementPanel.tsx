@@ -222,22 +222,26 @@ export default function EnterpriseManagementPanel() {
         />
       )}
 
+      {/* Demo 按钮 — 右下角浮层 */}
+      <div className="fixed bottom-6 right-6 z-50 flex gap-2">
+        <button
+          onClick={() => setDemoEmpty(v => !v)}
+          className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-3 py-1.5 shadow-sm transition-colors cursor-pointer"
+        >
+          {demoEmpty ? '还原示例数据' : '演示空状态'}
+        </button>
+        <button
+          onClick={() => setDemoOverAlloc(v => !v)}
+          className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-3 py-1.5 shadow-sm transition-colors cursor-pointer"
+        >
+          {demoOverAlloc ? '还原正常额度' : '演示超额分配'}
+        </button>
+      </div>
+
       {/* 子账号列表标题 + 操作区 */}
       <div className="flex items-center justify-between mb-3 mt-8">
         <div className="flex items-center gap-3">
           <span className="text-base font-medium text-gray-900">子账号列表</span>
-          <button
-            onClick={() => setDemoEmpty(v => !v)}
-            className="text-xs text-gray-400 hover:text-gray-600 border border-dashed border-gray-300 rounded px-2 py-0.5 transition-colors cursor-pointer"
-          >
-            {demoEmpty ? '还原示例数据' : '演示空状态'}
-          </button>
-          <button
-            onClick={() => setDemoOverAlloc(v => !v)}
-            className="text-xs text-gray-400 hover:text-gray-600 border border-dashed border-gray-300 rounded px-2 py-0.5 transition-colors cursor-pointer"
-          >
-            {demoOverAlloc ? '还原正常额度' : '演示超额分配'}
-          </button>
         </div>
         <Button
           type="primary"

@@ -16,6 +16,9 @@ const RATES: RateRow[] = [
   { key: 'TH', flag: '🇹🇭', market: '泰国',      currency: 'THB', rate: '4.77'  },
   { key: 'MY', flag: '🇲🇾', market: '马来西亚',   currency: 'MYR', rate: '0.58'  },
   { key: 'ID', flag: '🇮🇩', market: '印度尼西亚', currency: 'IDR', rate: '2,564' },
+  { key: 'SG', flag: '🇸🇬', market: '新加坡',    currency: 'SGD', rate: '0.19'  },
+  { key: 'PH', flag: '🇵🇭', market: '菲律宾',    currency: 'PHP', rate: '8.10'  },
+  { key: 'HK', flag: '🇭🇰', market: '香港',      currency: 'HKD', rate: '1.12'  },
 ];
 
 const EFFECTIVE_DATE = '2026-04-30';

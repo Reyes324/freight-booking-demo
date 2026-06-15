@@ -71,6 +71,38 @@ export const COUNTRY_GROUPS: CountryGroup[] = [
       { id: "thai_nguyen", zhName: "太原及北部地区",       enName: "Thai Nguyen & Northern Areas"    },
     ],
   },
+  {
+    id: "singapore",
+    flag: "🇸🇬",
+    zhName: "新加坡",
+    enName: "Singapore",
+    gmtOffset: 8,
+    cities: [
+      { id: "singapore", zhName: "新加坡", enName: "Singapore" },
+    ],
+  },
+  {
+    id: "philippines",
+    flag: "🇵🇭",
+    zhName: "菲律宾",
+    enName: "Philippines",
+    gmtOffset: 8,
+    cities: [
+      { id: "manila_ncr",    zhName: "马尼拉国家首都大区及南吕宋", enName: "Manila NCR & South Luzon (Rizal, Bulacan, Cavite, Laguna, Quezon, Batangas, Bicol)" },
+      { id: "cebu",          zhName: "宿务全岛、曼达韦、拉普拉普", enName: "Cebu Islandwide, Mandaue, Lapu-Lapu" },
+      { id: "central_north_luzon", zhName: "中北吕宋（邦板牙、打拉、新怡诗夏、三描礼士、碧瑶、伊罗戈、邦阿西楠）", enName: "Central & North Luzon (Pampanga, Tarlac, Nueva Ecija, Zambales, Baguio, Ilocos, Pangasinan)" },
+    ],
+  },
+  {
+    id: "hong_kong",
+    flag: "🇭🇰",
+    zhName: "香港",
+    enName: "Hong Kong",
+    gmtOffset: 8,
+    cities: [
+      { id: "hong_kong", zhName: "香港", enName: "Hong Kong" },
+    ],
+  },
 ];
 
 export const DEFAULT_CITY_ID = "bangkok";

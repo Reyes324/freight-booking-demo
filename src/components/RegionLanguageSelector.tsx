@@ -80,7 +80,7 @@ export default function RegionLanguageSelector() {
         <div
           ref={panelRef}
           style={{ top: panelPos.top, right: panelPos.right }}
-          className="fixed w-80 bg-white rounded-xl shadow-lg
+          className="fixed w-96 bg-white rounded-xl shadow-lg
                      border border-gray-200 overflow-hidden z-[9999]
                      animate-in fade-in slide-in-from-top-2 duration-200"
         >
@@ -120,16 +120,15 @@ export default function RegionLanguageSelector() {
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1.5 px-1">
               {lang === "zh" ? "地区" : "Region"}
             </div>
-            <div className="max-h-72 overflow-y-auto -mr-1 pr-1">
+            <div className="max-h-[420px] overflow-y-auto -mr-1 pr-1">
               {COUNTRY_GROUPS.map((country, ci) => (
                 <div key={country.id} className={ci > 0 ? "mt-3" : ""}>
                   {/* 国家标题 — 父级，不可点击 */}
                   <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-gray-50 mb-1">
                     <span className="text-base leading-none">{country.flag}</span>
-                    <div>
-                      <span className="text-xs font-semibold text-gray-700">{country.zhName}</span>
-                      <span className="text-xs text-gray-400 ml-1">{country.enName}</span>
-                    </div>
+                    <span className="text-xs font-semibold text-gray-700">
+                      {lang === "zh" ? country.zhName : country.enName}
+                    </span>
                   </div>
                   {/* 城市列表 — 子级，缩进 */}
                   <div className="space-y-0.5 pl-3">
@@ -147,14 +146,9 @@ export default function RegionLanguageSelector() {
                             isSelected ? "bg-blue-50" : "hover:bg-gray-50"
                           }`}
                         >
-                          <div className="flex items-baseline gap-1.5 min-w-0">
-                            <span className={`text-sm font-medium shrink-0 ${isSelected ? "text-blue-700" : "text-gray-900"}`}>
-                              {city.zhName}
-                            </span>
-                            <span className={`text-xs truncate ${isSelected ? "text-blue-400" : "text-gray-400"}`}>
-                              {city.enName}
-                            </span>
-                          </div>
+                          <span className={`text-sm font-medium ${isSelected ? "text-blue-700" : "text-gray-900"}`}>
+                            {lang === "zh" ? city.zhName : city.enName}
+                          </span>
                           {isSelected && (
                             <svg className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />

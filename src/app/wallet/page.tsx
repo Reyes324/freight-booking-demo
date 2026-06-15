@@ -60,6 +60,21 @@ export default function WalletPage() {
 
   // 表格列定义
   const columns: ColumnsType<Transaction> = [
+    // 母账号：账号名称列置首
+    ...(isParent
+      ? [
+          {
+            title: '账号名称',
+            key: 'subAccount',
+            width: 140,
+            render: (_: unknown, record: Transaction) => (
+              <span className="text-sm text-gray-900">
+                {record.subAccountId ? subName(record.subAccountId) : (account?.companyName ?? '主账号')}
+              </span>
+            ),
+          } as ColumnsType<Transaction>[number],
+        ]
+      : []),
     {
       title: t.wallet.date,
       dataIndex: 'date',
@@ -76,22 +91,6 @@ export default function WalletPage() {
         <span className="text-sm text-gray-900">{orderId || '-'}</span>
       ),
     },
-    // 母账号：账号列
-    ...(isParent
-      ? [
-          {
-            title: '所属账号',
-            key: 'subAccount',
-            width: 140,
-            render: (_: unknown, record: Transaction) =>
-              record.subAccountId ? (
-                <span className="text-sm text-gray-900">{subName(record.subAccountId)}</span>
-              ) : (
-                <span className="text-sm text-gray-900">母账号</span>
-              ),
-          } as ColumnsType<Transaction>[number],
-        ]
-      : []),
     {
       title: t.wallet.description,
       dataIndex: 'description',

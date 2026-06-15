@@ -64,8 +64,12 @@ export default function TransactionsPage() {
       );
     }
     if (subAccountFilter) {
-      if (subAccountFilter === '__parent__') result = result.filter((t) => !t.subAccountId);
-      else result = result.filter((t) => t.subAccountId === subAccountFilter);
+      if (subAccountFilter.startsWith('__parent__')) {
+        const eid = subAccountFilter.replace('__parent__', '');
+        result = result.filter((t) => t.enterpriseId === eid && !t.subAccountId);
+      } else {
+        result = result.filter((t) => t.subAccountId === subAccountFilter);
+      }
     }
 
     return result;
@@ -96,16 +100,14 @@ export default function TransactionsPage() {
       width: 120,
     },
     {
-      title: '所属账号',
+      title: '账号名称',
       key: 'subAccount',
       width: 130,
       render: (_, record) =>
         record.subAccountId ? (
           <span className="text-sm text-gray-900">{subAccountMap[record.subAccountId] ?? record.subAccountId}</span>
-        ) : parentEnterpriseIds.has(record.enterpriseId) ? (
-          <span className="text-sm text-gray-900">母账号</span>
         ) : (
-          <span className="text-sm text-gray-400">-</span>
+          <span className="text-sm text-gray-900">{enterpriseMap[record.enterpriseId]?.name ?? '-'}</span>
         ),
     },
     {
@@ -151,7 +153,6 @@ export default function TransactionsPage() {
       {/* Filters */}
       <div className="flex items-center gap-3 mb-6 flex-wrap">
         <Input
-
           placeholder="搜索订单号"
           prefix={<SearchOutlined className="text-gray-400" />}
           value={search}
@@ -160,7 +161,28 @@ export default function TransactionsPage() {
           style={{ width: 200 }}
         />
         <Select
-
+          placeholder="企业"
+          allowClear
+          value={enterpriseFilter}
+          onChange={(v) => { setEnterpriseFilter(v); setSubAccountFilter(null); }}
+          style={{ width: 160 }}
+          options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
+        />
+        <Select
+          placeholder="账号"
+          allowClear
+          value={subAccountFilter}
+          onChange={setSubAccountFilter}
+          style={{ width: 160 }}
+          options={(enterpriseFilter
+            ? enterprises.filter((e) => e.id === enterpriseFilter)
+            : enterprises
+          ).flatMap((e) => [
+            { value: `__parent__${e.id}`, label: `${e.name}（主账号）` },
+            ...(e.subAccounts ?? []).map((s) => ({ value: s.id, label: s.name })),
+          ])}
+        />
+        <Select
           placeholder="筛选类型"
           allowClear
           value={typeFilter}

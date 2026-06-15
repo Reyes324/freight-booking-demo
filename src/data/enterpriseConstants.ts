@@ -6,6 +6,7 @@ export const countryCodes = [
   { value: '+62', label: '+62 印尼' },
   { value: '+65', label: '+65 新加坡' },
   { value: '+63', label: '+63 菲律宾' },
+  { value: '+852', label: '+852 香港' },
 ];
 
 // 币种下拉选项（账期管理统一使用 CNY，此选项仅用于显示参考）
@@ -25,6 +26,9 @@ export const regionMap: Record<string, { country: string; currency: string; loca
   '+84': { country: '越南', currency: 'CNY', localCurrency: 'VND' },
   '+66': { country: '泰国', currency: 'CNY', localCurrency: 'THB' },
   '+62': { country: '印尼', currency: 'CNY', localCurrency: 'IDR' },
+  '+65': { country: '新加坡', currency: 'CNY', localCurrency: 'SGD' },
+  '+63': { country: '菲律宾', currency: 'CNY', localCurrency: 'PHP' },
+  '+852': { country: '香港', currency: 'CNY', localCurrency: 'HKD' },
 };
 
 // 地区号 → 当地货币映射（用于订单结算）
@@ -33,6 +37,9 @@ export const localCurrencyMap: Record<string, string> = {
   '+84': 'VND',
   '+66': 'THB',
   '+62': 'IDR',
+  '+65': 'SGD',
+  '+63': 'PHP',
+  '+852': 'HKD',
 };
 
 // 地区号 → 手机号位数规则
@@ -41,6 +48,9 @@ export const phoneDigitsMap: Record<string, { min: number; max: number }> = {
   '+84': { min: 9,  max: 10 }, // 越南: 9-10位
   '+66': { min: 9,  max: 9 },  // 泰国: 9位
   '+62': { min: 9,  max: 12 }, // 印尼: 9-12位
+  '+65': { min: 8,  max: 8 },  // 新加坡: 8位
+  '+63': { min: 7,  max: 10 }, // 菲律宾: 7-10位
+  '+852': { min: 8, max: 8 },  // 香港: 8位
 };
 
 // 校验常量

@@ -13,6 +13,9 @@ const REFERENCE_RATES: Record<string, number> = {
   'VND': 3450.00, // 1 CNY = 3450 VND
   'MYR': 0.62,    // 1 CNY = 0.62 MYR
   'IDR': 2150.00, // 1 CNY = 2150 IDR
+  'SGD': 0.19,    // 1 CNY = 0.19 SGD
+  'PHP': 8.10,    // 1 CNY = 8.10 PHP
+  'HKD': 1.12,    // 1 CNY = 1.12 HKD
 };
 
 // 转换为CNY（仅供参考）
@@ -114,8 +117,12 @@ export default function AdminOrdersPage() {
       result = result.filter((o) => o.supplierCode === supplierFilter);
     }
     if (subAccountFilter) {
-      if (subAccountFilter === '__parent__') result = result.filter((o) => !o.subAccountId);
-      else result = result.filter((o) => o.subAccountId === subAccountFilter);
+      if (subAccountFilter.startsWith('__parent__')) {
+        const eid = subAccountFilter.replace('__parent__', '');
+        result = result.filter((o) => o.enterpriseId === eid && !o.subAccountId);
+      } else {
+        result = result.filter((o) => o.subAccountId === subAccountFilter);
+      }
     }
     if (orderNoSearch.trim()) {
       const q = orderNoSearch.toLowerCase();
@@ -201,17 +208,14 @@ export default function AdminOrdersPage() {
       render: (_, r) => enterpriseMap[r.enterpriseId] || '-',
     },
     {
-      title: '所属账号',
+      title: '账号名称',
       key: 'subAccount',
       width: 130,
-      render: (_, r) =>
-        r.subAccountId ? (
-          <span className="text-sm text-gray-900">{subAccountMap[r.subAccountId] ?? r.subAccountId}</span>
-        ) : parentEnterpriseIds.has(r.enterpriseId) ? (
-          <span className="text-sm text-gray-900">母账号</span>
-        ) : (
-          <span className="text-sm text-gray-400">-</span>
-        ),
+      render: (_, r) => (
+        <span className="text-sm text-gray-900">
+          {r.subAccountId ? (subAccountMap[r.subAccountId] ?? r.subAccountId) : enterpriseMap[r.enterpriseId]}
+        </span>
+      ),
     },
     {
       title: '供应商',
@@ -401,6 +405,28 @@ export default function AdminOrdersPage() {
           onChange={(e) => setAddressSearch(e.target.value)}
           allowClear
           style={{ width: 200 }}
+        />
+        <Select
+          placeholder="企业"
+          allowClear
+          value={enterpriseFilter}
+          onChange={(v) => { setEnterpriseFilter(v); setSubAccountFilter(null); }}
+          style={{ width: 160 }}
+          options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
+        />
+        <Select
+          placeholder="账号"
+          allowClear
+          value={subAccountFilter}
+          onChange={setSubAccountFilter}
+          style={{ width: 160 }}
+          options={(enterpriseFilter
+            ? enterprises.filter((e) => e.id === enterpriseFilter)
+            : enterprises
+          ).flatMap((e) => [
+            { value: `__parent__${e.id}`, label: `${e.name}（主账号）` },
+            ...(e.subAccounts ?? []).map((s) => ({ value: s.id, label: s.name })),
+          ])}
         />
         <Select
 

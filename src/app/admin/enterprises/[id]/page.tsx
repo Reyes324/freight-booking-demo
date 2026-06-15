@@ -100,15 +100,14 @@ function CreditTab({ enterpriseId, currency, subAccounts }: { enterpriseId: stri
     ...(isParent
       ? [
           {
-            title: '所属账号',
+            title: '账号名称',
             key: 'subAccount',
             width: 140,
-            render: (_: unknown, record: CreditTransaction) =>
-              record.subAccountId ? (
-                <span className="text-sm text-gray-900">{subName(record.subAccountId)}</span>
-              ) : (
-                <span className="text-sm text-gray-900">母账号</span>
-              ),
+            render: (_: unknown, record: CreditTransaction) => (
+              <span className="text-sm text-gray-900">
+                {record.subAccountId ? subName(record.subAccountId) : (enterprise?.name ?? '母账号')}
+              </span>
+            ),
           } as ColumnsType<CreditTransaction>[number],
         ]
       : []),
@@ -221,6 +220,7 @@ function CreditTab({ enterpriseId, currency, subAccounts }: { enterpriseId: stri
 }
 
 function OrdersTab({ enterpriseId, subAccounts }: { enterpriseId: string; subAccounts?: AdminSubAccount[] }) {
+  const enterpriseName = enterprises.find((e) => e.id === enterpriseId)?.name;
   const [orderNoSearch, setOrderNoSearch] = useState('');
   const [addressSearch, setAddressSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -276,15 +276,14 @@ function OrdersTab({ enterpriseId, subAccounts }: { enterpriseId: string; subAcc
     ...(isParent
       ? [
           {
-            title: '所属账号',
+            title: '账号名称',
             key: 'subAccount',
             width: 140,
-            render: (_: unknown, r: AdminOrder) =>
-              r.subAccountId ? (
-                <span className="text-sm text-gray-900">{subName(r.subAccountId)}</span>
-              ) : (
-                <span className="text-sm text-gray-900">母账号</span>
-              ),
+            render: (_: unknown, r: AdminOrder) => (
+              <span className="text-sm text-gray-900">
+                {r.subAccountId ? subName(r.subAccountId) : (enterpriseName ?? '母账号')}
+              </span>
+            ),
           } as ColumnsType<AdminOrder>[number],
         ]
       : []),
@@ -510,69 +509,13 @@ function OrdersTab({ enterpriseId, subAccounts }: { enterpriseId: string; subAcc
   );
 }
 
-// 子账号只读列表（运营后台仅查看，无任何操作入口）
-function SubAccountsTab({ subAccounts }: { subAccounts: AdminSubAccount[] }) {
-  const columns: ColumnsType<AdminSubAccount> = [
-    {
-      title: '子账号名称',
-      dataIndex: 'name',
-      key: 'name',
-      render: (name: string, r) => (
-        <span className={r.status === 'disabled' ? 'text-gray-400' : 'text-gray-900'}>{name}</span>
-      ),
-    },
-    { title: '手机号', dataIndex: 'phone', key: 'phone' },
-    {
-      title: '已分配额度',
-      dataIndex: 'quota',
-      key: 'quota',
-      align: 'right',
-      render: (v: number) => `CNY ${v.toLocaleString('zh-CN')}`,
-    },
-    {
-      title: '当前余额',
-      dataIndex: 'balance',
-      key: 'balance',
-      align: 'right',
-      render: (v: number) => `CNY ${v.toLocaleString('zh-CN')}`,
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      render: (v: AdminSubAccount['status']) =>
-        v === 'active' ? <Tag color="success">启用</Tag> : <Tag>已停用</Tag>,
-    },
-  ];
-
-  return (
-    <div>
-      <Alert
-        title="运营后台仅可查看。"
-        type="info"
-        showIcon
-        className="mb-4"
-      />
-      <Card>
-        <Table
-          columns={columns}
-          dataSource={subAccounts}
-          rowKey="id"
-          pagination={false}
-        />
-      </Card>
-    </div>
-  );
-}
 
 export default function EnterpriseDetailPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const id = params.id as string;
   const enterprise = enterprises.find((e) => e.id === id);
-  // 母账号企业默认进「子账号」Tab；其余默认「交易明细」
-  const defaultTab = searchParams.get('tab') || (enterprise?.isParent ? 'sub-accounts' : 'credit');
+  const defaultTab = searchParams.get('tab') || 'orders';
 
   if (!enterprise) {
     return (
@@ -602,49 +545,26 @@ export default function EnterpriseDetailPage() {
           <span className="text-gray-400 text-lg font-normal ml-2">({enterprise.country})</span>
         </h1>
         <div className="flex gap-6 mt-2 text-sm text-gray-500">
-          <span>登录手机号: {enterprise.countryCode} {enterprise.phone}</span>
-          <span>溢价系数: {enterprise.premiumRate.toFixed(2)}</span>
+          <span>企业ID：<span className="font-mono text-gray-900">{enterprise.id}</span></span>
+          <span>账号ID：<span className="font-mono text-gray-900">{enterprise.id}</span></span>
+          <span>登录手机号：{enterprise.countryCode} {enterprise.phone}</span>
+          <span>溢价系数：{enterprise.premiumRate.toFixed(2)}</span>
         </div>
       </div>
 
       <Tabs
         defaultActiveKey={defaultTab}
         items={[
-          // 母账号企业：子账号 Tab 置顶并默认（是否母账号在新建/编辑页设置）
-          ...(enterprise.isParent
-            ? [
-                {
-                  key: 'sub-accounts',
-                  label: '子账号',
-                  children: (
-                    <SubAccountsTab
-                      subAccounts={enterprise.subAccounts ?? []}
-                    />
-                  ),
-                },
-                {
-                  key: 'orders',
-                  label: '订单记录',
-                  children: <OrdersTab enterpriseId={id} subAccounts={enterprise.subAccounts} />,
-                },
-                {
-                  key: 'credit',
-                  label: '交易明细',
-                  children: <CreditTab enterpriseId={id} currency={enterprise.currency} subAccounts={enterprise.subAccounts} />,
-                },
-              ]
-            : [
-                {
-                  key: 'credit',
-                  label: '交易明细',
-                  children: <CreditTab enterpriseId={id} currency={enterprise.currency} />,
-                },
-                {
-                  key: 'orders',
-                  label: '订单记录',
-                  children: <OrdersTab enterpriseId={id} />,
-                },
-              ]),
+          {
+            key: 'orders',
+            label: '订单记录',
+            children: <OrdersTab enterpriseId={id} subAccounts={enterprise.subAccounts} />,
+          },
+          {
+            key: 'credit',
+            label: '交易明细',
+            children: <CreditTab enterpriseId={id} currency={enterprise.currency} subAccounts={enterprise.subAccounts} />,
+          },
         ]}
       />
     </div>

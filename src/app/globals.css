@@ -37,6 +37,12 @@ body {
   box-sizing: border-box;
 }
 
+/* 停用子账号：整行文字置灰 */
+.ant-table-row.row-disabled > td,
+.ant-table-row.row-disabled > td * {
+  color: #8990A3 !important;
+}
+
 /* 子账号行：固定列强制继承行背景（onRow 内联样式不能穿透固定列） */
 .ant-table-tbody > tr[style] > td.ant-table-cell-fix-right,
 .ant-table-tbody > tr[style] > td.ant-table-cell-fix-left,

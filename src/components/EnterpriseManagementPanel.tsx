@@ -136,10 +136,8 @@ export default function EnterpriseManagementPanel() {
       title: '账号名称',
       dataIndex: 'name',
       key: 'name',
-      render: (name: string, record) => (
-        <span className={record.status === 'disabled' ? 'text-gray-400' : 'text-gray-900 font-medium'}>
-          {name}
-        </span>
+      render: (name: string) => (
+        <span>{name}</span>
       ),
     },
     {
@@ -242,6 +240,7 @@ export default function EnterpriseManagementPanel() {
           rowKey="id"
           pagination={false}
           size="small"
+          rowClassName={(record) => record.status === 'disabled' ? 'row-disabled' : ''}
           locale={{
             emptyText: (
               <Empty

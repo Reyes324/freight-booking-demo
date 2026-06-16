@@ -100,7 +100,7 @@ export default function SettingsPage() {
 
   const isParent = account?.accountType === 'parent';
 
-  const menuItems: MenuItem[] = [
+  const menuItems: { key: string; label: string }[] = [
     { key: 'profile', label: '账户资料' },
     ...(isParent ? [{ key: 'account', label: '子账户设置' }] : []),
   ];

@@ -148,11 +148,7 @@ export default function LoginPage() {
   return (
     <div>
       {/* 预加载背景图，避免 CSS background-image 延迟 */}
-      <link
-        rel="preload"
-        as="image"
-        href="https://www.figma.com/api/mcp/asset/db9b2e53-9892-49a0-a5dc-94a48c8a6962"
-      />
+      <link rel="preload" as="image" href="/login-bg.png" />
 
       {/* Demo 角色切换（左下角浮动，仅原型演示用） */}
       <div className="role-bar">
@@ -218,7 +214,7 @@ export default function LoginPage() {
       <div className="page">
         {/* Logo 居中顶部 — 单张图片（LALAMOVE + 分隔线 + 货拉拉·企业国际版） */}
         <img
-          src="https://www.figma.com/api/mcp/asset/6687e93e-0623-4d4f-bf63-11110769d5d4"
+          src="/login-logo.png"
           alt="LALAMOVE 货拉拉·企业国际版"
           className="page-logo-img"
           fetchPriority="high"
@@ -392,7 +388,7 @@ export default function LoginPage() {
           justify-content: center;
           padding: 48px 16px 140px;
           gap: 24px;
-          background-image: url('https://www.figma.com/api/mcp/asset/db9b2e53-9892-49a0-a5dc-94a48c8a6962');
+          background-image: url('/login-bg.png');
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;

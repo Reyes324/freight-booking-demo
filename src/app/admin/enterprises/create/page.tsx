@@ -17,7 +17,7 @@ import {
   creditLimitRules,
 } from '@/lib/enterpriseUtils';
 
-type AccountType = 'normal' | 'parent' | 'sub';
+type AccountType = 'normal' | 'sub';
 
 export default function CreateEnterprisePage() {
   const router = useRouter();
@@ -28,7 +28,6 @@ export default function CreateEnterprisePage() {
   const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
 
   const parentEnterpriseOptions = enterprises
-    .filter((e) => e.isParent)
     .map((e) => ({ label: `${e.name}（${e.id}）`, value: e.id }));
 
   const selectedParent = enterprises.find((e) => e.id === selectedParentId);
@@ -86,21 +85,24 @@ export default function CreateEnterprisePage() {
               }}
             >
               <Radio value="normal">普通账号</Radio>
-              <Radio value="parent">母账号（可创建并管理子账号）</Radio>
               <Radio value="sub">子账号</Radio>
             </Radio.Group>
           </Form.Item>
 
           {accountType === 'sub' && (
             <Form.Item
-              label="归属母账号"
+              label="归属上级账号"
               name="parentEnterpriseId"
-              rules={[{ required: true, message: '请选择归属母账号' }]}
+              rules={[{ required: true, message: '请选择上级账号' }]}
             >
               <Select
                 options={parentEnterpriseOptions}
-                placeholder="请选择母账号"
+                placeholder="请选择上级账号"
                 style={{ width: '100%' }}
+                showSearch
+                filterOption={(input, option) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
                 onChange={(v) => setSelectedParentId(v)}
               />
             </Form.Item>
@@ -141,21 +143,21 @@ export default function CreateEnterprisePage() {
             <Input.Password placeholder="8-20位，须包含字母和数字" />
           </Form.Item>
 
-          {/* 子账号：溢价系数只读跟随母账号 */}
+          {/* 子账号：溢价系数只读跟随上级账号 */}
           {accountType === 'sub' && (
             <Form.Item label="订单溢价系数">
               <Input
                 disabled
                 value={
                   selectedParent
-                    ? `${selectedParent.premiumRate.toFixed(2)}（跟随母账号）`
-                    : '请先选择归属母账号'
+                    ? `${selectedParent.premiumRate.toFixed(2)}（跟随上级账号）`
+                    : '请先选择上级账号'
                 }
               />
             </Form.Item>
           )}
 
-          {/* 普通账号 / 母账号：溢价系数可设置 */}
+          {/* 普通账号：溢价系数可设置 */}
           {accountType !== 'sub' && (
             <Form.Item
               label="订单溢价系数"
@@ -185,7 +187,7 @@ export default function CreateEnterprisePage() {
             </Form.Item>
           )}
 
-          {/* 普通账号 / 母账号：每月账期额度 */}
+          {/* 普通账号：每月账期额度 */}
           {accountType !== 'sub' && (
             <Form.Item
               label="每月账期额度（人民币）"

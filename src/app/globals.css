@@ -37,10 +37,12 @@ body {
   box-sizing: border-box;
 }
 
-/* 子账号行背景，覆盖 Ant Design hover 默认色 */
-.ant-table-row.bg-\[#F9FAFB\] > td,
-.ant-table-row.bg-\[#F9FAFB\]:hover > td {
-  background-color: #F9FAFB !important;
+/* 子账号行：固定列强制继承行背景（onRow 内联样式不能穿透固定列） */
+.ant-table-tbody > tr[style] > td.ant-table-cell-fix-right,
+.ant-table-tbody > tr[style] > td.ant-table-cell-fix-left,
+.ant-table-tbody > tr[style]:hover > td.ant-table-cell-fix-right,
+.ant-table-tbody > tr[style]:hover > td.ant-table-cell-fix-left {
+  background: inherit !important;
 }
 
 /* Figma 捕获模式：?cap 锁定 1440 宽度，让 flex/grid 分配出整数 px，消除小数 */

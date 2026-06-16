@@ -636,7 +636,7 @@ export interface Order extends CompleteOrder {
 export const mockOrders: Order[] = [
   {
     orderId: 'LLI-20260415-001',
-    subAccountId: 'SUB-VN',
+    subAccountId: 'E001-VN',
     createdAt: new Date(),
     status: 'calling_driver',
     pickup: {
@@ -670,7 +670,7 @@ export const mockOrders: Order[] = [
   },
   {
     orderId: 'LLI-20260415-002',
-    subAccountId: 'SUB-TH',
+    subAccountId: 'E001-TH',
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
     status: 'in_transit',
     pickup: {
@@ -719,7 +719,7 @@ export const mockOrders: Order[] = [
   },
   {
     orderId: 'LLI-20260415-003',
-    subAccountId: 'SUB-VN',
+    subAccountId: 'E001-VN',
     createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
     status: 'delivering',
     pickup: {
@@ -777,7 +777,7 @@ export const mockOrders: Order[] = [
   },
   {
     orderId: 'LLI-20260414-004',
-    subAccountId: 'SUB-TH',
+    subAccountId: 'E001-TH',
     createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
     status: 'completed',
     pickup: {
@@ -885,102 +885,102 @@ export const mockWalletBalance: WalletBalance = {
 // Mock 交易记录（金额为泰铢，日期集中在近 30 天内，默认视图即可看到全部数据）
 export const mockTransactions: Transaction[] = [
   // ── 2026-06-12（今天）──
-  { id: 'TXN-20260612-001', type: 'payment', date: new Date('2026-06-12T09:15:00'), orderId: 'LLI-20260612-001', amount: -340.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260612-002', type: 'payment', date: new Date('2026-06-12T08:40:00'), orderId: 'LLI-20260612-002', amount: -280.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260612-001', type: 'payment', date: new Date('2026-06-12T09:15:00'), orderId: 'LLI-20260612-001', amount: -340.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260612-002', type: 'payment', date: new Date('2026-06-12T08:40:00'), orderId: 'LLI-20260612-002', amount: -280.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
 
   // ── 2026-06-11 ──
-  { id: 'TXN-20260611-003', type: 'payment', date: new Date('2026-06-11T16:30:00'), orderId: 'LLI-20260611-003', amount: -420.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260611-004', type: 'payment', date: new Date('2026-06-11T14:10:00'), orderId: 'LLI-20260611-004', amount: -255.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260611-003', type: 'payment', date: new Date('2026-06-11T16:30:00'), orderId: 'LLI-20260611-003', amount: -420.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260611-004', type: 'payment', date: new Date('2026-06-11T14:10:00'), orderId: 'LLI-20260611-004', amount: -255.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
   { id: 'TXN-20260611-005', type: 'payment', date: new Date('2026-06-11T10:50:00'), orderId: 'LLI-20260611-005', amount: -375.00, status: 'success', description: '订单支付' },
 
   // ── 2026-06-10 ──
   { id: 'TXN-20260610-006', type: 'topup',   date: new Date('2026-06-10T10:00:00'), orderId: undefined,           amount: 5000.00, status: 'success', description: '钱包充值' },
-  { id: 'TXN-20260610-007', type: 'payment', date: new Date('2026-06-10T15:20:00'), orderId: 'LLI-20260610-007', amount: -310.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260610-008', type: 'payment', date: new Date('2026-06-10T11:35:00'), orderId: 'LLI-20260610-008', amount: -390.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260610-007', type: 'payment', date: new Date('2026-06-10T15:20:00'), orderId: 'LLI-20260610-007', amount: -310.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260610-008', type: 'payment', date: new Date('2026-06-10T11:35:00'), orderId: 'LLI-20260610-008', amount: -390.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
 
   // ── 2026-06-09 ──
-  { id: 'TXN-20260609-009', type: 'payment', date: new Date('2026-06-09T17:05:00'), orderId: 'LLI-20260609-009', amount: -265.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260609-010', type: 'payment', date: new Date('2026-06-09T13:25:00'), orderId: 'LLI-20260609-010', amount: -445.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260609-009', type: 'payment', date: new Date('2026-06-09T17:05:00'), orderId: 'LLI-20260609-009', amount: -265.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260609-010', type: 'payment', date: new Date('2026-06-09T13:25:00'), orderId: 'LLI-20260609-010', amount: -445.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
   { id: 'TXN-20260609-011', type: 'refund',  date: new Date('2026-06-09T11:00:00'), orderId: 'LLI-20260608-012', amount: 280.00,  status: 'success', description: '订单退款' },
   { id: 'TXN-20260609-012', type: 'payment', date: new Date('2026-06-09T09:40:00'), orderId: 'LLI-20260609-012', amount: -320.00, status: 'success', description: '订单支付' },
 
   // ── 2026-06-08 ──
-  { id: 'TXN-20260608-013', type: 'payment', date: new Date('2026-06-08T16:45:00'), orderId: 'LLI-20260608-013', amount: -480.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260608-014', type: 'payment', date: new Date('2026-06-08T14:20:00'), orderId: 'LLI-20260608-014', amount: -230.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
-  { id: 'TXN-20260608-015', type: 'payment', date: new Date('2026-06-08T10:15:00'), orderId: 'LLI-20260608-015', amount: -355.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
+  { id: 'TXN-20260608-013', type: 'payment', date: new Date('2026-06-08T16:45:00'), orderId: 'LLI-20260608-013', amount: -480.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260608-014', type: 'payment', date: new Date('2026-06-08T14:20:00'), orderId: 'LLI-20260608-014', amount: -230.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
+  { id: 'TXN-20260608-015', type: 'payment', date: new Date('2026-06-08T10:15:00'), orderId: 'LLI-20260608-015', amount: -355.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
 
   // ── 2026-06-07 ──
-  { id: 'TXN-20260607-016', type: 'payment', date: new Date('2026-06-07T15:55:00'), orderId: 'LLI-20260607-016', amount: -295.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
-  { id: 'TXN-20260607-017', type: 'payment', date: new Date('2026-06-07T11:30:00'), orderId: 'LLI-20260607-017', amount: -410.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
+  { id: 'TXN-20260607-016', type: 'payment', date: new Date('2026-06-07T15:55:00'), orderId: 'LLI-20260607-016', amount: -295.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
+  { id: 'TXN-20260607-017', type: 'payment', date: new Date('2026-06-07T11:30:00'), orderId: 'LLI-20260607-017', amount: -410.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
   { id: 'TXN-20260607-018', type: 'payment', date: new Date('2026-06-07T09:20:00'), orderId: 'LLI-20260607-018', amount: -275.00, status: 'success', description: '订单支付' },
 
   // ── 2026-06-06 ──
   { id: 'TXN-20260606-019', type: 'topup',   date: new Date('2026-06-06T10:00:00'), orderId: undefined,           amount: 3000.00, status: 'success', description: '钱包充值' },
-  { id: 'TXN-20260606-020', type: 'payment', date: new Date('2026-06-06T16:10:00'), orderId: 'LLI-20260606-020', amount: -360.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
-  { id: 'TXN-20260606-021', type: 'payment', date: new Date('2026-06-06T13:45:00'), orderId: 'LLI-20260606-021', amount: -240.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
+  { id: 'TXN-20260606-020', type: 'payment', date: new Date('2026-06-06T16:10:00'), orderId: 'LLI-20260606-020', amount: -360.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
+  { id: 'TXN-20260606-021', type: 'payment', date: new Date('2026-06-06T13:45:00'), orderId: 'LLI-20260606-021', amount: -240.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
 
   // ── 2026-06-05 ──
-  { id: 'TXN-20260605-022', type: 'payment', date: new Date('2026-06-05T17:20:00'), orderId: 'LLI-20260605-022', amount: -520.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260605-023', type: 'payment', date: new Date('2026-06-05T14:05:00'), orderId: 'LLI-20260605-023', amount: -345.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
-  { id: 'TXN-20260605-024', type: 'refund',  date: new Date('2026-06-05T10:30:00'), orderId: 'LLI-20260604-025', amount: 310.00,  status: 'success', description: '订单退款', subAccountId: 'SUB-VN' },
+  { id: 'TXN-20260605-022', type: 'payment', date: new Date('2026-06-05T17:20:00'), orderId: 'LLI-20260605-022', amount: -520.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260605-023', type: 'payment', date: new Date('2026-06-05T14:05:00'), orderId: 'LLI-20260605-023', amount: -345.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
+  { id: 'TXN-20260605-024', type: 'refund',  date: new Date('2026-06-05T10:30:00'), orderId: 'LLI-20260604-025', amount: 310.00,  status: 'success', description: '订单退款', subAccountId: 'E001-VN' },
 
   // ── 2026-06-04 ──
-  { id: 'TXN-20260604-025', type: 'payment', date: new Date('2026-06-04T16:35:00'), orderId: 'LLI-20260604-025', amount: -310.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260604-026', type: 'payment', date: new Date('2026-06-04T13:50:00'), orderId: 'LLI-20260604-026', amount: -385.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260604-025', type: 'payment', date: new Date('2026-06-04T16:35:00'), orderId: 'LLI-20260604-025', amount: -310.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260604-026', type: 'payment', date: new Date('2026-06-04T13:50:00'), orderId: 'LLI-20260604-026', amount: -385.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
   { id: 'TXN-20260604-027', type: 'payment', date: new Date('2026-06-04T10:25:00'), orderId: 'LLI-20260604-027', amount: -430.00, status: 'success', description: '订单支付' },
 
   // ── 2026-06-03 ──
-  { id: 'TXN-20260603-028', type: 'payment', date: new Date('2026-06-03T15:40:00'), orderId: 'LLI-20260603-028', amount: -290.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
-  { id: 'TXN-20260603-029', type: 'payment', date: new Date('2026-06-03T11:15:00'), orderId: 'LLI-20260603-029', amount: -375.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
+  { id: 'TXN-20260603-028', type: 'payment', date: new Date('2026-06-03T15:40:00'), orderId: 'LLI-20260603-028', amount: -290.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
+  { id: 'TXN-20260603-029', type: 'payment', date: new Date('2026-06-03T11:15:00'), orderId: 'LLI-20260603-029', amount: -375.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
 
   // ── 2026-06-02 ──
   { id: 'TXN-20260602-030', type: 'topup',   date: new Date('2026-06-02T10:00:00'), orderId: undefined,           amount: 4000.00, status: 'success', description: '钱包充值' },
-  { id: 'TXN-20260602-031', type: 'payment', date: new Date('2026-06-02T16:00:00'), orderId: 'LLI-20260602-031', amount: -460.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260602-032', type: 'payment', date: new Date('2026-06-02T13:20:00'), orderId: 'LLI-20260602-032', amount: -315.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260602-031', type: 'payment', date: new Date('2026-06-02T16:00:00'), orderId: 'LLI-20260602-031', amount: -460.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260602-032', type: 'payment', date: new Date('2026-06-02T13:20:00'), orderId: 'LLI-20260602-032', amount: -315.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
   { id: 'TXN-20260602-033', type: 'payment', date: new Date('2026-06-02T10:50:00'), orderId: 'LLI-20260602-033', amount: -270.00, status: 'success', description: '订单支付' },
 
   // ── 2026-06-01 ──
-  { id: 'TXN-20260601-034', type: 'payment', date: new Date('2026-06-01T17:15:00'), orderId: 'LLI-20260601-034', amount: -395.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
-  { id: 'TXN-20260601-035', type: 'payment', date: new Date('2026-06-01T14:30:00'), orderId: 'LLI-20260601-035', amount: -250.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260601-036', type: 'refund',  date: new Date('2026-06-01T11:00:00'), orderId: 'LLI-20260531-037', amount: 220.00,  status: 'success', description: '订单退款', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260601-034', type: 'payment', date: new Date('2026-06-01T17:15:00'), orderId: 'LLI-20260601-034', amount: -395.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
+  { id: 'TXN-20260601-035', type: 'payment', date: new Date('2026-06-01T14:30:00'), orderId: 'LLI-20260601-035', amount: -250.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260601-036', type: 'refund',  date: new Date('2026-06-01T11:00:00'), orderId: 'LLI-20260531-037', amount: 220.00,  status: 'success', description: '订单退款', subAccountId: 'E001-TH' },
 
   // ── 2026-05-31 ──
-  { id: 'TXN-20260531-037', type: 'payment', date: new Date('2026-05-31T16:50:00'), orderId: 'LLI-20260531-037', amount: -220.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
-  { id: 'TXN-20260531-038', type: 'payment', date: new Date('2026-05-31T13:25:00'), orderId: 'LLI-20260531-038', amount: -440.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
+  { id: 'TXN-20260531-037', type: 'payment', date: new Date('2026-05-31T16:50:00'), orderId: 'LLI-20260531-037', amount: -220.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
+  { id: 'TXN-20260531-038', type: 'payment', date: new Date('2026-05-31T13:25:00'), orderId: 'LLI-20260531-038', amount: -440.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
   { id: 'TXN-20260531-039', type: 'payment', date: new Date('2026-05-31T09:55:00'), orderId: 'LLI-20260531-039', amount: -305.00, status: 'success', description: '订单支付' },
 
   // ── 2026-05-29 ──
-  { id: 'TXN-20260529-040', type: 'payment', date: new Date('2026-05-29T15:10:00'), orderId: 'LLI-20260529-040', amount: -335.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260529-041', type: 'payment', date: new Date('2026-05-29T11:40:00'), orderId: 'LLI-20260529-041', amount: -415.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260529-040', type: 'payment', date: new Date('2026-05-29T15:10:00'), orderId: 'LLI-20260529-040', amount: -335.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260529-041', type: 'payment', date: new Date('2026-05-29T11:40:00'), orderId: 'LLI-20260529-041', amount: -415.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
 
   // ── 2026-05-27 ──
   { id: 'TXN-20260527-042', type: 'topup',   date: new Date('2026-05-27T10:00:00'), orderId: undefined,           amount: 3500.00, status: 'success', description: '钱包充值' },
-  { id: 'TXN-20260527-043', type: 'payment', date: new Date('2026-05-27T16:30:00'), orderId: 'LLI-20260527-043', amount: -285.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260527-044', type: 'payment', date: new Date('2026-05-27T13:00:00'), orderId: 'LLI-20260527-044', amount: -360.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260527-043', type: 'payment', date: new Date('2026-05-27T16:30:00'), orderId: 'LLI-20260527-043', amount: -285.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260527-044', type: 'payment', date: new Date('2026-05-27T13:00:00'), orderId: 'LLI-20260527-044', amount: -360.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
   { id: 'TXN-20260527-045', type: 'payment', date: new Date('2026-05-27T10:20:00'), orderId: 'LLI-20260527-045', amount: -490.00, status: 'success', description: '订单支付' },
 
   // ── 2026-05-25 ──
-  { id: 'TXN-20260525-046', type: 'payment', date: new Date('2026-05-25T14:45:00'), orderId: 'LLI-20260525-046', amount: -370.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
-  { id: 'TXN-20260525-047', type: 'payment', date: new Date('2026-05-25T10:30:00'), orderId: 'LLI-20260525-047', amount: -245.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
+  { id: 'TXN-20260525-046', type: 'payment', date: new Date('2026-05-25T14:45:00'), orderId: 'LLI-20260525-046', amount: -370.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
+  { id: 'TXN-20260525-047', type: 'payment', date: new Date('2026-05-25T10:30:00'), orderId: 'LLI-20260525-047', amount: -245.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
 
   // ── 2026-05-23 ──
-  { id: 'TXN-20260523-048', type: 'payment', date: new Date('2026-05-23T15:55:00'), orderId: 'LLI-20260523-048', amount: -505.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260523-049', type: 'payment', date: new Date('2026-05-23T12:10:00'), orderId: 'LLI-20260523-049', amount: -295.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260523-048', type: 'payment', date: new Date('2026-05-23T15:55:00'), orderId: 'LLI-20260523-048', amount: -505.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260523-049', type: 'payment', date: new Date('2026-05-23T12:10:00'), orderId: 'LLI-20260523-049', amount: -295.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
   { id: 'TXN-20260523-050', type: 'refund',  date: new Date('2026-05-23T09:30:00'), orderId: 'LLI-20260522-051', amount: 340.00,  status: 'success', description: '订单退款' },
 
   // ── 2026-05-20 ──
   { id: 'TXN-20260520-051', type: 'topup',   date: new Date('2026-05-20T10:00:00'), orderId: undefined,           amount: 5000.00, status: 'success', description: '钱包充值' },
-  { id: 'TXN-20260520-052', type: 'payment', date: new Date('2026-05-20T16:25:00'), orderId: 'LLI-20260520-052', amount: -430.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260520-053', type: 'payment', date: new Date('2026-05-20T13:50:00'), orderId: 'LLI-20260520-053', amount: -320.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260520-052', type: 'payment', date: new Date('2026-05-20T16:25:00'), orderId: 'LLI-20260520-052', amount: -430.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260520-053', type: 'payment', date: new Date('2026-05-20T13:50:00'), orderId: 'LLI-20260520-053', amount: -320.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
   { id: 'TXN-20260520-054', type: 'payment', date: new Date('2026-05-20T10:10:00'), orderId: 'LLI-20260520-054', amount: -260.00, status: 'success', description: '订单支付' },
 
   // ── 2026-05-17 ──
-  { id: 'TXN-20260517-055', type: 'payment', date: new Date('2026-05-17T15:30:00'), orderId: 'LLI-20260517-055', amount: -385.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
-  { id: 'TXN-20260517-056', type: 'payment', date: new Date('2026-05-17T11:45:00'), orderId: 'LLI-20260517-056', amount: -475.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
+  { id: 'TXN-20260517-055', type: 'payment', date: new Date('2026-05-17T15:30:00'), orderId: 'LLI-20260517-055', amount: -385.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
+  { id: 'TXN-20260517-056', type: 'payment', date: new Date('2026-05-17T11:45:00'), orderId: 'LLI-20260517-056', amount: -475.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
 
   // ── 2026-05-14 ──
-  { id: 'TXN-20260514-057', type: 'payment', date: new Date('2026-05-14T16:00:00'), orderId: 'LLI-20260514-057', amount: -350.00, status: 'success', description: '订单支付', subAccountId: 'SUB-VN' },
-  { id: 'TXN-20260514-058', type: 'payment', date: new Date('2026-05-14T13:15:00'), orderId: 'LLI-20260514-058', amount: -410.00, status: 'success', description: '订单支付', subAccountId: 'SUB-TH' },
+  { id: 'TXN-20260514-057', type: 'payment', date: new Date('2026-05-14T16:00:00'), orderId: 'LLI-20260514-057', amount: -350.00, status: 'success', description: '订单支付', subAccountId: 'E001-VN' },
+  { id: 'TXN-20260514-058', type: 'payment', date: new Date('2026-05-14T13:15:00'), orderId: 'LLI-20260514-058', amount: -410.00, status: 'success', description: '订单支付', subAccountId: 'E001-TH' },
   { id: 'TXN-20260514-059', type: 'topup',   date: new Date('2026-05-14T10:00:00'), orderId: undefined,           amount: 3000.00, status: 'success', description: '钱包充值' },
 ];
 
@@ -1084,14 +1084,14 @@ export const accountPresets: Record<string, CurrentAccount> = {
   },
   childVN: {
     accountType: 'child',
-    accountId: 'SUB-VN',
+    accountId: 'E001-VN',
     companyName: PARENT_COMPANY_NAME,
     subAccountName: '越南子账号',
     parentId: PARENT_ACCOUNT_ID,
   },
   childTH: {
     accountType: 'child',
-    accountId: 'SUB-TH',
+    accountId: 'E001-TH',
     companyName: PARENT_COMPANY_NAME,
     subAccountName: '泰国子账号',
     parentId: PARENT_ACCOUNT_ID,
@@ -1101,7 +1101,7 @@ export const accountPresets: Record<string, CurrentAccount> = {
 /** 母账号下的子账号列表（演示数据） */
 export const mockSubAccounts: SubAccount[] = [
   {
-    id: 'SUB-VN',
+    id: 'E001-VN',
     name: '越南子账号',
     phone: '+84 901234567',
     quota: 5000,
@@ -1110,7 +1110,7 @@ export const mockSubAccounts: SubAccount[] = [
     createdAt: '2026-03-01',
   },
   {
-    id: 'SUB-TH',
+    id: 'E001-TH',
     name: '泰国子账号',
     phone: '+66 812345678',
     quota: 2000,

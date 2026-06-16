@@ -179,8 +179,12 @@ export default function WalletPage() {
                   value={subTxnFilter}
                   onChange={setSubTxnFilter}
                   style={{ width: 160 }}
+                  showSearch
+                  filterOption={(input, option) =>
+                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
                   options={[
-                    { value: '__parent__', label: '母账号' },
+                    { value: '__parent__', label: account?.companyName ?? '本账号' },
                     ...mockSubAccounts.map((s) => ({ value: s.id, label: s.name })),
                   ]}
                 />

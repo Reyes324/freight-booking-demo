@@ -193,17 +193,16 @@ export default function EnterpriseManagementPanel() {
 
   return (
     <>
-      {/* 额度概览 */}
-      <p className="text-base font-medium text-gray-900 mb-2">额度分配概览</p>
+      <p className="text-base font-medium text-gray-900 mb-2">额度分配</p>
       {/* 说明 */}
       <p className="text-sm text-gray-500 mb-3">
-        您可为企业创建子账号并分配额度，各子账号独立管理订单和交易明细，母账号可查看全部数据。
+        您可为企业创建子账号并分配额度，各子账号独立管理订单和交易明细，上级账号可查看全部数据。
       </p>
       <div className="grid grid-cols-3 divide-x divide-gray-100 border border-gray-100 rounded-xl mb-3 bg-gray-50">
         {[
           { label: '企业总额度', value: displayTotal },
           { label: '已分配额度', value: allocated },
-          { label: '未分配额度（母账号可用）', value: displayRemaining },
+          { label: '未分配额度（本账号可用）', value: displayRemaining },
         ].map(({ label, value }) => (
           <div key={label} className="px-5 py-4">
             <p className="text-xs text-gray-400 mb-1">{label}</p>
@@ -222,26 +221,22 @@ export default function EnterpriseManagementPanel() {
         />
       )}
 
-      {/* Demo 按钮 — 右下角浮层 */}
-      <div className="fixed bottom-6 right-6 z-50 flex gap-2">
-        <button
-          onClick={() => setDemoEmpty(v => !v)}
-          className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-3 py-1.5 shadow-sm transition-colors cursor-pointer"
-        >
-          {demoEmpty ? '还原示例数据' : '演示空状态'}
-        </button>
-        <button
-          onClick={() => setDemoOverAlloc(v => !v)}
-          className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-3 py-1.5 shadow-sm transition-colors cursor-pointer"
-        >
-          {demoOverAlloc ? '还原正常额度' : '演示超额分配'}
-        </button>
-      </div>
-
       {/* 子账号列表标题 + 操作区 */}
       <div className="flex items-center justify-between mb-3 mt-8">
         <div className="flex items-center gap-3">
           <span className="text-base font-medium text-gray-900">子账号列表</span>
+          <button
+            onClick={() => setDemoEmpty(v => !v)}
+            className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-2.5 py-1 transition-colors cursor-pointer"
+          >
+            {demoEmpty ? '还原示例数据' : '演示空状态'}
+          </button>
+          <button
+            onClick={() => setDemoOverAlloc(v => !v)}
+            className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-2.5 py-1 transition-colors cursor-pointer"
+          >
+            {demoOverAlloc ? '还原正常额度' : '演示超额分配'}
+          </button>
         </div>
         <Button
           type="primary"
@@ -327,7 +322,7 @@ export default function EnterpriseManagementPanel() {
             ]}
             extra={`当前剩余可分配：${fmt(remaining)}`}
           >
-            <InputNumber min={1} className="w-full" placeholder="请输入正整数" precision={0} />
+            <InputNumber min={1} className="w-full" placeholder="请输入" precision={0} />
           </Form.Item>
         </Form>
       </Modal>

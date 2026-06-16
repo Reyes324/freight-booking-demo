@@ -120,7 +120,7 @@ const zh = {
     subAccountColumn: "账号名称",
     subAccountFilter: "子账号",
     allSubAccounts: "全部子账号",
-    parentOwnOrder: "母账号",
+    parentOwnOrder: "本账号",
     statusCalling: "呼叫司机中",
     statusInTransit: "前往装货地",
     statusDelivering: "配送中",
@@ -140,7 +140,7 @@ const zh = {
     noTransactions: "所选时间段内暂无交易记录",
     // 母子账号
     subBalanceLabel: "本账号余额（人民币）",
-    subQuotaNote: "本账号额度由母账号管理员分配，如需调整请联系企业管理员。",
+    subQuotaNote: "本账号额度由上级账号管理员分配，如需调整请联系企业管理员。",
     parentTotalLabel: "企业总额度（人民币）",
     allocationTitle: "子账号额度分布",
     colSubName: "子账号",

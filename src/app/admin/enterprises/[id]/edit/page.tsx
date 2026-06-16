@@ -16,7 +16,7 @@ import {
   creditLimitRules,
 } from '@/lib/enterpriseUtils';
 
-type AccountType = 'normal' | 'parent' | 'sub';
+type AccountType = 'normal' | 'sub';
 
 export default function EditEnterprisePage() {
   const router = useRouter();
@@ -36,7 +36,6 @@ export default function EditEnterprisePage() {
 
   const initAccountType = (): AccountType => {
     if (isSubMode) return 'sub';
-    if (enterprise?.isParent) return 'parent';
     return 'normal';
   };
 
@@ -54,7 +53,6 @@ export default function EditEnterprisePage() {
   const currentName = enterprise?.name ?? subAccount!.name;
 
   const parentEnterpriseOptions = enterprises
-    .filter((e) => e.isParent)
     .map((e) => ({ label: `${e.name}（${e.id}）`, value: e.id }));
 
   const onCountryCodeChange = (value: string) => {
@@ -111,22 +109,24 @@ export default function EditEnterprisePage() {
               onChange={(e) => setAccountType(e.target.value as AccountType)}
             >
               <Radio value="normal">普通账号</Radio>
-              <Radio value="parent">母账号（可创建并管理子账号）</Radio>
               <Radio value="sub">子账号</Radio>
             </Radio.Group>
           </Form.Item>
 
-          {/* 子账号：归属母账号选择 */}
           {accountType === 'sub' && (
             <Form.Item
-              label="归属母账号"
+              label="归属上级账号"
               name="parentEnterpriseId"
-              rules={[{ required: true, message: '请选择归属母账号' }]}
+              rules={[{ required: true, message: '请选择上级账号' }]}
             >
               <Select
                 options={parentEnterpriseOptions}
-                placeholder="请选择母账号"
+                placeholder="请选择上级账号"
                 style={{ width: '100%' }}
+                showSearch
+                filterOption={(input, option) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
               />
             </Form.Item>
           )}
@@ -183,17 +183,15 @@ export default function EditEnterprisePage() {
             </Form.Item>
           )}
 
-          {/* 子账号：溢价系数跟随母账号，不可单独设置 */}
           {accountType === 'sub' && (
             <Form.Item label="订单溢价系数">
               <Input
                 disabled
-                value={`${subAccountParent?.premiumRate?.toFixed(2) ?? '—'}（跟随母账号）`}
+                value={`${subAccountParent?.premiumRate?.toFixed(2) ?? '—'}（跟随上级账号）`}
               />
             </Form.Item>
           )}
 
-          {/* 普通账号 / 母账号：溢价系数 + 账期额度 */}
           {accountType !== 'sub' && (
             <>
               <Form.Item
@@ -221,7 +219,7 @@ export default function EditEnterprisePage() {
                 />
               </Form.Item>
 
-              {accountType === 'parent' && enterprise && (
+              {enterprise?.isParent && enterprise && (
                 <Form.Item noStyle shouldUpdate={(p, c) => p.creditLimit !== c.creditLimit}>
                   {({ getFieldValue }) => {
                     const allocated = (enterprise.subAccounts ?? []).reduce((sum, s) => sum + s.quota, 0);

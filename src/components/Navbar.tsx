@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Popconfirm, Dropdown, Drawer } from "antd";
+import { Popconfirm, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import EnterpriseManagementPanel from "@/components/EnterpriseManagementPanel";
 import { shadow } from "@/styles/design-tokens";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useT } from "@/hooks/useT";
@@ -24,13 +23,13 @@ export default function Navbar() {
     setAccount(getCurrentAccount());
   }, [pathname]);
 
-  const isParent = account?.accountType === "parent";
-  const [mgmtOpen, setMgmtOpen] = useState(false);
+  const isChild = account?.accountType === "child";
 
   const tabs = [
     { id: "order", label: t.nav.bookARide, path: "/" },
     { id: "history", label: t.nav.orderHistory, path: "/orders" },
     { id: "wallet", label: t.nav.accountBalance, path: "/wallet" },
+    ...(!isChild ? [{ id: "settings", label: "设置", path: "/settings" }] : []),
   ];
 
   const activeTab = tabs.find(tab => tab.path === pathname)?.id || "";
@@ -115,17 +114,6 @@ export default function Navbar() {
         {/* 企业名称（桌面端） */}
         <div className="hidden md:flex items-center gap-2">
           <span className="text-sm font-medium text-gray-700">{account?.companyName ?? '菜鸟物流国际'}</span>
-          {isParent && (
-            <button
-              onClick={() => setMgmtOpen(true)}
-              className="text-sm text-[#2257D4] hover:text-[#1C47AC] transition-colors cursor-pointer flex items-center gap-0.5"
-            >
-              子账号管理
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          )}
           {account?.subAccountName && (
             <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
               {account.subAccountName}
@@ -155,18 +143,6 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-
-      {/* 子账号管理 Drawer（仅母账号） */}
-      <Drawer
-        title="子账号管理"
-        placement="right"
-        width={660}
-        open={mgmtOpen}
-        onClose={() => setMgmtOpen(false)}
-        destroyOnClose={false}
-      >
-        <EnterpriseManagementPanel />
-      </Drawer>
 
       {/* Demo：切换账号悬浮按钮（右下角，与登录页保持一致） */}
       {account && (

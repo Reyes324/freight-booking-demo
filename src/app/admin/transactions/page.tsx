@@ -166,6 +166,10 @@ export default function TransactionsPage() {
           value={enterpriseFilter}
           onChange={(v) => { setEnterpriseFilter(v); setSubAccountFilter(null); }}
           style={{ width: 160 }}
+          showSearch
+          filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+          }
           options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
         />
         <Select
@@ -174,11 +178,15 @@ export default function TransactionsPage() {
           value={subAccountFilter}
           onChange={setSubAccountFilter}
           style={{ width: 160 }}
+          showSearch
+          filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+          }
           options={(enterpriseFilter
             ? enterprises.filter((e) => e.id === enterpriseFilter)
             : enterprises
           ).flatMap((e) => [
-            { value: `__parent__${e.id}`, label: `${e.name}（主账号）` },
+            { value: `__parent__${e.id}`, label: e.name },
             ...(e.subAccounts ?? []).map((s) => ({ value: s.id, label: s.name })),
           ])}
         />

@@ -105,7 +105,7 @@ function CreditTab({ enterpriseId, currency, subAccounts }: { enterpriseId: stri
             width: 140,
             render: (_: unknown, record: CreditTransaction) => (
               <span className="text-sm text-gray-900">
-                {record.subAccountId ? subName(record.subAccountId) : (enterprise?.name ?? '母账号')}
+                {record.subAccountId ? subName(record.subAccountId) : enterprise?.name}
               </span>
             ),
           } as ColumnsType<CreditTransaction>[number],
@@ -188,8 +188,12 @@ function CreditTab({ enterpriseId, currency, subAccounts }: { enterpriseId: stri
             value={subAccountFilter}
             onChange={setSubAccountFilter}
             style={{ width: 160 }}
+            showSearch
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
             options={[
-              { value: '__parent__', label: '母账号' },
+              { value: '__parent__', label: enterprise?.name ?? '上级账号' },
               ...(subAccounts ?? []).map((s) => ({ value: s.id, label: s.name })),
             ]}
           />
@@ -281,7 +285,7 @@ function OrdersTab({ enterpriseId, subAccounts }: { enterpriseId: string; subAcc
             width: 140,
             render: (_: unknown, r: AdminOrder) => (
               <span className="text-sm text-gray-900">
-                {r.subAccountId ? subName(r.subAccountId) : (enterpriseName ?? '母账号')}
+                {r.subAccountId ? subName(r.subAccountId) : enterpriseName}
               </span>
             ),
           } as ColumnsType<AdminOrder>[number],
@@ -477,8 +481,12 @@ function OrdersTab({ enterpriseId, subAccounts }: { enterpriseId: string; subAcc
             value={subAccountFilter}
             onChange={setSubAccountFilter}
             style={{ width: 160 }}
+            showSearch
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
             options={[
-              { value: '__parent__', label: '母账号' },
+              { value: '__parent__', label: enterpriseName ?? '上级账号' },
               ...(subAccounts ?? []).map((s) => ({ value: s.id, label: s.name })),
             ]}
           />

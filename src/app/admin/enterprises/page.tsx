@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Table, Input, Button, Card, Modal, message, Switch, Tag } from 'antd';
+import { Table, Input, Button, Card, Modal, message, Switch } from 'antd';
 import { SearchOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { enterprises as initialEnterprises, type Enterprise, type AdminSubAccount } from '@/data/adminMockData';
@@ -167,20 +167,25 @@ export default function EnterprisesPage() {
       title: '账号名称',
       dataIndex: 'name',
       key: 'name',
-      width: 160,
-      render: (name: string) => (
-        <span className="whitespace-nowrap">{name}</span>
+      width: 180,
+      render: (name: string, r) => (
+        r._type === 'sub' ? (
+          <div className="flex items-center gap-1 pl-2">
+            <span className="text-gray-300 text-sm select-none">└</span>
+            <span className="whitespace-nowrap">{name}</span>
+          </div>
+        ) : (
+          <span className="whitespace-nowrap">{name}</span>
+        )
       ),
     },
     {
       title: '账号类型',
       key: 'accountType',
       width: 100,
-      render: (_, r) => {
-        if (r._type === 'sub') return <Tag>子账号</Tag>;
-        if (r.isParent) return <Tag color="blue">母账号</Tag>;
-        return <span className="text-sm">普通账号</span>;
-      },
+      render: (_, r) => (
+        <span className="text-sm">{r._type === 'sub' ? '子账号' : '普通账号'}</span>
+      ),
     },
     {
       title: '登录手机号',
@@ -310,7 +315,7 @@ export default function EnterprisesPage() {
           columns={columns}
           dataSource={tableData}
           rowKey="_key"
-          rowClassName={(r) => r._type === 'sub' ? 'bg-[#F9FAFB]' : ''}
+          onRow={(r) => r._type === 'sub' ? { style: { background: '#F9FAFB' } } : {}}
           pagination={{
             pageSize: 10,
             showTotal: (total) => `共 ${total} 家企业`,

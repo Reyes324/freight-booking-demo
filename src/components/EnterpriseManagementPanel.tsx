@@ -193,12 +193,12 @@ export default function EnterpriseManagementPanel() {
 
   return (
     <>
-      <p className="text-base font-medium text-gray-900 mb-2">额度分配</p>
+      <p className="text-base font-medium text-gray-900 mb-3">额度分配</p>
       {/* 说明 */}
-      <p className="text-sm text-gray-500 mb-3">
+      <p className="text-sm text-gray-500 mb-5">
         您可为企业创建子账号并分配额度，各子账号独立管理订单和交易明细，上级账号可查看全部数据。
       </p>
-      <div className="grid grid-cols-3 divide-x divide-gray-100 border border-gray-100 rounded-xl mb-3 bg-gray-50">
+      <div className="grid grid-cols-3 divide-x divide-gray-100 border border-gray-100 rounded-xl mb-5 bg-gray-50">
         {[
           { label: '企业总额度', value: displayTotal },
           { label: '已分配额度', value: allocated },
@@ -222,22 +222,8 @@ export default function EnterpriseManagementPanel() {
       )}
 
       {/* 子账号列表标题 + 操作区 */}
-      <div className="flex items-center justify-between mb-3 mt-8">
-        <div className="flex items-center gap-3">
-          <span className="text-base font-medium text-gray-900">子账号列表</span>
-          <button
-            onClick={() => setDemoEmpty(v => !v)}
-            className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-2.5 py-1 transition-colors cursor-pointer"
-          >
-            {demoEmpty ? '还原示例数据' : '演示空状态'}
-          </button>
-          <button
-            onClick={() => setDemoOverAlloc(v => !v)}
-            className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-2.5 py-1 transition-colors cursor-pointer"
-          >
-            {demoOverAlloc ? '还原正常额度' : '演示超额分配'}
-          </button>
-        </div>
+      <div className="flex items-center justify-between mb-3 mt-10">
+        <span className="text-base font-medium text-gray-900">子账号列表</span>
         <Button
           type="primary"
           size="small"
@@ -265,6 +251,21 @@ export default function EnterpriseManagementPanel() {
             ),
           }}
         />
+      </div>
+
+      <div className="flex justify-end gap-2 mt-3">
+        <button
+          onClick={() => setDemoEmpty(v => !v)}
+          className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-2.5 py-1 transition-colors cursor-pointer"
+        >
+          {demoEmpty ? '还原示例数据' : '演示空状态'}
+        </button>
+        <button
+          onClick={() => setDemoOverAlloc(v => !v)}
+          className="text-xs text-gray-400 hover:text-gray-600 bg-white border border-dashed border-gray-300 rounded px-2.5 py-1 transition-colors cursor-pointer"
+        >
+          {demoOverAlloc ? '还原正常额度' : '演示超额分配'}
+        </button>
       </div>
 
       {/* 新增子账号弹窗 */}

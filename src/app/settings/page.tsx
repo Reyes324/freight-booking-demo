@@ -146,15 +146,17 @@ export default function SettingsPage() {
 
           {/* 右侧内容 */}
           <main className="flex-1 bg-white overflow-y-auto">
-            <div className="max-w-2xl px-10 py-8">
-              {account && activeKey === 'profile' && <ProfileContent account={account} />}
-              {isParent && activeKey === 'account' && (
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-10">子账户设置</h2>
-                  <EnterpriseManagementPanel />
-                </div>
-              )}
-            </div>
+            {account && activeKey === 'profile' && (
+              <div style={{ maxWidth: 640 }} className="px-10 py-8">
+                <ProfileContent account={account} />
+              </div>
+            )}
+            {isParent && activeKey === 'account' && (
+              <div style={{ maxWidth: 860 }} className="px-10 py-8">
+                <h2 className="text-lg font-semibold text-gray-900 mb-10">子账户设置</h2>
+                <EnterpriseManagementPanel />
+              </div>
+            )}
           </main>
         </div>
       </div>

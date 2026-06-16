@@ -147,6 +147,13 @@ export default function LoginPage() {
 
   return (
     <div>
+      {/* 预加载背景图，避免 CSS background-image 延迟 */}
+      <link
+        rel="preload"
+        as="image"
+        href="https://www.figma.com/api/mcp/asset/db9b2e53-9892-49a0-a5dc-94a48c8a6962"
+      />
+
       {/* Demo 角色切换（左下角浮动，仅原型演示用） */}
       <div className="role-bar">
         <div
@@ -214,6 +221,7 @@ export default function LoginPage() {
           src="https://www.figma.com/api/mcp/asset/6687e93e-0623-4d4f-bf63-11110769d5d4"
           alt="LALAMOVE 货拉拉·企业国际版"
           className="page-logo-img"
+          fetchPriority="high"
         />
 
         {/* 登录卡片 */}

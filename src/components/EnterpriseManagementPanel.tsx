@@ -136,31 +136,29 @@ export default function EnterpriseManagementPanel() {
       title: '账号名称',
       dataIndex: 'name',
       key: 'name',
-      render: (name: string) => (
-        <span>{name}</span>
-      ),
+      width: 140,
+      render: (name: string) => <span>{name}</span>,
     },
     {
       title: '手机号',
       dataIndex: 'phone',
       key: 'phone',
+      width: 150,
       render: (phone: string) => <span className="text-sm text-gray-600">{phone}</span>,
     },
     {
       title: '已分配额度',
       dataIndex: 'quota',
       key: 'quota',
-      align: 'right',
+      width: 120,
       render: (quota: number) => <span className="text-sm text-gray-900">{fmt(quota)}</span>,
     },
     {
-      title: '当前余额',
+      title: '本月当前余额',
       dataIndex: 'balance',
       key: 'balance',
-      align: 'right',
-      render: (balance: number) => (
-        <span className="text-sm text-gray-900">{fmt(balance)}</span>
-      ),
+      width: 120,
+      render: (balance: number) => <span className="text-sm text-gray-900">{fmt(balance)}</span>,
     },
     {
       title: '状态',
@@ -191,36 +189,13 @@ export default function EnterpriseManagementPanel() {
 
   return (
     <>
-      <p className="text-base font-medium text-gray-900 mb-3">额度分配</p>
       {/* 说明 */}
-      <p className="text-sm text-gray-500 mb-5">
-        您可为企业创建子账号并分配额度，各子账号独立管理订单和交易明细，上级账号可查看全部数据。
+      <p className="text-sm text-gray-500 mb-6">
+        您可创建子账号并分配下单额度，各子账号独立管理订单。
       </p>
-      <div className="grid grid-cols-3 divide-x divide-gray-100 border border-gray-100 rounded-xl mb-5 bg-gray-50">
-        {[
-          { label: '企业总额度', value: displayTotal },
-          { label: '已分配额度', value: allocated },
-          { label: '未分配额度（本账号可用）', value: displayRemaining },
-        ].map(({ label, value }) => (
-          <div key={label} className="px-5 py-4">
-            <p className="text-xs text-gray-400 mb-1">{label}</p>
-            <p className={`text-base font-semibold ${value < 0 ? 'text-red-500' : 'text-gray-900'}`}>
-              {fmt(value)}
-            </p>
-          </div>
-        ))}
-      </div>
-      {displayRemaining < 0 && (
-        <Alert
-          type="warning"
-          showIcon
-          className="mb-3"
-          message="因企业总额度调低，子账号额度总额已超出限额。请尽快修改子账号额度，企业整体额度用尽后所有账号均无法继续下单。"
-        />
-      )}
 
       {/* 子账号列表标题 + 操作区 */}
-      <div className="flex items-center justify-between mb-3 mt-10">
+      <div className="flex items-center justify-between mb-3">
         <span className="text-base font-medium text-gray-900">子账号列表</span>
         <Button
           type="primary"
@@ -241,6 +216,7 @@ export default function EnterpriseManagementPanel() {
           pagination={false}
           size="small"
           rowClassName={(record) => record.status === 'disabled' ? 'row-disabled' : ''}
+          scroll={{ x: 602 }}
           locale={{
             emptyText: (
               <Empty
@@ -251,6 +227,33 @@ export default function EnterpriseManagementPanel() {
           }}
         />
       </div>
+
+      {/* 额度分配情况 */}
+      <p className="text-base font-medium text-gray-900 mt-8 mb-3">额度分配情况</p>
+      <div className="flex gap-3 mb-3">
+        {[
+          { label: '总额度', value: displayTotal },
+          { label: '已分配子账号', value: allocated },
+          { label: '未分配（本账号可用）', value: displayRemaining },
+        ].map(({ label, value }) => (
+          <div key={label} className="flex-1 bg-white border border-gray-200 rounded-xl px-5 py-4">
+            <p className="text-xs text-gray-400 mb-2">{label}</p>
+            <p className={`text-lg font-semibold ${value === displayRemaining && value < 0 ? 'text-red-500' : 'text-gray-900'}`}>
+              {fmt(value)}
+            </p>
+          </div>
+        ))}
+      </div>
+
+
+      {displayRemaining < 0 && (
+        <Alert
+          type="warning"
+          showIcon
+          className="mb-3"
+          message="因企业总额度调低，子账号额度总额已超出限额。请尽快修改子账号额度，企业整体额度用尽后所有账号均无法继续下单。"
+        />
+      )}
 
       <div className="flex justify-end gap-2 mt-3">
         <button

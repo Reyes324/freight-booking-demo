@@ -153,7 +153,7 @@ export default function SettingsPage() {
             )}
             {isParent && activeKey === 'account' && (
               <div style={{ maxWidth: 860 }} className="px-10 py-8">
-                <h2 className="text-lg font-semibold text-gray-900 mb-10">子账户设置</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-2">子账户设置</h2>
                 <EnterpriseManagementPanel />
               </div>
             )}

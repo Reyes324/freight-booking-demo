@@ -237,6 +237,7 @@ export default function LoginPage() {
                     <option value="+65">🇸🇬 +65</option>
                     <option value="+63">🇵🇭 +63</option>
                     <option value="+852">🇭🇰 +852</option>
+                    <option value="+86">🇨🇳 +86</option>
                   </select>
                   <svg className="cc-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>

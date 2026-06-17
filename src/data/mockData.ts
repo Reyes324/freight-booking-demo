@@ -27,79 +27,72 @@ export interface AddressDetail {
   lng?: number;
 }
 
+const CDN = "https://sg-oimg.lalamove.com/ops/prd/2026-04-16/";
+
 export const vehicles: Vehicle[] = [
   {
-    id: "van",
-    name: "Van仔",
-    image: "/vehicles/van.png",
-    dimensions: "1.8 x 1.2 x 1.2 米",
-    weight: "800 kg",
-    description: "适合多件运送，包括建材、小型家电等等。最多可载人数：5（不包括司机）",
-    maxPassengers: 5,
+    id: "MOTORCYCLE",
+    name: "摩托车",
+    image: `${CDN}1089095e-75a7-93fe-3f4a-17c3e3eb1ff0.png`,
+    dimensions: "0.5m × 0.4m × 0.5m",
+    weight: "20 kg",
+    description: "适合食品饮料、文件及小件货物配送",
   },
   {
-    id: "courier",
-    name: "速递专员",
-    image: "/vehicles/courier.png",
-    dimensions: "0.4 x 0.4 x 0.4 米",
-    weight: "10 kg",
-    description: "适合小型货物，由电单车或特选步兵运送，更快速为您配对订单",
+    id: "CAR",
+    name: "轿车",
+    image: `${CDN}17cc43da-6545-2e52-7691-a7a5ff2b22ec.png`,
+    dimensions: "0.9m × 1m × 0.7m",
+    weight: "100 kg",
+    description: "适合食品饮料、气球、鲜花蛋糕及小件包裹配送",
   },
   {
-    id: "motorcycle",
-    name: "电单车",
-    image: "/vehicles/motorcycle.png",
-    dimensions: "0.4 x 0.4 x 0.4 米",
-    weight: "10 kg",
-    description: "适合上门取件送货及小件快速运送（易碎物品如蛋糕较适合由步兵运送）",
+    id: "MPV",
+    name: "两厢车",
+    image: `${CDN}16105529-1a0d-2155-efef-262837cc0e8a.png`,
+    dimensions: "1.1m × 1.1m × 0.8m",
+    weight: "200 kg",
+    description: "适合食品饮料、气球、鲜花蛋糕及小件包裹配送",
   },
   {
-    id: "walker",
-    name: "步兵",
-    image: "/vehicles/walker.png",
-    dimensions: "0.4 x 0.4 x 0.4 米",
-    weight: "10 kg",
-    description: "适合上门取件送货及同区小件运送（适合运送易碎物件，如蛋糕）",
+    id: "SUV",
+    name: "SUV",
+    image: `${CDN}162abd3e-8e8b-a94c-9f41-e76e845fa55d.png`,
+    dimensions: "1.3m × 1.6m × 0.8m",
+    weight: "300 kg",
+    description: "适合食品饮料、气球、鲜花蛋糕及小件包裹配送",
   },
   {
-    id: "truck-5.5t",
-    name: "5.5吨货车",
-    image: "/vehicles/truck.png",
-    dimensions: "4.5 x 1.8 x 1.8 米",
-    weight: "1200 kg",
-    description: "适合家具、家电、企业物流等等",
+    id: "PICK_UP_TRUCK",
+    name: "皮卡",
+    image: `${CDN}164e1e52-1911-6019-6898-d12b373890c6.png`,
+    dimensions: "1.5m × 1.4m × 0.5m",
+    weight: "1,100 kg",
+    description: "适合蔬果、建筑材料及汽车配件运输",
   },
   {
-    id: "truck-9t",
-    name: "9吨货车",
-    image: "/vehicles/truck.png",
-    dimensions: "6 x 1.8 x 1.8 米",
-    weight: "3500 kg",
-    description: "适合搬屋、搬写字楼、企业物流等等",
+    id: "TRUCK175",
+    name: "围栏货车",
+    image: `${CDN}1e42d01d-d545-0d80-7218-2b016dd302a9.png`,
+    dimensions: "1.7m × 1.8m × 1.7m",
+    weight: "1,100 kg",
+    description: "适合蔬果、建筑材料及汽车配件运输",
   },
   {
-    id: "van-hourly",
-    name: "Van仔包钟（3小时）",
-    image: "/vehicles/van.png",
-    dimensions: "1.8 x 1.2 x 1.2 米",
-    weight: "800 kg",
-    description: "适合多件运送，包括建材、小型家电等等",
+    id: "TRUCK330",
+    name: "厢式货车",
+    image: `${CDN}11bdff2f-bcc1-8c72-4e81-c2c73b1ae832.png`,
+    dimensions: "1.7m × 1.8m × 1.7m",
+    weight: "1,100 kg",
+    description: "适合搬家及活动物料运输",
   },
   {
-    id: "truck-5.5t-hourly",
-    name: "5.5吨货车包钟（3小时）",
-    image: "/vehicles/truck.png",
-    dimensions: "4.5 x 1.8 x 1.8 米",
-    weight: "1200 kg",
-    description: "适合家具、家电、企业物流等等",
-  },
-  {
-    id: "truck-9t-hourly",
-    name: "9吨货车包钟（3小时）",
-    image: "/vehicles/truck.png",
-    dimensions: "6 x 1.8 x 1.8 米",
-    weight: "3500 kg",
-    description: "适合家具、家电、企业物流等等",
+    id: "BOX_TRUCK_JUMBO",
+    name: "加大厢式货车",
+    image: `${CDN}1adefe3c-d7ef-3362-4d86-2fd8dbb23868.png`,
+    dimensions: "1.8m × 3m × 2m",
+    weight: "2,400 kg",
+    description: "适合搬家、活动物料及建筑材料运输",
   },
 ];
 
@@ -132,410 +125,72 @@ export function isServiceGroup(s: VehicleService): s is VehicleServiceGroup {
   return "type" in s && s.type === "group";
 }
 
-// ── Reusable tunnel toll builders (prices differ by vehicle size) ──
-const tunnelsSmall = (): VehicleServiceGroup => ({
-  id: "tunnels",
-  name: "隧道费",
-  type: "group",
-  items: [
-    { id: "t-cross", name: "红磡海底隧道", price: 8, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-eastern", name: "东区海底隧道", price: 8, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-lion", name: "狮子山隧道", price: 8 },
-    { id: "t-tate", name: "大老山隧道", price: 15 },
-    { id: "t-tailam", name: "大榄隧道", price: 7, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-tsim", name: "尖山隧道", price: 8 },
-    { id: "t-aberdeen", name: "香港仔隧道", price: 8 },
-    { id: "t-western", name: "西区海底隧道", price: 8, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-shingmun", name: "城门隧道", price: 8 },
-  ],
-});
-
-const tunnelsVan = (): VehicleServiceGroup => ({
-  id: "tunnels",
-  name: "隧道费",
-  type: "group",
-  items: [
-    { id: "t-cross", name: "红磡海底隧道", price: 50, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-eastern", name: "东区海底隧道", price: 50, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-lion", name: "狮子山隧道", price: 8 },
-    { id: "t-tate", name: "大老山隧道", price: 24 },
-    { id: "t-tailam", name: "大榄隧道", price: 43, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-tsim", name: "尖山隧道", price: 8 },
-    { id: "t-aberdeen", name: "香港仔隧道", price: 8 },
-    { id: "t-western", name: "西区海底隧道", price: 50, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-shingmun", name: "城门隧道", price: 8 },
-  ],
-});
-
-const tunnelsTruck55 = (): VehicleServiceGroup => ({
-  id: "tunnels",
-  name: "隧道费",
-  type: "group",
-  items: [
-    { id: "t-cross", name: "红磡海底隧道", price: 50, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-eastern", name: "东区海底隧道", price: 50, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-lion", name: "狮子山隧道", price: 8 },
-    { id: "t-tate", name: "大老山隧道", price: 24 },
-    { id: "t-tailam", name: "大榄隧道", price: 43, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-tsim", name: "尖山隧道", price: 8 },
-    { id: "t-aberdeen", name: "香港仔隧道", price: 8 },
-    { id: "t-western", name: "西区海底隧道", price: 50, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-shingmun", name: "城门隧道", price: 8 },
-  ],
-});
-
-const tunnelsTruck9 = (): VehicleServiceGroup => ({
-  id: "tunnels",
-  name: "隧道费",
-  type: "group",
-  items: [
-    { id: "t-cross", name: "红磡海底隧道", price: 50, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-eastern", name: "东区海底隧道", price: 50, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-lion", name: "狮子山隧道", price: 8 },
-    { id: "t-tate", name: "大老山隧道", price: 28 },
-    { id: "t-tailam", name: "大榄隧道", price: 43, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-tsim", name: "尖山隧道", price: 8 },
-    { id: "t-aberdeen", name: "香港仔隧道", price: 8 },
-    { id: "t-western", name: "西区海底隧道", price: 50, description: "根据进入隧道的时间，可能会另外衍生额外费用" },
-    { id: "t-shingmun", name: "城门隧道", price: 8 },
-  ],
-});
-
 // ── Per-vehicle additional services ──
 export const vehicleServicesMap: Record<string, VehicleService[]> = {
-  // ── 电单车：最少服务 ──
-  motorcycle: [
+  MOTORCYCLE: [
     { id: "thermal-bag", name: "保温袋", price: 0 },
-    { id: "english-driver", name: "英文司机", price: 0 },
+    { id: "food-box", name: "食品配送箱", price: 0 },
+    { id: "round-trip", name: "往返", price: 0 },
   ],
-
-  // ── 速递专员 ──
-  courier: [
-    { id: "thermal-bag", name: "保温袋", price: 0 },
-    { id: "english-driver", name: "英文司机", price: 0 },
-    tunnelsSmall(),
+  CAR: [
+    { id: "round-trip", name: "往返", price: 0 },
+    { id: "door-to-door", name: "上门配送（司机操作）", price: 0 },
+    { id: "cod", name: "货到付款（COD）", price: 0 },
   ],
-
-  // ── 步兵 ──
-  walker: [
-    { id: "thermal-bag", name: "保温袋", price: 0 },
-    { id: "english-driver", name: "英文司机", price: 0 },
-    tunnelsSmall(),
+  MPV: [
+    { id: "round-trip", name: "往返", price: 0 },
+    { id: "door-to-door", name: "上门配送（司机操作）", price: 0 },
+    { id: "cod", name: "货到付款（COD）", price: 0 },
   ],
-
-  // ── Van仔 ──
-  van: [
-    { id: "premium-car", name: "星级尊车", price: 30 },
-    {
-      id: "passenger",
-      name: "有人跟车",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "p-1", name: "1 人跟车", price: 0 },
-        { id: "p-2", name: "2 人跟车", price: 0 },
-        { id: "p-3", name: "3 人跟车", price: 0 },
-        { id: "p-4", name: "4 人跟车", price: 0 },
-        { id: "p-5", name: "5 人跟车", price: 0 },
-      ],
-    },
-    { id: "pet", name: "接送宠物", price: 10 },
-    {
-      id: "moving",
-      name: "帮搬服务",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "m-1s", name: "单边上门，最多2件，总重20kg内", price: 78 },
-        { id: "m-1d", name: "两边上门，最多2件，总重20kg内", price: 156 },
-        { id: "m-2s", name: "单边上门（总重70kg内，最多10箱）", price: 100 },
-        { id: "m-2d", name: "两边上门（总重70kg内，最多10箱）", price: 200 },
-        { id: "m-other", name: "其他尺寸或重量（由司机报价）", price: 0 },
-      ],
-    },
-    { id: "over6ft", name: "货物长度超过6呎", price: 20 },
-    { id: "over6ft-tall", name: "货物长度超过6呎 高度超过2呎", price: 40 },
-    { id: "trolley", name: "租用车仔", price: 10 },
-    { id: "flatbed", name: "租用板车", price: 10 },
-    { id: "fold-seat", name: "收起后座", price: 15 },
-    { id: "jumpstart", name: "搭电服务[过江龙]", price: 200 },
-    { id: "english-driver", name: "英文司机", price: 0 },
-    tunnelsVan(),
-    { id: "landfill", name: "进入堆填区", price: 50 },
-    { id: "construction", name: "进入地盘", price: 20 },
-    { id: "safety-card", name: "平安卡", price: 50 },
-    { id: "construction-waste", name: "运送或弃置建筑废料（由司机报价）", price: 0 },
+  SUV: [
+    { id: "round-trip", name: "往返", price: 0 },
+    { id: "cod", name: "货到付款（COD）", price: 0 },
   ],
-
-  // ── 5.5吨货车 ──
-  "truck-5.5t": [
-    {
-      id: "pallet",
-      name: "板货唧车运送",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "pl-1", name: "1板（每板连卡板≤500kg）", price: 200 },
-        { id: "pl-2", name: "2板", price: 400 },
-        { id: "pl-3", name: "3板", price: 600 },
-        { id: "pl-4", name: "4板", price: 800 },
-        { id: "pl-5", name: "5板", price: 1000 },
-        { id: "pl-other", name: "其他数量或重量（由司机报价）", price: 0 },
-      ],
-    },
-    {
-      id: "heavy-item",
-      name: "大型物件搬运",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "hi-1", name: "1件（<50kg，三边总和<400cm）", price: 350 },
-        { id: "hi-2", name: "2件（每件<50kg）", price: 500 },
-        { id: "hi-3", name: "3件（每件<50kg）", price: 650 },
-        { id: "hi-other", name: "其他数量或体积（由司机报价）", price: 0 },
-      ],
-    },
-    {
-      id: "passenger",
-      name: "有人跟车",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "p-2", name: "最多 2 人跟车", price: 0 },
-        { id: "p-5", name: "最多 5 人跟车", price: 20 },
-      ],
-    },
-    { id: "trolley", name: "租用车仔", price: 10 },
-    { id: "jack", name: "租用唧车", price: 20 },
-    { id: "tailgate", name: "尾板", price: 0 },
-    { id: "flatbed", name: "租用板车", price: 10 },
-    { id: "english-driver", name: "英文司机", price: 0 },
-    tunnelsTruck55(),
-    { id: "landfill", name: "进入堆填区", price: 100 },
-    { id: "construction", name: "进入地盘", price: 40 },
-    { id: "safety-card", name: "平安卡", price: 70 },
-    { id: "construction-waste", name: "运送或弃置建筑废料（由司机报价）", price: 0 },
+  PICK_UP_TRUCK: [
+    { id: "round-trip", name: "往返", price: 0 },
+    { id: "document", name: "文件处理", price: 0 },
+    { id: "cod", name: "货到付款（COD）", price: 0 },
   ],
-
-  // ── 9吨货车 ──
-  "truck-9t": [
+  TRUCK175: [
     {
-      id: "pallet",
-      name: "板货唧车运送",
+      id: "helpers",
+      name: "所需人数",
       type: "group",
       maxSelect: 1,
       items: [
-        { id: "pl-1", name: "1板（每板连卡板≤500kg）", price: 200 },
-        { id: "pl-2", name: "2板", price: 400 },
-        { id: "pl-3", name: "3板", price: 600 },
-        { id: "pl-4", name: "4板", price: 800 },
-        { id: "pl-5", name: "5板", price: 1000 },
-        { id: "pl-other", name: "其他数量或重量（由司机报价）", price: 0 },
+        { id: "h-0", name: "仅司机", price: 0 },
+        { id: "h-1", name: "司机 + 1名助手", price: 0 },
       ],
     },
-    {
-      id: "heavy-item",
-      name: "大型物件搬运",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "hi-1", name: "1件（<50kg，三边总和<400cm）", price: 350 },
-        { id: "hi-2", name: "2件（每件<50kg）", price: 500 },
-        { id: "hi-3", name: "3件（每件<50kg）", price: 650 },
-        { id: "hi-other", name: "其他数量或体积（由司机报价）", price: 0 },
-      ],
-    },
-    {
-      id: "passenger",
-      name: "有人跟车",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "p-2", name: "最多 2 人跟车", price: 0 },
-        { id: "p-5", name: "最多 5 人跟车", price: 20 },
-      ],
-    },
-    { id: "trolley", name: "租用车仔", price: 10 },
-    { id: "jack", name: "租用唧车", price: 20 },
-    { id: "tailgate", name: "尾板", price: 0 },
-    { id: "flatbed", name: "租用板车", price: 10 },
-    { id: "english-driver", name: "英文司机", price: 0 },
-    tunnelsTruck9(),
-    { id: "landfill", name: "进入堆填区", price: 150 },
-    { id: "construction", name: "进入地盘", price: 60 },
-    { id: "safety-card", name: "平安卡", price: 100 },
-    { id: "construction-waste", name: "运送或弃置建筑废料（由司机报价）", price: 0 },
+    { id: "round-trip", name: "往返", price: 0 },
+    { id: "overweight", name: "超重货物（最重2.9吨）", price: 0 },
   ],
-
-  // ── Van仔包钟（3小时） ──
-  "van-hourly": [
+  TRUCK330: [
     {
-      id: "extra-hours",
-      name: "额外包钟",
+      id: "helpers",
+      name: "所需人数",
       type: "group",
       maxSelect: 1,
       items: [
-        { id: "eh-1", name: "额外包钟1小时（总共4小时）", price: 110 },
-        { id: "eh-2", name: "额外包钟2小时（总共5小时）", price: 220 },
-        { id: "eh-3", name: "额外包钟3小时（总共6小时）", price: 330 },
-        { id: "eh-4", name: "额外包钟4小时（总共7小时）", price: 440 },
-        { id: "eh-5", name: "额外包钟5小时（总共8小时）", price: 550 },
+        { id: "h-0", name: "仅司机", price: 0 },
+        { id: "h-1", name: "司机 + 1名助手", price: 0 },
       ],
     },
-    { id: "premium-car", name: "星级尊车", price: 30 },
-    {
-      id: "passenger",
-      name: "有人跟车",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "p-2", name: "最多 2 人跟车", price: 0 },
-        { id: "p-5", name: "最多 5 人跟车", price: 0 },
-      ],
-    },
-    { id: "pet", name: "接送宠物", price: 10 },
-    {
-      id: "moving",
-      name: "帮搬服务",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "m-1s", name: "单边上门，最多2件，总重20kg内", price: 78 },
-        { id: "m-1d", name: "两边上门，最多2件，总重20kg内", price: 156 },
-        { id: "m-2s", name: "单边上门（总重70kg内，最多10箱）", price: 100 },
-        { id: "m-2d", name: "两边上门（总重70kg内，最多10箱）", price: 200 },
-        { id: "m-other", name: "其他尺寸或重量（由司机报价）", price: 0 },
-      ],
-    },
-    { id: "over6ft", name: "货物长度超过6呎", price: 20 },
-    { id: "over6ft-tall", name: "货物长度超过6呎 高度超过2呎", price: 40 },
-    { id: "trolley", name: "租用车仔", price: 10 },
-    { id: "flatbed", name: "租用板车", price: 10 },
-    { id: "fold-seat", name: "收起后座", price: 15 },
-    { id: "english-driver", name: "英文司机", price: 0 },
-    tunnelsVan(),
-    { id: "landfill", name: "进入堆填区", price: 50 },
-    { id: "construction", name: "进入地盘", price: 20 },
-    { id: "safety-card", name: "平安卡", price: 50 },
-    { id: "construction-waste", name: "运送或弃置建筑废料（由司机报价）", price: 0 },
+    { id: "round-trip", name: "往返", price: 0 },
+    { id: "trolley", name: "手推车租用", price: 0 },
   ],
-
-  // ── 5.5吨货车包钟（3小时） ──
-  "truck-5.5t-hourly": [
+  BOX_TRUCK_JUMBO: [
     {
-      id: "extra-hours",
-      name: "额外包钟",
+      id: "helpers",
+      name: "所需人数",
       type: "group",
       maxSelect: 1,
       items: [
-        { id: "eh-1", name: "额外包钟1小时（总共4小时）", price: 160 },
-        { id: "eh-2", name: "额外包钟2小时（总共5小时）", price: 320 },
-        { id: "eh-3", name: "额外包钟3小时（总共6小时）", price: 480 },
+        { id: "h-0", name: "仅司机", price: 0 },
+        { id: "h-1", name: "司机 + 1名助手", price: 0 },
       ],
     },
-    {
-      id: "pallet",
-      name: "板货唧车运送",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "pl-1", name: "1板（每板连卡板≤500kg）", price: 200 },
-        { id: "pl-2", name: "2板", price: 400 },
-        { id: "pl-3", name: "3板", price: 600 },
-        { id: "pl-other", name: "其他数量或重量（由司机报价）", price: 0 },
-      ],
-    },
-    {
-      id: "heavy-item",
-      name: "大型物件搬运",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "hi-1", name: "1件（<50kg，三边总和<400cm）", price: 350 },
-        { id: "hi-2", name: "2件（每件<50kg）", price: 500 },
-        { id: "hi-3", name: "3件（每件<50kg）", price: 650 },
-        { id: "hi-other", name: "其他数量或体积（由司机报价）", price: 0 },
-      ],
-    },
-    {
-      id: "passenger",
-      name: "有人跟车",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "p-2", name: "最多 2 人跟车", price: 0 },
-        { id: "p-5", name: "最多 5 人跟车", price: 20 },
-      ],
-    },
-    { id: "trolley", name: "租用车仔", price: 10 },
-    { id: "jack", name: "租用唧车", price: 20 },
-    { id: "tailgate", name: "尾板", price: 0 },
-    { id: "flatbed", name: "租用板车", price: 10 },
-    { id: "english-driver", name: "英文司机", price: 0 },
-    tunnelsTruck55(),
-    { id: "landfill", name: "进入堆填区", price: 100 },
-    { id: "construction", name: "进入地盘", price: 40 },
-    { id: "safety-card", name: "平安卡", price: 70 },
-    { id: "construction-waste", name: "运送或弃置建筑废料（由司机报价）", price: 0 },
-  ],
-
-  // ── 9吨货车包钟（3小时） ──
-  "truck-9t-hourly": [
-    {
-      id: "extra-hours",
-      name: "额外包钟",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "eh-1", name: "额外包钟1小时（总共4小时）", price: 200 },
-        { id: "eh-2", name: "额外包钟2小时（总共5小时）", price: 400 },
-        { id: "eh-3", name: "额外包钟3小时（总共6小时）", price: 600 },
-      ],
-    },
-    {
-      id: "pallet",
-      name: "板货唧车运送",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "pl-1", name: "1板（每板连卡板≤500kg）", price: 200 },
-        { id: "pl-2", name: "2板", price: 400 },
-        { id: "pl-3", name: "3板", price: 600 },
-        { id: "pl-other", name: "其他数量或重量（由司机报价）", price: 0 },
-      ],
-    },
-    {
-      id: "heavy-item",
-      name: "大型物件搬运",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "hi-1", name: "1件（<50kg，三边总和<400cm）", price: 350 },
-        { id: "hi-2", name: "2件（每件<50kg）", price: 500 },
-        { id: "hi-3", name: "3件（每件<50kg）", price: 650 },
-        { id: "hi-other", name: "其他数量或体积（由司机报价）", price: 0 },
-      ],
-    },
-    {
-      id: "passenger",
-      name: "有人跟车",
-      type: "group",
-      maxSelect: 1,
-      items: [
-        { id: "p-2", name: "最多 2 人跟车", price: 0 },
-        { id: "p-5", name: "最多 5 人跟车", price: 20 },
-      ],
-    },
-    { id: "trolley", name: "租用车仔", price: 10 },
-    { id: "jack", name: "租用唧车", price: 20 },
-    { id: "tailgate", name: "尾板", price: 0 },
-    { id: "flatbed", name: "租用板车", price: 10 },
-    { id: "english-driver", name: "英文司机", price: 0 },
-    tunnelsTruck9(),
-    { id: "landfill", name: "进入堆填区", price: 150 },
-    { id: "construction", name: "进入地盘", price: 60 },
-    { id: "safety-card", name: "平安卡", price: 100 },
-    { id: "construction-waste", name: "运送或弃置建筑废料（由司机报价）", price: 0 },
+    { id: "round-trip", name: "来回程", price: 0 },
   ],
 };
 
@@ -655,7 +310,7 @@ export const mockOrders: Order[] = [
       lat: 13.7453,
       lng: 100.5344,
     },
-    vehicle: vehicles[4], // 5.5吨货车
+    vehicle: vehicles[4], // PICK_UP_TRUCK 皮卡
     pricingOption: 'standard',
     selectedServices: {
       itemIds: [],
@@ -696,7 +351,7 @@ export const mockOrders: Order[] = [
       lat: 13.7384,
       lng: 100.5609,
     },
-    vehicle: vehicles[0], // Van仔
+    vehicle: vehicles[2], // MPV 两厢车
     pricingOption: 'priority',
     selectedServices: {
       itemIds: ['premium-car'],
@@ -753,7 +408,7 @@ export const mockOrders: Order[] = [
       lat: 13.7275,
       lng: 100.5441,
     },
-    vehicle: vehicles[0], // Van仔
+    vehicle: vehicles[2], // MPV 两厢车
     pricingOption: 'standard',
     selectedServices: {
       itemIds: ['fold-seat'],
@@ -794,7 +449,7 @@ export const mockOrders: Order[] = [
       lat: 13.7289,
       lng: 100.5280,
     },
-    vehicle: vehicles[2], // 电单车
+    vehicle: vehicles[0], // MOTORCYCLE 摩托车
     pricingOption: 'standard',
     selectedServices: {
       itemIds: [],
@@ -835,7 +490,7 @@ export const mockOrders: Order[] = [
       lat: 13.7489,
       lng: 100.5664,
     },
-    vehicle: vehicles[5], // 9吨货车
+    vehicle: vehicles[6], // TRUCK330 厢式货车
     pricingOption: 'standard',
     selectedServices: {
       itemIds: [],

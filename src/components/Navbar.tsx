@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Popconfirm, Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import { shadow } from "@/styles/design-tokens";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useT } from "@/hooks/useT";
 import { accountPresets, getCurrentAccount, type CurrentAccount } from "@/data/mockData";
@@ -59,14 +58,11 @@ export default function Navbar() {
     <nav
       data-ds="Navbar"
       data-ds-label="顶部导航栏"
-      className="h-14 lg:h-16 border-b border-gray-200 bg-white flex items-center justify-between px-4 lg:px-6 relative"
-      style={{
-        boxShadow: shadow.navbar,
-        overflow: 'visible'
-      }}
+      className="h-14 lg:h-[64px] border-b border-gray-200/80 bg-white flex items-center justify-between px-4 lg:px-8 relative"
+      style={{ overflow: 'visible' }}
     >
       {/* Left: Hamburger (mobile) + Logo + Tabs */}
-      <div className="flex items-center gap-4 lg:gap-8">
+      <div className="flex items-center gap-4 lg:gap-8 self-stretch">
         {/* Hamburger button (mobile only) */}
         <button className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
           <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,23 +83,19 @@ export default function Navbar() {
         </Link>
 
         {/* Tabs (hidden on mobile) */}
-        <div className="hidden lg:flex items-center gap-2">
+        <div className="hidden lg:flex items-stretch h-full gap-2">
           {tabs.map((tab) => (
             <Link
               key={tab.id}
               href={tab.path}
               prefetch={true}
               data-active={activeTab === tab.id ? "true" : undefined}
-              className="relative px-4 py-2.5 text-base font-medium transition-all duration-200 cursor-pointer"
+              className={`flex items-center px-4 text-base font-medium transition-colors duration-150 cursor-pointer border-b-2 -mb-px
+                ${activeTab === tab.id
+                  ? 'text-gray-900 border-[#2257D4]'
+                  : 'text-gray-400 border-transparent hover:text-gray-600'}`}
             >
               {tab.label}
-              {/* 底部指示线 - 延伸到导航栏底部 */}
-              {activeTab === tab.id && (
-                <div
-                  className="absolute left-0 right-0 h-0.5 z-20"
-                  style={{ bottom: '-10px', backgroundColor: '#2257D4' }}
-                />
-              )}
             </Link>
           ))}
         </div>
@@ -113,7 +105,7 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         {/* 企业名称（桌面端） */}
         <div className="hidden md:flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-700">{account?.companyName ?? '菜鸟物流国际'}</span>
+          <span className="text-sm text-gray-600">{account?.companyName ?? '菜鸟物流国际'}</span>
           {account?.subAccountName && (
             <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
               {account.subAccountName}
@@ -122,7 +114,7 @@ export default function Navbar() {
         </div>
 
         {/* 分隔线（桌面端） */}
-        <div className="hidden md:block w-px h-5 bg-gray-200" />
+        <div className="hidden md:block w-px h-4 bg-gray-200" />
 
         {/* 功能图标 */}
         <div className="flex items-center gap-2">

@@ -7,6 +7,7 @@ export const countryCodes = [
   { value: '+65', label: '+65 新加坡' },
   { value: '+63', label: '+63 菲律宾' },
   { value: '+852', label: '+852 香港' },
+  { value: '+86', label: '+86 中国大陆' },
 ];
 
 // 币种下拉选项（账期管理统一使用 CNY，此选项仅用于显示参考）
@@ -51,6 +52,7 @@ export const phoneDigitsMap: Record<string, { min: number; max: number }> = {
   '+65': { min: 8,  max: 8 },  // 新加坡: 8位
   '+63': { min: 7,  max: 10 }, // 菲律宾: 7-10位
   '+852': { min: 8, max: 8 },  // 香港: 8位
+  '+86': { min: 11, max: 11 }, // 中国大陆: 11位
 };
 
 // 校验常量

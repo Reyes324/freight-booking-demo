@@ -72,9 +72,15 @@ export default function VehicleSelector({
         {/* Left arrow — pinned to left edge */}
         <button
           onClick={goToPrev}
-          className="absolute left-0 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 hover:border-gray-300 hover:text-gray-600 hover:shadow-sm transition-all cursor-pointer"
+          className="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full bg-white transition-all cursor-pointer"
+          style={{
+            boxShadow: "0 2px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04)",
+            color: "#1e2640",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06)")}
+          onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04)")}
         >
-          <LeftOutlined className="text-sm" />
+          <LeftOutlined style={{ fontSize: 12 }} />
         </button>
 
         {/* Vehicle image + info */}
@@ -111,9 +117,15 @@ export default function VehicleSelector({
         {/* Right arrow — pinned to right edge */}
         <button
           onClick={goToNext}
-          className="absolute right-0 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 hover:border-gray-300 hover:text-gray-600 hover:shadow-sm transition-all cursor-pointer"
+          className="absolute right-0 flex h-10 w-10 items-center justify-center rounded-full bg-white transition-all cursor-pointer"
+          style={{
+            boxShadow: "0 2px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04)",
+            color: "#1e2640",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06)")}
+          onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04)")}
         >
-          <RightOutlined className="text-sm" />
+          <RightOutlined style={{ fontSize: 12 }} />
         </button>
       </div>
     </div>

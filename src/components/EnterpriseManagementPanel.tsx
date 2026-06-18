@@ -177,7 +177,7 @@ export default function EnterpriseManagementPanel() {
       key: 'action',
       width: 60,
       render: (_, record) => (
-        <Button type="link" size="small" onClick={() => openEdit(record)}>
+        <Button type="link" size="small" className="keep-color" onClick={() => openEdit(record)}>
           编辑
         </Button>
       ),
@@ -234,7 +234,7 @@ export default function EnterpriseManagementPanel() {
           { label: '未分配（本账号可用）', value: displayRemaining },
         ].map(({ label, value }) => (
           <div key={label} className="flex-1 bg-white border border-gray-200 rounded-xl px-5 py-4">
-            <p className="text-xs text-gray-500 font-medium mb-2">{label}</p>
+            <p className="text-sm text-gray-500 mb-2">{label}</p>
             <p className={`text-lg font-semibold ${value === displayRemaining && value < 0 ? 'text-red-500' : 'text-gray-900'}`}>
               {fmt(value)}
             </p>
@@ -248,7 +248,7 @@ export default function EnterpriseManagementPanel() {
           type="warning"
           showIcon
           className="mb-3"
-          message="因企业总额度调低，子账号额度总额已超出限额。请尽快修改子账号额度，企业整体额度用尽后所有账号均无法继续下单。"
+          message={<>因企业总账期额度调低，子账号额度总和<span className="text-red-500">已超出限额</span>，请尽快修改子账号额度。</>}
         />
       )}
 

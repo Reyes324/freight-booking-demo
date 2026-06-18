@@ -238,7 +238,6 @@ export interface OrderDraft {
 
 // 订单确认信息（确认页用户填写）
 export interface OrderConfirmation {
-  contactPhone: string;    // 订单联系电话，默认 +66
   scheduledTime?: Date; // undefined = 现在用车
   driverNote: string;   // 最多 500 字
   paymentMethod: 'credit'; // 当前只支持账期支付

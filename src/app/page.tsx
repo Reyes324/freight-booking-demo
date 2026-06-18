@@ -14,7 +14,6 @@ import OrderSummary from "@/components/OrderSummary";
 import DateTimePicker from "@/components/DateTimePicker";
 import DriverNoteInput from "@/components/DriverNoteInput";
 import PaymentMethodSelector from "@/components/PaymentMethodSelector";
-import OrderContactPhone from "@/components/OrderContactPhone";
 import ConfirmationFooter from "@/components/ConfirmationFooter";
 import { OrderStorage } from "@/lib/orderStorage";
 import { App } from "antd";
@@ -42,11 +41,9 @@ export default function OrderPage() {
   }>({ itemIds: [], groupSelections: {} });
 
   // 确认页状态
-  const [contactPhone, setContactPhone] = useState<string>("+66 812345678");
   const [scheduledTime, setScheduledTime] = useState<string>("");
   const [driverNote, setDriverNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [contactPhoneError, setContactPhoneError] = useState<string>("");
 
   // 全局提示状态
   const [alertMessage, setAlertMessage] = useState<string>("");
@@ -152,20 +149,6 @@ export default function OrderPage() {
   const handleConfirm = useCallback(async () => {
     if (!orderDraft) return;
 
-    // 校验联系电话
-    setContactPhoneError("");
-    if (!contactPhone || !contactPhone.trim()) {
-      setContactPhoneError(t.order.phoneRequired);
-      return;
-    }
-
-    // 提取电话号码部分（去掉区号）
-    const phoneNumberPart = contactPhone.split(" ").slice(1).join(" ").trim();
-    if (!phoneNumberPart) {
-      setContactPhoneError(t.order.phoneNumberRequired);
-      return;
-    }
-
     // Demo 场景：检查是否选择了最后一个额外服务
     console.log("🔍 开始验证附加服务...");
     console.log("orderDraft.selectedServices:", orderDraft.selectedServices);
@@ -226,7 +209,6 @@ export default function OrderPage() {
     setIsSubmitting(true);
 
     const confirmation: OrderConfirmation = {
-      contactPhone,
       scheduledTime: scheduledTime ? new Date(scheduledTime) : undefined,
       driverNote,
       paymentMethod: "credit",
@@ -251,7 +233,7 @@ export default function OrderPage() {
 
     // 跳转到订单记录页面
     router.push('/orders');
-  }, [orderDraft, contactPhone, scheduledTime, driverNote, router, modal, t]);
+  }, [orderDraft, scheduledTime, driverNote, router, modal, t]);
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-gray-100">
@@ -393,9 +375,6 @@ export default function OrderPage() {
                 />
               </div>
 
-              <div className="mb-4">
-                <OrderContactPhone value={contactPhone} onChange={setContactPhone} error={contactPhoneError} />
-              </div>
 
               <div className="mb-4">
                 <DateTimePicker value={scheduledTime} onChange={setScheduledTime} />

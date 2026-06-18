@@ -37,10 +37,15 @@ body {
   box-sizing: border-box;
 }
 
-/* 停用子账号：整行文字置灰，操作列除外 */
-.ant-table-row.row-disabled > td:not(:last-child),
-.ant-table-row.row-disabled > td:not(:last-child) * {
+/* 停用子账号：整行文字置灰 */
+.ant-table-row.row-disabled > td,
+.ant-table-row.row-disabled > td * {
   color: #8990A3 !important;
+}
+/* 操作列编辑按钮保持品牌色 */
+.ant-table-row.row-disabled .keep-color,
+.ant-table-row.row-disabled .keep-color * {
+  color: #2257D4 !important;
 }
 
 /* 子账号行：固定列强制继承行背景（onRow 内联样式不能穿透固定列） */

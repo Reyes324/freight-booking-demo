@@ -177,12 +177,9 @@ export default function EnterpriseManagementPanel() {
       key: 'action',
       width: 60,
       render: (_, record) => (
-        <button
-          onClick={() => openEdit(record)}
-          className="text-sm text-[#2257D4] hover:text-[#1C47AC] transition-colors cursor-pointer"
-        >
+        <Button type="link" size="small" onClick={() => openEdit(record)}>
           编辑
-        </button>
+        </Button>
       ),
     },
   ];
@@ -325,7 +322,7 @@ export default function EnterpriseManagementPanel() {
             ]}
             extra={`当前剩余可分配：${fmt(remaining)}`}
           >
-            <InputNumber min={1} className="w-full" placeholder="请输入" precision={0} />
+            <InputNumber min={1} style={{ width: '100%' }} placeholder="请输入" precision={0} />
           </Form.Item>
         </Form>
       </Modal>
@@ -390,9 +387,9 @@ export default function EnterpriseManagementPanel() {
                 },
               },
             ]}
-            extra={editTarget ? `调整将同步更新该子账号余额（当前余额 ${fmt(editTarget.balance)}）` : undefined}
+            extra={editTarget ? `当前剩余可分配：${fmt(displayTotal - subAccounts.filter((s) => s.id !== editTarget.id).reduce((sum, s) => sum + s.quota, 0))}` : undefined}
           >
-            <InputNumber min={1} className="w-full" precision={0} />
+            <InputNumber min={1} style={{ width: '100%' }} precision={0} />
           </Form.Item>
         </Form>
       </Modal>

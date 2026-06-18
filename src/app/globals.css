@@ -37,9 +37,9 @@ body {
   box-sizing: border-box;
 }
 
-/* 停用子账号：整行文字置灰 */
-.ant-table-row.row-disabled > td,
-.ant-table-row.row-disabled > td * {
+/* 停用子账号：整行文字置灰，操作列除外 */
+.ant-table-row.row-disabled > td:not(:last-child),
+.ant-table-row.row-disabled > td:not(:last-child) * {
   color: #8990A3 !important;
 }
 

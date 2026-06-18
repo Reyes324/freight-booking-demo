@@ -237,7 +237,7 @@ export default function EnterpriseManagementPanel() {
           { label: '未分配（本账号可用）', value: displayRemaining },
         ].map(({ label, value }) => (
           <div key={label} className="flex-1 bg-white border border-gray-200 rounded-xl px-5 py-4">
-            <p className="text-xs text-gray-400 mb-2">{label}</p>
+            <p className="text-xs text-gray-500 font-medium mb-2">{label}</p>
             <p className={`text-lg font-semibold ${value === displayRemaining && value < 0 ? 'text-red-500' : 'text-gray-900'}`}>
               {fmt(value)}
             </p>
@@ -312,10 +312,10 @@ export default function EnterpriseManagementPanel() {
             <Input.Password placeholder="8–20 位，含字母和数字" />
           </Form.Item>
           <Form.Item
-            label="初始分配额度（CNY）"
+            label="分配额度（CNY）"
             name="quota"
             rules={[
-              { required: true, message: '请填写初始分配额度' },
+              { required: true, message: '请填写分配额度' },
               {
                 validator: (_, value) =>
                   value > remaining
@@ -332,7 +332,7 @@ export default function EnterpriseManagementPanel() {
 
       {/* 编辑子账号弹窗 */}
       <Modal
-        title={`编辑子账号 · ${editTarget?.name ?? ''}`}
+        title="编辑子账号"
         open={!!editTarget}
         onOk={handleEdit}
         onCancel={() => { setEditTarget(null); editForm.resetFields(); }}

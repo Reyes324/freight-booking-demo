@@ -72,6 +72,7 @@ export default function EnterprisesPage() {
               createdAt: s.createdAt,
               quota: s.quota,
               balance: s.balance,
+              premiumRate: e.premiumRate,
             });
           });
         }
@@ -171,7 +172,7 @@ export default function EnterprisesPage() {
       render: (name: string, r) => (
         r._type === 'sub' ? (
           <div className="flex items-center gap-1 pl-2">
-            <span className="text-gray-300 text-sm select-none">└</span>
+            <span className="text-gray-600 text-base select-none">└</span>
             <span className="whitespace-nowrap">{name}</span>
           </div>
         ) : (
@@ -204,8 +205,7 @@ export default function EnterprisesPage() {
       title: '溢价系数',
       key: 'premiumRate',
       width: 90,
-      render: (_, r) =>
-        r._type === 'sub' ? <span className="text-gray-400">—</span> : r.premiumRate?.toFixed(2),
+      render: (_, r) => r.premiumRate?.toFixed(2),
     },
     {
       title: '月账期额度',
@@ -315,6 +315,7 @@ export default function EnterprisesPage() {
           columns={columns}
           dataSource={tableData}
           rowKey="_key"
+          rowClassName={(r) => r._type === 'sub' ? 'row-sub' : ''}
           onRow={(r) => r._type === 'sub' ? { style: { background: '#F9FAFB' } } : {}}
           pagination={{
             pageSize: 10,

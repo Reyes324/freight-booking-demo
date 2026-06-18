@@ -153,7 +153,7 @@ export default function WalletPage() {
             </p>
           </div>
         ) : (
-          /* 普通账号 */
+          /* 企业账号 */
           <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
             <p className="text-sm text-gray-500 mb-2">{t.wallet.balanceLabel}</p>
             <p className="text-4xl font-bold text-gray-900">

@@ -28,7 +28,7 @@ export default function CreateEnterprisePage() {
   const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
 
   const parentEnterpriseOptions = enterprises
-    .map((e) => ({ label: `${e.name}（${e.id}）`, value: e.id }));
+    .map((e) => ({ label: e.name, value: e.id }));
 
   const selectedParent = enterprises.find((e) => e.id === selectedParentId);
 
@@ -84,36 +84,49 @@ export default function CreateEnterprisePage() {
                 form.setFieldValue('parentEnterpriseId', undefined);
               }}
             >
-              <Radio value="normal">普通账号</Radio>
+              <Radio value="normal">企业账号</Radio>
               <Radio value="sub">子账号</Radio>
             </Radio.Group>
           </Form.Item>
 
           {accountType === 'sub' && (
             <Form.Item
-              label="归属上级账号"
+              label="归属上级企业账号"
               name="parentEnterpriseId"
-              rules={[{ required: true, message: '请选择上级账号' }]}
+              rules={[{ required: true, message: '请选择上级企业账号' }]}
             >
               <Select
                 options={parentEnterpriseOptions}
-                placeholder="请选择上级账号"
+                placeholder="请选择上级企业账号"
                 style={{ width: '100%' }}
                 showSearch
                 filterOption={(input, option) =>
                   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                 }
-                onChange={(v) => setSelectedParentId(v)}
+                onChange={(v) => {
+                  setSelectedParentId(v);
+                  form.validateFields(['name']);
+                }}
               />
             </Form.Item>
           )}
 
           <Form.Item
-            label="账号名称"
+            label={accountType === 'normal' ? '企业名称' : '账号名称'}
             name="name"
-            rules={getEnterpriseNameRules()}
+            rules={[
+              ...getEnterpriseNameRules(),
+              {
+                validator: (_, value: string) => {
+                  if (accountType === 'sub' && selectedParent && value?.trim() === selectedParent.name) {
+                    return Promise.reject('子账号名称不能与上级企业名称相同');
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
           >
-            <Input placeholder="请输入账号名称" maxLength={50} />
+            <Input placeholder={accountType === 'normal' ? '请输入企业名称' : '请输入账号名称'} maxLength={50} />
           </Form.Item>
 
           <Form.Item label="登录手机号" required>

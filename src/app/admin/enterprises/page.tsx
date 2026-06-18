@@ -184,7 +184,7 @@ export default function EnterprisesPage() {
       key: 'accountType',
       width: 100,
       render: (_, r) => (
-        <span className="text-sm">{r._type === 'sub' ? '子账号' : '普通账号'}</span>
+        <span className="text-sm">{r._type === 'sub' ? '子账号' : '企业账号'}</span>
       ),
     },
     {

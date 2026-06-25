@@ -317,7 +317,7 @@ export const mockOrders: Order[] = [
     },
     basePrice: 220.0,
     totalPrice: 220.0,
-    contactPhone: '+66 812345678',
+
     scheduledTime: new Date(),
     driverNote: '',
     paymentMethod: 'credit',
@@ -360,7 +360,7 @@ export const mockOrders: Order[] = [
     totalPrice: 440.0,
     scheduledTime: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2小时前
     actualPickupTime: new Date(Date.now() - 1.5 * 60 * 60 * 1000),
-    contactPhone: '+66 812345678',
+
     driverNote: '请小心搬运',
     paymentMethod: 'credit',
     driver: {
@@ -417,7 +417,7 @@ export const mockOrders: Order[] = [
     totalPrice: 265.0,
     scheduledTime: new Date(Date.now() - 1 * 60 * 60 * 1000),
     actualPickupTime: new Date(Date.now() - 30 * 60 * 1000),
-    contactPhone: '+66 812345678',
+
     driverNote: '有两箱易碎品，请轻拿轻放',
     paymentMethod: 'credit',
     driver: {
@@ -459,7 +459,7 @@ export const mockOrders: Order[] = [
     scheduledTime: new Date(Date.now() - 24 * 60 * 60 * 1000), // 昨天
     actualPickupTime: new Date(Date.now() - 23.5 * 60 * 60 * 1000),
     completedTime: new Date(Date.now() - 23 * 60 * 60 * 1000),
-    contactPhone: '+66 812345678',
+
     driverNote: '',
     paymentMethod: 'credit',
     driver: {
@@ -497,7 +497,7 @@ export const mockOrders: Order[] = [
     },
     basePrice: 220.0,
     totalPrice: 220.0,
-    contactPhone: '+66 812345678',
+
     scheduledTime: new Date(Date.now() - 48 * 60 * 60 * 1000), // 2天前
     cancelledTime: new Date(Date.now() - 47.5 * 60 * 60 * 1000),
     driverNote: '',

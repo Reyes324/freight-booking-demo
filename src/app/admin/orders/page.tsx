@@ -68,12 +68,11 @@ export default function AdminOrdersPage() {
   }, []);
 
   const [orderNoSearch, setOrderNoSearch] = useState('');
-  const [addressSearch, setAddressSearch] = useState('');
-  const [enterpriseFilter, setEnterpriseFilter] = useState<string | null>(null);
+  const [enterpriseSearch, setEnterpriseSearch] = useState('');
+  const [subAccountSearch, setSubAccountSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [countryFilter, setCountryFilter] = useState<string | null>(null);
   const [supplierFilter, setSupplierFilter] = useState<string | null>(null);
-  const [subAccountFilter, setSubAccountFilter] = useState<string | null>(null);
 
   const enterpriseMap = useMemo(() => {
     const map: Record<string, string> = {};
@@ -90,22 +89,24 @@ export default function AdminOrdersPage() {
     return map;
   }, []);
 
-  // 所有子账号选项（用于筛选）
-  const allSubAccounts = useMemo(() =>
-    enterprises.flatMap((e) => e.subAccounts ?? []),
-  []);
-
-  const parentEnterpriseIds = useMemo(() => {
-    const set = new Set<string>();
-    enterprises.forEach((e) => { if ((e.subAccounts ?? []).length > 0) set.add(e.id); });
-    return set;
-  }, []);
 
   const filtered = useMemo(() => {
     let result = adminOrders;
 
-    if (enterpriseFilter) {
-      result = result.filter((o) => o.enterpriseId === enterpriseFilter);
+    if (enterpriseSearch.trim()) {
+      const q = enterpriseSearch.toLowerCase();
+      result = result.filter((o) =>
+        (enterpriseMap[o.enterpriseId] ?? '').toLowerCase().includes(q)
+      );
+    }
+    if (subAccountSearch.trim()) {
+      const q = subAccountSearch.toLowerCase();
+      result = result.filter((o) => {
+        const name = o.subAccountId
+          ? (subAccountMap[o.subAccountId] ?? o.subAccountId)
+          : (enterpriseMap[o.enterpriseId] ?? '');
+        return name.toLowerCase().includes(q);
+      });
     }
     if (statusFilter) {
       result = result.filter((o) => o.status === statusFilter);
@@ -116,14 +117,6 @@ export default function AdminOrdersPage() {
     if (supplierFilter) {
       result = result.filter((o) => o.supplierCode === supplierFilter);
     }
-    if (subAccountFilter) {
-      if (subAccountFilter.startsWith('__parent__')) {
-        const eid = subAccountFilter.replace('__parent__', '');
-        result = result.filter((o) => o.enterpriseId === eid && !o.subAccountId);
-      } else {
-        result = result.filter((o) => o.subAccountId === subAccountFilter);
-      }
-    }
     if (orderNoSearch.trim()) {
       const q = orderNoSearch.toLowerCase();
       result = result.filter(
@@ -132,17 +125,9 @@ export default function AdminOrdersPage() {
           o.supplierOrderId.toLowerCase().includes(q)
       );
     }
-    if (addressSearch.trim()) {
-      const q = addressSearch.toLowerCase();
-      result = result.filter(
-        (o) =>
-          o.pickupAddress.toLowerCase().includes(q) ||
-          o.dropoffAddress.toLowerCase().includes(q)
-      );
-    }
 
     return result;
-  }, [orderNoSearch, addressSearch, enterpriseFilter, statusFilter, countryFilter, supplierFilter, subAccountFilter, enterpriseMap]);
+  }, [orderNoSearch, enterpriseSearch, subAccountSearch, statusFilter, countryFilter, supplierFilter, enterpriseMap, subAccountMap]);
 
   const handleExport = () => {
     const data = filtered.map((o) => ({
@@ -389,7 +374,6 @@ export default function AdminOrdersPage() {
       {/* Filters */}
       <div className="flex items-center gap-3 mb-6 flex-wrap">
         <Input
-
           placeholder="搜索单号"
           prefix={<SearchOutlined className="text-gray-400" />}
           value={orderNoSearch}
@@ -398,43 +382,20 @@ export default function AdminOrdersPage() {
           style={{ width: 200 }}
         />
         <Input
-
-          placeholder="搜索地址"
+          placeholder="搜索企业"
           prefix={<SearchOutlined className="text-gray-400" />}
-          value={addressSearch}
-          onChange={(e) => setAddressSearch(e.target.value)}
+          value={enterpriseSearch}
+          onChange={(e) => setEnterpriseSearch(e.target.value)}
           allowClear
-          style={{ width: 200 }}
-        />
-        <Select
-          placeholder="企业"
-          allowClear
-          value={enterpriseFilter}
-          onChange={(v) => { setEnterpriseFilter(v); setSubAccountFilter(null); }}
           style={{ width: 160 }}
-          showSearch
-          filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-          }
-          options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
         />
-        <Select
-          placeholder="账号"
+        <Input
+          placeholder="搜索账号"
+          prefix={<SearchOutlined className="text-gray-400" />}
+          value={subAccountSearch}
+          onChange={(e) => setSubAccountSearch(e.target.value)}
           allowClear
-          value={subAccountFilter}
-          onChange={setSubAccountFilter}
           style={{ width: 160 }}
-          showSearch
-          filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-          }
-          options={(enterpriseFilter
-            ? enterprises.filter((e) => e.id === enterpriseFilter)
-            : enterprises
-          ).flatMap((e) => [
-            { value: `__parent__${e.id}`, label: e.name },
-            ...(e.subAccounts ?? []).map((s) => ({ value: s.id, label: s.name })),
-          ])}
         />
         <Select
 

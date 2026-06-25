@@ -10,9 +10,9 @@ const { RangePicker } = DatePicker;
 
 export default function TransactionsPage() {
   const [search, setSearch] = useState('');
-  const [enterpriseFilter, setEnterpriseFilter] = useState<string | null>(null);
+  const [enterpriseSearch, setEnterpriseSearch] = useState('');
+  const [subAccountSearch, setSubAccountSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
-  const [subAccountFilter, setSubAccountFilter] = useState<string | null>(null);
 
   const enterpriseMap = useMemo(() => {
     const map: Record<string, { name: string; currency: string }> = {};
@@ -28,16 +28,6 @@ export default function TransactionsPage() {
     return map;
   }, []);
 
-  const allSubAccounts = useMemo(
-    () => enterprises.flatMap((e) => e.subAccounts ?? []),
-    []
-  );
-
-  const parentEnterpriseIds = useMemo(() => {
-    const set = new Set<string>();
-    enterprises.forEach((e) => { if ((e.subAccounts ?? []).length > 0) set.add(e.id); });
-    return set;
-  }, []);
 
   const allTransactions = useMemo(() => {
     return creditTransactions
@@ -51,8 +41,20 @@ export default function TransactionsPage() {
   const filtered = useMemo(() => {
     let result = allTransactions;
 
-    if (enterpriseFilter) {
-      result = result.filter((t) => t.enterpriseId === enterpriseFilter);
+    if (enterpriseSearch.trim()) {
+      const q = enterpriseSearch.toLowerCase();
+      result = result.filter((t) =>
+        (enterpriseMap[t.enterpriseId]?.name ?? '').toLowerCase().includes(q)
+      );
+    }
+    if (subAccountSearch.trim()) {
+      const q = subAccountSearch.toLowerCase();
+      result = result.filter((t) => {
+        const name = t.subAccountId
+          ? (subAccountMap[t.subAccountId] ?? t.subAccountId)
+          : (enterpriseMap[t.enterpriseId]?.name ?? '');
+        return name.toLowerCase().includes(q);
+      });
     }
     if (typeFilter) {
       result = result.filter((t) => t.description === typeFilter);
@@ -63,17 +65,9 @@ export default function TransactionsPage() {
         (t) => t.orderId && t.orderId.toLowerCase().includes(q)
       );
     }
-    if (subAccountFilter) {
-      if (subAccountFilter.startsWith('__parent__')) {
-        const eid = subAccountFilter.replace('__parent__', '');
-        result = result.filter((t) => t.enterpriseId === eid && !t.subAccountId);
-      } else {
-        result = result.filter((t) => t.subAccountId === subAccountFilter);
-      }
-    }
 
     return result;
-  }, [search, enterpriseFilter, typeFilter, subAccountFilter, allTransactions]);
+  }, [search, enterpriseSearch, subAccountSearch, typeFilter, allTransactions, enterpriseMap, subAccountMap]);
 
   const totalIncome = useMemo(
     () => filtered.filter((t) => t.cnyAmount > 0).reduce((sum, t) => sum + t.cnyAmount, 0),
@@ -160,35 +154,21 @@ export default function TransactionsPage() {
           allowClear
           style={{ width: 200 }}
         />
-        <Select
-          placeholder="企业"
+        <Input
+          placeholder="搜索企业"
+          prefix={<SearchOutlined className="text-gray-400" />}
+          value={enterpriseSearch}
+          onChange={(e) => setEnterpriseSearch(e.target.value)}
           allowClear
-          value={enterpriseFilter}
-          onChange={(v) => { setEnterpriseFilter(v); setSubAccountFilter(null); }}
           style={{ width: 160 }}
-          showSearch
-          filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-          }
-          options={enterprises.map((e) => ({ value: e.id, label: e.name }))}
         />
-        <Select
-          placeholder="账号"
+        <Input
+          placeholder="搜索账号"
+          prefix={<SearchOutlined className="text-gray-400" />}
+          value={subAccountSearch}
+          onChange={(e) => setSubAccountSearch(e.target.value)}
           allowClear
-          value={subAccountFilter}
-          onChange={setSubAccountFilter}
           style={{ width: 160 }}
-          showSearch
-          filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-          }
-          options={(enterpriseFilter
-            ? enterprises.filter((e) => e.id === enterpriseFilter)
-            : enterprises
-          ).flatMap((e) => [
-            { value: `__parent__${e.id}`, label: e.name },
-            ...(e.subAccounts ?? []).map((s) => ({ value: s.id, label: s.name })),
-          ])}
         />
         <Select
           placeholder="筛选类型"

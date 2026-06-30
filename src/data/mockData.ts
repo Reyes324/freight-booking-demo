@@ -252,7 +252,7 @@ export interface CompleteOrder extends OrderDraft, OrderConfirmation {
 // ── Order Status Types ──
 export type OrderStatus =
   | 'calling_driver'    // 呼叫司机中
-  | 'in_transit'        // 前往装货地
+  | 'in_transit'        // 司机已接单
   | 'delivering'        // 配送中
   | 'cancelled'         // 订单已取消
   | 'completed'         // 订单已完成

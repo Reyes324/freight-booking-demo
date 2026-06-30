@@ -370,7 +370,7 @@ export const adminOrders: AdminOrder[] = [
     enterpriseId: 'E002', orderDate: '2026-03-24 10:00', pickupTime: '2026-03-24 10:30', country: '泰国', vehicleType: 'Pickup Truck',
     pickupAddress: 'Rama IV Rd, Pathum Wan', pickupContact: 'Kittisak +66 812 345 67',
     dropoffAddress: 'Lat Phrao Rd, Wang Thonglang', dropoffContact: 'Siriporn +66 845 678 90',
-    driverInfo: 'ชซ 3456 / +66 894 567 890', status: '前往装货地',
+    driverInfo: 'ชซ 3456 / +66 894 567 890', status: '司机已接单',
     lliAmount: 2115.00, lliFeeBreakdown: { baseFare: 900, distanceFee: 750, serviceFee: 200, surcharge: 150, tax: 115.00, discount: 0, total: 2115.00 },
     llmAmount: 1850.00, llmFeeBreakdown: { baseFare: 780, distanceFee: 650, serviceFee: 175, surcharge: 130, tax: 115.00, discount: 0, total: 1850.00 },
     currency: 'THB',

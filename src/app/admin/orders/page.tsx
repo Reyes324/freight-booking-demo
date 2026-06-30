@@ -171,7 +171,7 @@ export default function AdminOrdersPage() {
 
   const statusConfig: Record<string, { color: string }> = {
     '正在呼叫司机': { color: '#2257D4' },  // Brand/Primary（橙色 #FF6600 不在规范内）
-    '前往装货地': { color: '#2257D4' },
+    '司机已接单': { color: '#2257D4' },
     '配送中': { color: '#2257D4' },
     '已完成': { color: 'default' },
     '已取消': { color: '#F23041' },

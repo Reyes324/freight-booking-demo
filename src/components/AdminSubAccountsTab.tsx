@@ -335,6 +335,19 @@ export default function AdminSubAccountsTab({
             rules={[
               { required: true, message: '请填写账号名称' },
               { max: 20, message: '账号名称最多 20 字符' },
+              {
+                validator: (_, value: string) => {
+                  const name = value?.trim();
+                  if (!name) return Promise.resolve();
+                  if (name === enterprise.name) {
+                    return Promise.reject(new Error('子账号名称不能与企业名称相同'));
+                  }
+                  if (subAccounts.some((s) => s.name === name)) {
+                    return Promise.reject(new Error('子账号名称已存在，请更换'));
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
           >
             <Input placeholder="如：马来西亚子账号" />
@@ -395,6 +408,19 @@ export default function AdminSubAccountsTab({
             rules={[
               { required: true, message: '请填写账号名称' },
               { max: 20, message: '账号名称最多 20 字符' },
+              {
+                validator: (_, value: string) => {
+                  const name = value?.trim();
+                  if (!name) return Promise.resolve();
+                  if (name === enterprise.name) {
+                    return Promise.reject(new Error('子账号名称不能与企业名称相同'));
+                  }
+                  if (subAccounts.some((s) => s.id !== editTarget?.id && s.name === name)) {
+                    return Promise.reject(new Error('子账号名称已存在，请更换'));
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
           >
             <Input placeholder="如：马来西亚子账号" />

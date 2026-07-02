@@ -15,8 +15,7 @@ export interface Enterprise {
 
   // ── 母子账号（Demo）──
   isParent?: boolean;            // 是否已开通母账号资格
-  parentQuotaTotal?: number;     // 母账号总额度上限（CNY），开通后填写
-  subAccounts?: AdminSubAccount[]; // 母账号下的子账号（只读展示）
+  subAccounts?: AdminSubAccount[]; // 母账号下的子账号，额度从 creditLimit 中划分
 }
 
 /** 运营后台只读展示的子账号 */
@@ -158,9 +157,8 @@ export const enterprises: Enterprise[] = [
     usedCredit: 11500,
     createdAt: '2025-11-01',
     status: 'active',
-    // 母子账号 Demo：E001 已开通母账号资格
+    // 母子账号 Demo：E001 已开通母账号资格，子账号额度从 creditLimit 中划分
     isParent: true,
-    parentQuotaTotal: 15000,
     subAccounts: [
       { id: 'E001-VN', name: '越南子账号', phone: '+84 901234567', quota: 5000, balance: 3200, status: 'active', createdAt: '2026-03-01' },
       { id: 'E001-TH', name: '泰国子账号', phone: '+66 812345678', quota: 2000, balance: 320, status: 'disabled', createdAt: '2026-03-12' },

@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* antd v6 的 CSS-in-JS 默认不带 @layer，未分层样式的优先级会高于 Tailwind 的 @layer utilities，
+   导致给 antd 组件加的 Tailwind 间距类（如 mb-8）不生效。这里显式声明层级顺序，
+   并配合 <ConfigProvider layer> 把 antd 样式装进 antd 层，让 utilities 层保持最高优先级。 */
+@layer theme, base, antd, components, utilities;
+
 @theme {
   /* 品牌蓝色 */
   --color-blue-50: #eef2fb;

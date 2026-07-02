@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { Form, Input, InputNumber, Select, Button, message, Modal, Radio, Alert } from 'antd';
+import { Form, Input, InputNumber, Select, Button, message, Modal, Alert } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { enterprises } from '@/data/adminMockData';
@@ -16,8 +16,6 @@ import {
   creditLimitRules,
 } from '@/lib/enterpriseUtils';
 
-type AccountType = 'normal' | 'sub';
-
 export default function EditEnterprisePage() {
   const router = useRouter();
   const params = useParams();
@@ -25,38 +23,16 @@ export default function EditEnterprisePage() {
   const [passwordForm] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
-  // 先查 enterprise，再查 sub-account
   const enterprise = enterprises.find((e) => e.id === params.id);
-  const subAccountParent = !enterprise
-    ? enterprises.find((e) => e.subAccounts?.some((s) => s.id === params.id))
-    : null;
-  const subAccount = subAccountParent?.subAccounts?.find((s) => s.id === params.id);
 
-  const isSubMode = !!subAccount;
-
-  const initAccountType = (): AccountType => {
-    if (isSubMode) return 'sub';
-    return 'normal';
-  };
-
-  const [accountType, setAccountType] = useState<AccountType>(initAccountType);
-  const [countryCode, setCountryCode] = useState(
-    enterprise?.countryCode || subAccountParent?.countryCode || '+852'
-  );
+  const [countryCode, setCountryCode] = useState(enterprise?.countryCode || '+852');
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [selectedParentId, setSelectedParentId] = useState<string | null>(subAccountParent?.id ?? null);
 
-  const selectedParentEnterprise = enterprises.find((e) => e.id === selectedParentId);
-
-  if (!enterprise && !subAccount) {
+  if (!enterprise) {
     return <div className="text-gray-500">企业不存在</div>;
   }
 
-  const currentId = (enterprise?.id ?? subAccount!.id) as string;
-  const currentName = enterprise?.name ?? subAccount!.name;
-
-  const parentEnterpriseOptions = enterprises
-    .map((e) => ({ label: e.name, value: e.id }));
+  const currentId = enterprise.id;
 
   const onCountryCodeChange = (value: string) => {
     setCountryCode(value);
@@ -96,64 +72,19 @@ export default function EditEnterprisePage() {
           layout="vertical"
           onFinish={onFinish}
           initialValues={{
-            name: currentName,
-            countryCode: enterprise?.countryCode ?? subAccountParent?.countryCode ?? '+852',
-            phone: enterprise?.phone ?? subAccount?.phone,
-            premiumRate: enterprise?.premiumRate,
-            creditLimit: enterprise?.creditLimit,
-            quota: subAccount?.quota,
-            parentEnterpriseId: subAccountParent?.id,
+            name: enterprise.name,
+            countryCode: enterprise.countryCode,
+            phone: enterprise.phone,
+            premiumRate: enterprise.premiumRate,
+            creditLimit: enterprise.creditLimit,
           }}
         >
-          {/* 账号类型 */}
-          <Form.Item label="账号类型">
-            <Radio.Group
-              value={accountType}
-              onChange={(e) => setAccountType(e.target.value as AccountType)}
-            >
-              <Radio value="normal">企业账号</Radio>
-              <Radio value="sub">子账号</Radio>
-            </Radio.Group>
-          </Form.Item>
-
-          {accountType === 'sub' && (
-            <Form.Item
-              label="归属上级企业账号"
-              name="parentEnterpriseId"
-              rules={[{ required: true, message: '请选择上级企业账号' }]}
-            >
-              <Select
-                options={parentEnterpriseOptions}
-                placeholder="请选择上级企业账号"
-                style={{ width: '100%' }}
-                showSearch
-                filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-                onChange={(v) => {
-                  setSelectedParentId(v);
-                  form.validateFields(['name']);
-                }}
-              />
-            </Form.Item>
-          )}
-
           <Form.Item
-            label={accountType === 'normal' ? '企业名称' : '账号名称'}
+            label="企业名称"
             name="name"
-            rules={[
-              ...getEnterpriseNameRules(currentId),
-              {
-                validator: (_, value: string) => {
-                  if (accountType === 'sub' && selectedParentEnterprise && value?.trim() === selectedParentEnterprise.name) {
-                    return Promise.reject('子账号名称不能与上级企业名称相同');
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
+            rules={getEnterpriseNameRules(currentId)}
           >
-            <Input placeholder={accountType === 'normal' ? '请输入企业名称' : '请输入账号名称'} maxLength={50} />
+            <Input placeholder="请输入企业名称" maxLength={50} />
           </Form.Item>
 
           <Form.Item label="登录手机号" required>
@@ -182,80 +113,49 @@ export default function EditEnterprisePage() {
             </div>
           </Form.Item>
 
-          {/* 子账号：分配额度 */}
-          {accountType === 'sub' && (
-            <Form.Item
-              label="分配额度（人民币）"
-              name="quota"
-              rules={[{ required: true, message: '请输入分配额度' }]}
-            >
-              <InputNumber
-                min={0}
-                step={1000}
-                precision={0}
-                placeholder="5000"
-                addonBefore="CNY"
-                style={{ width: '100%' }}
-              />
+          <Form.Item
+            label="订单溢价系数"
+            name="premiumRate"
+            extra="订单实际收费 = 基础运费 × 溢价系数"
+            rules={premiumRateRules}
+          >
+            <InputNumber min={1} max={PREMIUM_RATE_MAX} step={0.01} precision={2} style={{ width: '100%' }} />
+          </Form.Item>
+
+          <Form.Item
+            label="每月账期额度（人民币）"
+            name="creditLimit"
+            rules={creditLimitRules}
+          >
+            <InputNumber
+              min={0}
+              max={CREDIT_LIMIT_MAX}
+              step={1000}
+              precision={0}
+              placeholder="50000"
+              addonBefore="CNY"
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+
+          {enterprise.isParent && (
+            <Form.Item noStyle shouldUpdate={(p, c) => p.creditLimit !== c.creditLimit}>
+              {({ getFieldValue }) => {
+                const allocated = (enterprise.subAccounts ?? []).reduce((sum, s) => sum + s.quota, 0);
+                const creditLimit = getFieldValue('creditLimit') ?? 0;
+                if (creditLimit < allocated) {
+                  return (
+                    <Alert
+                      type="warning"
+                      showIcon
+                      className="mb-6"
+                      message={`当前账期额度（CNY ${creditLimit.toLocaleString('zh-CN')}）低于子账号已分配额度合计（CNY ${allocated.toLocaleString('zh-CN')}），请注意`}
+                    />
+                  );
+                }
+                return null;
+              }}
             </Form.Item>
-          )}
-
-          {accountType === 'sub' && (
-            <Form.Item label="订单溢价系数">
-              <Input
-                disabled
-                value={`${subAccountParent?.premiumRate?.toFixed(2) ?? '—'}（跟随上级账号）`}
-              />
-            </Form.Item>
-          )}
-
-          {accountType !== 'sub' && (
-            <>
-              <Form.Item
-                label="订单溢价系数"
-                name="premiumRate"
-                extra="订单实际收费 = 基础运费 × 溢价系数"
-                rules={premiumRateRules}
-              >
-                <InputNumber min={1} max={PREMIUM_RATE_MAX} step={0.01} precision={2} style={{ width: '100%' }} />
-              </Form.Item>
-
-              <Form.Item
-                label="每月账期额度（人民币）"
-                name="creditLimit"
-                rules={creditLimitRules}
-              >
-                <InputNumber
-                  min={0}
-                  max={CREDIT_LIMIT_MAX}
-                  step={1000}
-                  precision={0}
-                  placeholder="50000"
-                  addonBefore="CNY"
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-
-              {enterprise?.isParent && enterprise && (
-                <Form.Item noStyle shouldUpdate={(p, c) => p.creditLimit !== c.creditLimit}>
-                  {({ getFieldValue }) => {
-                    const allocated = (enterprise.subAccounts ?? []).reduce((sum, s) => sum + s.quota, 0);
-                    const creditLimit = getFieldValue('creditLimit') ?? 0;
-                    if (creditLimit < allocated) {
-                      return (
-                        <Alert
-                          type="warning"
-                          showIcon
-                          className="mb-6"
-                          message={`当前账期额度（CNY ${creditLimit.toLocaleString('zh-CN')}）低于子账号已分配额度合计（CNY ${allocated.toLocaleString('zh-CN')}），请注意`}
-                        />
-                      );
-                    }
-                    return null;
-                  }}
-                </Form.Item>
-              )}
-            </>
           )}
 
           <div className="flex justify-end gap-3 mt-8">

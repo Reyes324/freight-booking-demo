@@ -781,10 +781,12 @@ export interface ParentQuota {
   remaining: number; // 剩余可分配额度
 }
 
+// 总额度与运营后台 adminMockData.ts 中 E001 的 creditLimit（50000）保持一致：
+// 子账号额度从企业自身的每月账期额度中划分，不是独立的池子。
 export const mockParentQuota: ParentQuota = {
-  total: 15000,
+  total: 50000,
   allocated: 7000, // 5000 + 2000
-  remaining: 8000,
+  remaining: 43000,
 };
 
 /**

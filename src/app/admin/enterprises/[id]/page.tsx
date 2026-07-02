@@ -15,6 +15,7 @@ import {
   type FeeBreakdown,
   type AdminSubAccount,
 } from '@/data/adminMockData';
+import AdminSubAccountsTab from '@/components/AdminSubAccountsTab';
 
 // 参考汇率（日常运营使用，月末按官方挂牌汇率结算）
 const REFERENCE_RATES: Record<string, number> = {
@@ -522,7 +523,7 @@ export default function EnterpriseDetailPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const id = params.id as string;
-  const enterprise = enterprises.find((e) => e.id === id);
+  const [enterprise, setEnterprise] = useState(() => enterprises.find((e) => e.id === id));
   const defaultTab = searchParams.get('tab') || 'orders';
 
   if (!enterprise) {
@@ -572,6 +573,11 @@ export default function EnterpriseDetailPage() {
             key: 'credit',
             label: '交易明细',
             children: <CreditTab enterpriseId={id} currency={enterprise.currency} subAccounts={enterprise.subAccounts} />,
+          },
+          {
+            key: 'sub-accounts',
+            label: '子账号管理',
+            children: <AdminSubAccountsTab enterprise={enterprise} onChange={setEnterprise} />,
           },
         ]}
       />

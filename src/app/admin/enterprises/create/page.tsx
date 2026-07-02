@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Form, Input, InputNumber, Select, Button, message, Modal, Radio } from 'antd';
+import { Form, Input, InputNumber, Select, Button, message, Modal } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { enterprises } from '@/data/adminMockData';
 import { countryCodes } from '@/data/enterpriseConstants';
 import { PREMIUM_RATE_MAX, CREDIT_LIMIT_MAX } from '@/data/enterpriseConstants';
 import {
@@ -17,20 +16,11 @@ import {
   creditLimitRules,
 } from '@/lib/enterpriseUtils';
 
-type AccountType = 'normal' | 'sub';
-
 export default function CreateEnterprisePage() {
   const router = useRouter();
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [countryCode, setCountryCode] = useState('+60');
-  const [accountType, setAccountType] = useState<AccountType>('normal');
-  const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
-
-  const parentEnterpriseOptions = enterprises
-    .map((e) => ({ label: e.name, value: e.id }));
-
-  const selectedParent = enterprises.find((e) => e.id === selectedParentId);
 
   const onCountryCodeChange = (value: string) => {
     setCountryCode(value);
@@ -44,9 +34,6 @@ export default function CreateEnterprisePage() {
       title: '账号创建成功',
       content: (
         <div className="mt-2 space-y-1">
-          {accountType === 'sub' && (
-            <p className="text-gray-600">企业ID：<span className="font-mono font-semibold">{selectedParentId}</span></p>
-          )}
           <p className="text-gray-600">账号ID：<span className="font-mono text-lg font-semibold">{newId}</span></p>
         </div>
       ),
@@ -75,58 +62,12 @@ export default function CreateEnterprisePage() {
           onFinish={onFinish}
           initialValues={{ countryCode: '+60', premiumRate: 1.00 }}
         >
-          <Form.Item label="账号类型">
-            <Radio.Group
-              value={accountType}
-              onChange={(e) => {
-                setAccountType(e.target.value as AccountType);
-                setSelectedParentId(null);
-                form.setFieldValue('parentEnterpriseId', undefined);
-              }}
-            >
-              <Radio value="normal">企业账号</Radio>
-              <Radio value="sub">子账号</Radio>
-            </Radio.Group>
-          </Form.Item>
-
-          {accountType === 'sub' && (
-            <Form.Item
-              label="归属上级企业账号"
-              name="parentEnterpriseId"
-              rules={[{ required: true, message: '请选择上级企业账号' }]}
-            >
-              <Select
-                options={parentEnterpriseOptions}
-                placeholder="请选择上级企业账号"
-                style={{ width: '100%' }}
-                showSearch
-                filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-                onChange={(v) => {
-                  setSelectedParentId(v);
-                  form.validateFields(['name']);
-                }}
-              />
-            </Form.Item>
-          )}
-
           <Form.Item
-            label={accountType === 'normal' ? '企业名称' : '账号名称'}
+            label="企业名称"
             name="name"
-            rules={[
-              ...getEnterpriseNameRules(),
-              {
-                validator: (_, value: string) => {
-                  if (accountType === 'sub' && selectedParent && value?.trim() === selectedParent.name) {
-                    return Promise.reject('子账号名称不能与上级企业名称相同');
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
+            rules={getEnterpriseNameRules()}
           >
-            <Input placeholder={accountType === 'normal' ? '请输入企业名称' : '请输入账号名称'} maxLength={50} />
+            <Input placeholder="请输入企业名称" maxLength={50} />
           </Form.Item>
 
           <Form.Item label="登录手机号" required>
@@ -156,68 +97,30 @@ export default function CreateEnterprisePage() {
             <Input.Password placeholder="8-20位，须包含字母和数字" />
           </Form.Item>
 
-          {/* 子账号：溢价系数只读跟随上级账号 */}
-          {accountType === 'sub' && (
-            <Form.Item label="订单溢价系数">
-              <Input
-                disabled
-                value={
-                  selectedParent
-                    ? `${selectedParent.premiumRate.toFixed(2)}（跟随上级账号）`
-                    : '请先选择上级账号'
-                }
-              />
-            </Form.Item>
-          )}
+          <Form.Item
+            label="订单溢价系数"
+            name="premiumRate"
+            extra="订单实际收费 = 基础运费 × 溢价系数"
+            rules={premiumRateRules}
+          >
+            <InputNumber min={1} max={PREMIUM_RATE_MAX} step={0.01} precision={2} style={{ width: '100%' }} />
+          </Form.Item>
 
-          {/* 普通账号：溢价系数可设置 */}
-          {accountType !== 'sub' && (
-            <Form.Item
-              label="订单溢价系数"
-              name="premiumRate"
-              extra="订单实际收费 = 基础运费 × 溢价系数"
-              rules={premiumRateRules}
-            >
-              <InputNumber min={1} max={PREMIUM_RATE_MAX} step={0.01} precision={2} style={{ width: '100%' }} />
-            </Form.Item>
-          )}
-
-          {/* 子账号：分配额度 */}
-          {accountType === 'sub' && (
-            <Form.Item
-              label="分配额度（人民币）"
-              name="quota"
-              rules={[{ required: true, message: '请输入分配额度' }]}
-            >
-              <InputNumber
-                min={0}
-                step={1000}
-                precision={0}
-                placeholder="5000"
-                addonBefore="CNY"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-          )}
-
-          {/* 普通账号：每月账期额度 */}
-          {accountType !== 'sub' && (
-            <Form.Item
-              label="每月账期额度（人民币）"
-              name="creditLimit"
-              rules={creditLimitRules}
-            >
-              <InputNumber
-                min={0}
-                max={CREDIT_LIMIT_MAX}
-                step={1000}
-                precision={0}
-                placeholder="50000"
-                addonBefore="CNY"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-          )}
+          <Form.Item
+            label="每月账期额度（人民币）"
+            name="creditLimit"
+            rules={creditLimitRules}
+          >
+            <InputNumber
+              min={0}
+              max={CREDIT_LIMIT_MAX}
+              step={1000}
+              precision={0}
+              placeholder="50000"
+              addonBefore="CNY"
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
 
           <div className="flex justify-end gap-3 mt-8">
             <Button onClick={() => router.push('/admin/enterprises')}>取消</Button>

@@ -20,6 +20,14 @@ export default function EnterprisesPage() {
   }, [search, enterpriseList]);
 
   // ── 母账号启停 ──
+  // 同步写回模块级 enterprises 数组（而非只更新本页 state），这样从列表页停用/启用后，
+  // 再进入该企业详情页的「子账号管理」Tab 才能看到一致的启停状态（详情页会重新从
+  // enterprises 数组读取）。这是仅在当前浏览会话内有效的 demo 级同步，刷新页面仍会重置。
+  const syncSharedStatus = (id: string, status: Enterprise['status']) => {
+    const target = initialEnterprises.find((e) => e.id === id);
+    if (target) target.status = status;
+  };
+
   const handleDisable = (id: string, name: string) => {
     Modal.confirm({
       title: '确认停用企业账号？',
@@ -29,6 +37,7 @@ export default function EnterprisesPage() {
       okType: 'danger',
       cancelText: '取消',
       onOk() {
+        syncSharedStatus(id, 'disabled');
         setEnterpriseList((prev) => prev.map((e) => e.id === id ? { ...e, status: 'disabled' } : e));
         message.success(`已停用企业账号 "${name}"`);
       },
@@ -36,6 +45,7 @@ export default function EnterprisesPage() {
   };
 
   const handleEnable = (id: string, name: string) => {
+    syncSharedStatus(id, 'active');
     setEnterpriseList((prev) => prev.map((e) => e.id === id ? { ...e, status: 'active' } : e));
     message.success(`已启用企业账号 "${name}"`);
   };

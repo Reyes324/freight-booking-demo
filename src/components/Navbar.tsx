@@ -61,17 +61,10 @@ export default function Navbar() {
       className="h-14 lg:h-[64px] border-b border-gray-200/80 bg-white flex items-center justify-between px-4 lg:px-8 relative"
       style={{ overflow: 'visible' }}
     >
-      {/* Left: Hamburger (mobile) + Logo + Tabs */}
+      {/* Left: Logo + Tabs */}
       <div className="flex items-center gap-4 lg:gap-8 self-stretch">
-        {/* Hamburger button (mobile only) */}
-        <button className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-        </button>
-
-        {/* Logo */}
-        <Link href="/" className="flex items-center cursor-pointer">
+        {/* Logo（桌面端）/ 企业名称（移动端） */}
+        <Link href="/" className="hidden lg:flex items-center cursor-pointer">
           <Image
             src={lang === "en" ? "/logo-complete-en.png" : "/logo-complete.png"}
             alt="LALA i LOGISTICS"
@@ -81,6 +74,9 @@ export default function Navbar() {
             priority
           />
         </Link>
+        <span className="lg:hidden text-base text-[#0F1229] truncate">
+          {account?.companyName ?? '菜鸟物流国际'}
+        </span>
 
         {/* Tabs (hidden on mobile) */}
         <div className="hidden lg:flex items-stretch h-full gap-2">

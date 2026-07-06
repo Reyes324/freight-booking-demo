@@ -15,6 +15,8 @@ interface RouteSectionProps {
   onDropoffChange: (address: AddressDetail) => void;
   addressErrors?: boolean[];
   onAddressInteract?: (index: number) => void;
+  /** 移动端全屏地址选择流程打开/关闭时通知父级（用于隐藏底部 Tab 栏等） */
+  onMobileFlowOpenChange?: (open: boolean) => void;
 }
 
 export default function RouteSection({
@@ -24,6 +26,7 @@ export default function RouteSection({
   onDropoffChange,
   addressErrors,
   onAddressInteract,
+  onMobileFlowOpenChange,
 }: RouteSectionProps) {
   // Dynamic address list (minimum 2: pickup + dropoff)
   const [addresses, setAddresses] = useState<(AddressDetail | null)[]>([
@@ -54,6 +57,10 @@ export default function RouteSection({
   // Mobile full-screen address flow
   const [mobileFlowOpen, setMobileFlowOpen] = useState(false);
   const [mobileFlowIndex, setMobileFlowIndex] = useState<number>(0);
+
+  useEffect(() => {
+    onMobileFlowOpenChange?.(mobileFlowOpen);
+  }, [mobileFlowOpen, onMobileFlowOpenChange]);
 
   const containerRefs = useRef<(HTMLDivElement | null)[]>([]);
 

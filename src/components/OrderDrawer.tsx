@@ -180,25 +180,28 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
 
   return (
     <>
-      {/* 透明点击区域 - 点击关闭面板 */}
+      {/* 透明点击区域 - 点击关闭面板（移动端抽屉全屏覆盖，此区域仅桌面端可见/可点） */}
       {visible && (
         <div
-          className="fixed top-14 lg:top-16 left-0 right-0 bottom-0 z-20"
+          className="fixed top-0 lg:top-16 left-0 right-0 bottom-0 z-20"
           onClick={onClose}
         />
       )}
 
-      {/* 抽屉 - 无蒙层，在导航栏下方 */}
+      {/* 抽屉 - 移动端全屏独立页（覆盖外层导航栏和底部 Tab 栏），桌面端仍是导航栏下方的侧边面板 */}
       <div
-        className={`fixed top-14 lg:top-16 right-0 bottom-0 w-full lg:w-[48%] bg-gray-50 z-30
+        className={`fixed top-0 lg:top-16 right-0 bottom-0 w-full lg:w-[48%] bg-gray-50 z-30
                    transform transition-transform duration-300 ease-out shadow-2xl ${
                      visible ? "translate-x-0" : "translate-x-full"
                    }`}
       >
         {/* 订单详情 - 一级页面（始终渲染） */}
         <>
-        {/* 头部 - 关闭按钮 */}
-        <div className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6">
+        {/* 头部 - 关闭按钮（移动端全屏覆盖后需自己让出状态栏/刘海空间） */}
+        <div
+          className="min-h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6"
+          style={{ paddingTop: 'env(safe-area-inset-top)' }}
+        >
           <h2 className="text-base font-semibold text-gray-900">{t.drawer.title}</h2>
           <button
             onClick={onClose}
@@ -211,7 +214,10 @@ export default function OrderDrawer({ open, order, onClose }: OrderDrawerProps) 
         </div>
 
         {/* 内容区域 */}
-        <div className="h-[calc(100%-56px)] overflow-y-auto subtle-scroll">
+        <div
+          className="overflow-y-auto subtle-scroll"
+          style={{ height: 'calc(100% - 56px - env(safe-area-inset-top))' }}
+        >
           <div className="p-4 lg:p-6 space-y-6">
             {/* 统一状态卡片：状态 header → 司机信息 → 操作按钮 */}
             <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">

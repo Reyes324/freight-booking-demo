@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 /* antd v6 的 CSS-in-JS 默认不带 @layer，未分层样式的优先级会高于 Tailwind 的 @layer utilities，
    导致给 antd 组件加的 Tailwind 间距类（如 mb-8）不生效。这里显式声明层级顺序，
@@ -22,7 +26,7 @@
   /* 设计系统文本色 - 覆盖 Tailwind 默认 gray */
   --color-gray-900: #0F1229;  /* Ink/T10 - 一级文案 */
   --color-gray-700: #454C66;  /* Ink/T30 - 二级文案（按钮等） */
-  --color-gray-500: #454C66;  /* Ink/T30 - 二级文案（标签等） */
+  --color-gray-500: #656C85;  /* Ink/T40 - 四级文案（metadata） */
   --color-gray-400: #8990A3;  /* Ink/T50 - 三级文案 */
 }
 
@@ -34,6 +38,7 @@ body {
   overflow-x: hidden;
   font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Microsoft YaHei",
     "Helvetica Neue", Arial, sans-serif;
+  font-optical-sizing: auto;
 }
 
 /* 防止所有元素超出屏幕宽度 */
@@ -248,6 +253,21 @@ nav.admin-sidebar a[data-active="true"] {
   color: #0F1229 !important;  /* Ink/T10 - 一级文案 */
 }
 
+/* 树形表格展开图标内联对齐修复：用 flex 行让 indent/expand-icon/内容在同一行 */
+/* 原因：.ant-table-row-indent 和 .ant-table-row-expand-icon 均为 display:block，导致换行 */
+.ant-table-tbody tr td:first-child {
+  display: flex !important;
+  align-items: center !important;
+}
+.ant-table-row-indent {
+  flex-shrink: 0 !important;
+}
+.ant-table-row-expand-icon {
+  flex-shrink: 0 !important;
+  float: none !important;
+  margin-top: 0 !important;
+}
+
 /* Ant Design 链接颜色：统一使用品牌蓝色 */
 .ant-table a,
 .ant-table-tbody a,
@@ -262,4 +282,156 @@ main a:not([data-active]) {
 a.ant-typography:hover,
 main a:not([data-active]):hover {
   color: #1c47ac !important;  /* 品牌蓝色-hover (blue-700) */
+}
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: #0F1229;              /* Ink/T10 */
+  --card: oklch(1 0 0);
+  --card-foreground: #0F1229;
+  --popover: oklch(1 0 0);
+  --popover-foreground: #0F1229;
+  --primary: #2257D4;                 /* 品牌蓝 */
+  --primary-foreground: #ffffff;
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: #0F1229;
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: #8990A3;        /* Ink/T50 */
+  --accent: #eef2fb;                  /* blue-50 */
+  --accent-foreground: #2257D4;
+  --destructive: #F23041;
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: #2257D4;
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: #0F1229;
+  --sidebar-primary: #2257D4;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* 移动端地图左下角高德 Logo 会被底部 Tab 栏遮挡，向上让出空间 */
+@media (max-width: 1023px) {
+  .amap-logo {
+    bottom: calc(56px + env(safe-area-inset-bottom) + 6px) !important;
+  }
+}
+
+/* 移动端弹窗左右边距：AntD 默认 8px，改成 16px */
+@media (max-width: 1023px) {
+  .ant-modal {
+    max-width: calc(100vw - 32px) !important;
+    margin: 16px auto !important;
+  }
+}
+
+/* 移动端日期范围选择器：双月历面板默认左右并排会超出屏幕宽度被裁切，改成上下堆叠。
+   同时弹层本身按输入框位置定位（left 固定，宽度不变）也会超出屏幕右侧，
+   改用 left+right 双固定，让弹层宽度自动撑满“视口宽度 - 16px”，不再跟随输入框位置溢出。 */
+@media (max-width: 1023px) {
+  .ant-picker-dropdown {
+    left: 8px !important;
+    right: 8px !important;
+  }
+  .ant-picker-dropdown .ant-picker-panels {
+    flex-direction: column !important;
+  }
 }

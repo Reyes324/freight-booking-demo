@@ -8,6 +8,13 @@ const zh = {
     confirmLogoutOk: "确认退出",
     cancel: "取消",
   },
+  mine: {
+    home: "首页",
+    ordersTab: "订单",
+    mineTab: "我的",
+    balanceDetail: "明细",
+    subAccountManagement: "子账号管理",
+  },
   order: {
     title: "下单叫车",
     subtitle: "填写装卸货信息，快速匹配司机",
@@ -393,6 +400,13 @@ const en: typeof zh = {
     confirmLogoutDesc: "You will need to log in again to continue.",
     confirmLogoutOk: "Confirm",
     cancel: "Cancel",
+  },
+  mine: {
+    home: "Home",
+    ordersTab: "Orders",
+    mineTab: "Profile",
+    balanceDetail: "Details",
+    subAccountManagement: "Sub-account Management",
   },
   order: {
     title: "Place Order",

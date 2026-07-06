@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useT } from "@/hooks/useT";
 import Navbar from "@/components/Navbar";
+import BottomTabBar from "@/components/BottomTabBar";
 import RouteSection from "@/components/RouteSection";
 import VehicleSelector from "@/components/VehicleSelector";
 import AdditionalServices from "@/components/AdditionalServices";
@@ -49,6 +50,8 @@ export default function OrderPage() {
   const [alertMessage, setAlertMessage] = useState<string>("");
   const [showAlert, setShowAlert] = useState(false);
   const [addressErrors, setAddressErrors] = useState<boolean[]>([false, false]);
+  // 移动端全屏地址选择流程是否打开（打开时隐藏底部 Tab 栏，避免二级页出现多余导航层级）
+  const [mobileAddressFlowOpen, setMobileAddressFlowOpen] = useState(false);
 
   // 防止浏览器 scrollIntoView 静默滚动父容器（checkbox 获取焦点时会触发）
   const leftColRef = useRef<HTMLDivElement>(null);
@@ -270,7 +273,11 @@ export default function OrderPage() {
               ref={configScrollRef}
               className="h-full overflow-y-scroll subtle-scroll bg-white relative
                          animate-in fade-in slide-in-from-left-8 duration-300"
-              style={{ paddingBottom: showPricing ? 'calc(320px + env(safe-area-inset-bottom))' : '24px' }}
+              style={{
+                paddingBottom: showPricing
+                  ? 'calc(320px + env(safe-area-inset-bottom))'
+                  : 'calc(56px + env(safe-area-inset-bottom) + 24px)',
+              }}
             >
               {/* 报错栏（固定悬浮在顶部，不占空间） */}
               {showAlert && (
@@ -286,11 +293,13 @@ export default function OrderPage() {
                 </div>
               )}
 
-              <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
+              <div className="p-4 lg:p-6">
                 <VehicleSelector
                   selectedVehicle={selectedVehicle}
                   onSelect={handleVehicleSelect}
                 />
+
+                <div className="h-px bg-gray-100 my-5 lg:my-6" />
 
                 <RouteSection
                   pickupAddress={pickupAddress}
@@ -302,7 +311,10 @@ export default function OrderPage() {
                     setAddressErrors((e) => { const n = [...e]; n[index] = false; return n; });
                     setShowAlert(false);
                   }}
+                  onMobileFlowOpenChange={setMobileAddressFlowOpen}
                 />
+
+                <div className="h-px bg-gray-100 my-5 lg:my-6" />
 
                 <AdditionalServices
                   visible={selectedVehicle !== null}
@@ -365,7 +377,7 @@ export default function OrderPage() {
 
               {/* 内容区 */}
               <div className="p-4 lg:p-6" style={{ paddingBottom: "120px" }}>
-              <div className="mb-4">
+              <div className="mb-6">
                 <OrderSummary
                   pickup={orderDraft.pickup}
                   dropoff={orderDraft.dropoff}
@@ -375,6 +387,7 @@ export default function OrderPage() {
                 />
               </div>
 
+              <div className="h-px bg-gray-100 mb-5" />
 
               <div className="mb-4">
                 <DateTimePicker value={scheduledTime} onChange={setScheduledTime} />
@@ -413,6 +426,9 @@ export default function OrderPage() {
           )}
         </div>
       </div>
+
+      {/* 底部 Tab 栏：仅在未进入配置/确认底部操作栏、且移动端地址选择二级页未打开时显示 */}
+      {currentStep === "configure" && !showPricing && !mobileAddressFlowOpen && <BottomTabBar />}
     </div>
   );
 }

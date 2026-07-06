@@ -7,11 +7,11 @@ import * as XLSX from 'xlsx';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs, { Dayjs } from 'dayjs';
 import Navbar from '@/components/Navbar';
+import MobileDetailHeader from '@/components/MobileDetailHeader';
+import BalanceSummaryCard from '@/components/BalanceSummaryCard';
 import {
-  mockWalletBalance,
   mockTransactions,
   mockSubAccounts,
-  mockParentQuota,
   getCurrentAccount,
   type Transaction,
   type CurrentAccount,
@@ -121,56 +121,27 @@ export default function WalletPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
+    <div className="min-h-screen bg-gray-100" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <div className="hidden lg:block">
+        <Navbar />
+      </div>
+      <div className="lg:hidden">
+        <MobileDetailHeader title={t.wallet.transactions} />
+      </div>
 
       <div className="p-6">
         {/* 账期余额 */}
-        <h1 className="text-lg font-semibold text-gray-900 mb-4">{t.wallet.title}</h1>
+        <h1 className="hidden lg:block text-lg font-semibold text-gray-900 mb-4">{t.wallet.title}</h1>
 
-        {isChild && childAccount ? (
-          /* 子账号：本账号分配额度和余额 */
-          <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
-            <p className="text-sm text-gray-500 mb-2">{t.wallet.subBalanceLabel}</p>
-            <p className="text-4xl font-bold text-gray-900">
-              CNY {childAccount.balance.toLocaleString('zh-CN')}
-              <span className="text-lg font-normal text-gray-400"> / CNY {childAccount.quota.toLocaleString('zh-CN')}</span>
-            </p>
-            <p className="text-xs text-gray-500 mt-3 leading-relaxed">
-              {t.wallet.subQuotaNote}
-            </p>
-          </div>
-        ) : isParent ? (
-          /* 母账号：企业总额度（不展示子账号分布） */
-          <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
-            <p className="text-sm text-gray-500 mb-2">{t.wallet.parentTotalLabel}</p>
-            <p className="text-4xl font-bold text-gray-900">
-              CNY {(mockParentQuota.total - mockParentQuota.allocated + mockSubAccounts.reduce((s, a) => s + a.balance, 0)).toLocaleString('zh-CN')}
-              <span className="text-lg font-normal text-gray-400"> / CNY {mockParentQuota.total.toLocaleString('zh-CN')}</span>
-            </p>
-            <p className="text-xs text-gray-500 mt-3 leading-relaxed">
-              {t.wallet.rateNote}
-            </p>
-          </div>
-        ) : (
-          /* 企业账号 */
-          <div className="border border-gray-200 rounded-xl p-6 bg-white mb-6">
-            <p className="text-sm text-gray-500 mb-2">{t.wallet.balanceLabel}</p>
-            <p className="text-4xl font-bold text-gray-900">
-              CNY {mockWalletBalance.balance.toLocaleString('zh-CN')}
-              <span className="text-lg font-normal text-gray-400"> / CNY {mockWalletBalance.creditLimit.toLocaleString('zh-CN')}</span>
-            </p>
-            <p className="text-xs text-gray-500 mt-3 leading-relaxed">
-              {t.wallet.rateNote}
-            </p>
-          </div>
-        )}
+        <div className="hidden lg:block mb-6">
+          <BalanceSummaryCard isParent={isParent} isChild={isChild} childAccount={childAccount} />
+        </div>
 
         {/* 交易明细 */}
         <div className="space-y-4">
           {/* 标题栏 + 筛选 */}
           <div className="flex items-center justify-between flex-wrap gap-3">
-            <h2 className="text-lg font-semibold text-gray-900">{t.wallet.transactions}</h2>
+            <h2 className="hidden lg:block text-lg font-semibold text-gray-900">{t.wallet.transactions}</h2>
             <div className="flex items-center gap-3">
               {isParent && (
                 <Select
@@ -221,8 +192,8 @@ export default function WalletPage() {
             </div>
           </div>
 
-          {/* 表格 */}
-          <div className="bg-white rounded-xl border border-gray-200" data-ds="Table" data-ds-label="交易记录">
+          {/* 表格（桌面端） */}
+          <div className="hidden lg:block bg-white rounded-xl border border-gray-200" data-ds="Table" data-ds-label="交易记录">
             <Table
               columns={columns}
               dataSource={filteredTransactions}
@@ -241,6 +212,39 @@ export default function WalletPage() {
                 ),
               }}
             />
+          </div>
+
+          {/* 交易列表（移动端） */}
+          <div className="lg:hidden bg-white rounded-[8px] divide-y divide-gray-100">
+            {filteredTransactions.length === 0 ? (
+              <div className="py-10">
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t.wallet.noTransactions} />
+              </div>
+            ) : (
+              filteredTransactions.map((tx) => {
+                const thbAmount = Math.abs(tx.amount);
+                const cnyAmount = thbAmount / 5.0;
+                return (
+                  <div key={tx.id} className="flex items-start justify-between gap-3 px-4 py-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">{tx.description}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {dayjs(tx.date).format('YYYY-MM-DD HH:mm')}
+                        {isParent && (
+                          <> · {tx.subAccountId ? subName(tx.subAccountId) : (account?.companyName ?? '主账号')}</>
+                        )}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-sm font-medium text-gray-900">
+                        {tx.amount > 0 ? '+' : '-'}฿{thbAmount.toFixed(0)}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5">≈ CNY {cnyAmount.toFixed(2)}</p>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>

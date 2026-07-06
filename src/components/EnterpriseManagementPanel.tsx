@@ -185,6 +185,12 @@ export default function EnterpriseManagementPanel() {
     },
   ];
 
+  const statItems = [
+    { label: '总额度', value: displayTotal },
+    { label: '已分配子账号', value: allocated },
+    { label: '未分配（本账号可用）', value: displayRemaining },
+  ];
+
   return (
     <>
       {/* 说明 */}
@@ -206,7 +212,8 @@ export default function EnterpriseManagementPanel() {
         </Button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200">
+      {/* 子账号列表（桌面端表格） */}
+      <div className="hidden lg:block bg-white rounded-xl border border-gray-200">
         <Table
           columns={columns}
           dataSource={displayAccounts}
@@ -226,19 +233,85 @@ export default function EnterpriseManagementPanel() {
         />
       </div>
 
+      {/* 子账号列表（移动端卡片） */}
+      <div className="lg:hidden space-y-3">
+        {displayAccounts.length === 0 ? (
+          <div className="bg-white rounded-[8px] py-10">
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description="暂无子账号，点击「新增子账号」开始添加"
+            />
+          </div>
+        ) : (
+          displayAccounts.map((record) => {
+            const disabled = record.status === 'disabled';
+            const titleColor = disabled ? 'text-[#8990A3]' : 'text-[#0F1229]';
+            const textColor = disabled ? 'text-[#8990A3]' : 'text-[#454C66]';
+            return (
+              <div key={record.id} className="bg-white rounded-[8px] p-4">
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm font-medium ${titleColor}`}>{record.name}</span>
+                  <Switch
+                    checked={record.status === 'active'}
+                    onChange={(checked) => handleStatusChange(record, checked)}
+                  />
+                </div>
+
+                <div className="h-px bg-gray-100 my-3" />
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm ${textColor}`}>手机号</span>
+                    <span className={`text-sm ${textColor}`}>{record.phone}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm ${textColor}`}>已分配额度</span>
+                    <span className={`text-sm ${textColor}`}>{fmt(record.quota)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm ${textColor}`}>本月当前余额</span>
+                    <span className={`text-sm ${textColor}`}>{fmt(record.balance)}</span>
+                  </div>
+                </div>
+
+                <div className="h-px bg-gray-100 my-3" />
+
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => openEdit(record)}
+                    className="flex items-center gap-1 h-9 px-3 rounded-md border border-[#C5CCDB] bg-white text-sm text-[#0F1229] cursor-pointer"
+                  >
+                    编辑
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
       {/* 额度分配情况 */}
       <p className="text-base font-medium text-gray-900 mt-8 mb-3">额度分配情况</p>
-      <div className="flex gap-3 mb-3">
-        {[
-          { label: '总额度', value: displayTotal },
-          { label: '已分配子账号', value: allocated },
-          { label: '未分配（本账号可用）', value: displayRemaining },
-        ].map(({ label, value }) => (
+      <div className="hidden lg:flex gap-3 mb-3">
+        {statItems.map(({ label, value }) => (
           <div key={label} className="flex-1 bg-white border border-gray-200 rounded-xl px-5 py-4">
             <p className="text-sm text-gray-500 mb-2">{label}</p>
             <p className={`text-lg font-semibold ${value === displayRemaining && value < 0 ? 'text-red-500' : 'text-gray-900'}`}>
               {fmt(value)}
             </p>
+          </div>
+        ))}
+      </div>
+      <div className="lg:hidden flex bg-white rounded-[8px] mb-3">
+        {statItems.map(({ label, value }, i) => (
+          <div key={label} className="flex-1 min-w-0 flex">
+            {i > 0 && <div className="w-px bg-gray-100 my-3" />}
+            <div className="flex-1 min-w-0 px-3 py-3">
+              <p className="text-xs text-gray-500 leading-snug">{label}</p>
+              <p className={`text-sm font-semibold mt-1 truncate ${value === displayRemaining && value < 0 ? 'text-red-500' : 'text-gray-900'}`}>
+                {fmt(value)}
+              </p>
+            </div>
           </div>
         ))}
       </div>

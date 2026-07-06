@@ -333,87 +333,92 @@ export default function MobileAddressFlow({
       ) : (
         <>
           {/* Details step */}
-          {/* Map with selected location */}
-          <div className="flex-shrink-0 h-[30vh] border-b border-gray-100">
+          {/* Map：占满头部和表单面板之间的剩余空间，尽量多留给地图 */}
+          <div className="flex-1 min-h-0">
             <MapView pickupAddress={mapPickup} dropoffAddress={null} />
           </div>
 
-          {/* Detail form */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-            {/* Selected address */}
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                {t.address.selectedAddress}
-              </label>
-              <div className="px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-100">
-                <p className="text-sm text-gray-700 leading-snug">
-                  {selectedAddress}
-                </p>
+          {/* 表单面板：置底，按内容自然高度显示，不撑满剩余空间 */}
+          <div className="flex-shrink-0 bg-white rounded-t-2xl shadow-[0_-4px_16px_rgba(0,0,0,0.06)] overflow-y-auto max-h-[70vh]">
+            <div className="px-4 pt-4 pb-1 space-y-4">
+              {/* Selected address */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">
+                  {t.address.selectedAddress}
+                </label>
+                <div className="px-3 py-2.5 bg-gray-50 rounded-lg border border-gray-100">
+                  <p className="text-sm text-gray-700 leading-snug">
+                    {selectedAddress}
+                  </p>
+                </div>
+              </div>
+
+              {/* Contact Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                  {t.address.contactName}
+                </label>
+                <input
+                  type="text"
+                  value={contactName}
+                  onChange={(e) => setContactName(e.target.value)}
+                  placeholder={t.address.contactNamePlaceholder}
+                  className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
+                             focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
+                />
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                  {t.address.contactPhone}
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder={t.address.contactPhonePlaceholder}
+                  className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
+                             focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
+                />
+              </div>
+
+              {/* Unit */}
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                  {t.address.addressNote}
+                </label>
+                <input
+                  type="text"
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                  placeholder={t.address.addressNotePlaceholder}
+                  className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
+                             focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
+                />
               </div>
             </div>
 
-            {/* Contact Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                {t.address.contactName}
-              </label>
-              <input
-                type="text"
-                value={contactName}
-                onChange={(e) => setContactName(e.target.value)}
-                placeholder={t.address.contactNamePlaceholder}
-                className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
-                           focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
-              />
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                {t.address.contactPhone}
-              </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder={t.address.contactPhonePlaceholder}
-                className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
-                           focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
-              />
-            </div>
-
-            {/* Unit */}
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                {t.address.addressNote}
-              </label>
-              <input
-                type="text"
-                value={unit}
-                onChange={(e) => setUnit(e.target.value)}
-                placeholder={t.address.addressNotePlaceholder}
-                className="w-full h-12 px-3.5 rounded-lg border border-gray-200 bg-white text-base text-gray-900 placeholder:text-gray-400
-                           focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
-              />
-            </div>
-          </div>
-
-          {/* Footer buttons */}
-          <div className="flex-shrink-0 flex gap-3 px-4 pt-4 pb-8 border-t border-gray-100 bg-white">
-            <button
-              onClick={handleBack}
-              className="flex-1 h-12 rounded-lg border border-gray-200 text-base font-medium text-gray-700
-                         active:bg-gray-100 transition-colors"
+            {/* Footer buttons */}
+            <div
+              className="flex gap-3 px-4 pt-2 border-t border-gray-100 bg-white"
+              style={{ paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' }}
             >
-              {t.address.cancel}
-            </button>
-            <button
-              onClick={handleConfirm}
-              className="flex-1 h-12 rounded-lg text-base font-semibold text-white bg-blue-600
-                         active:bg-blue-700 transition-colors"
-            >
-              {t.address.confirm}
-            </button>
+              <button
+                onClick={handleBack}
+                className="flex-1 h-12 rounded-lg border border-gray-200 text-base font-medium text-gray-700
+                           active:bg-gray-100 transition-colors"
+              >
+                {t.address.cancel}
+              </button>
+              <button
+                onClick={handleConfirm}
+                className="flex-1 h-12 rounded-lg text-base font-semibold text-white bg-blue-600
+                           active:bg-blue-700 transition-colors"
+              >
+                {t.address.confirm}
+              </button>
+            </div>
           </div>
         </>
       )}

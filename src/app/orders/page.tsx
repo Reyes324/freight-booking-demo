@@ -6,7 +6,8 @@ import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import type { ColumnsType } from 'antd/es/table';
 import Navbar from '@/components/Navbar';
-import OrderStatusTag from '@/components/OrderStatusTag';
+import BottomTabBar from '@/components/BottomTabBar';
+import OrderStatusTag, { getStatusConfig } from '@/components/OrderStatusTag';
 import OrderDrawer from '@/components/OrderDrawer';
 import {
   mockOrders,
@@ -209,10 +210,12 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
+    <div className="min-h-screen bg-gray-100 pb-[calc(56px+env(safe-area-inset-bottom)+16px)] lg:pb-0">
+      <div className="hidden lg:block">
+        <Navbar />
+      </div>
 
-      <div className="p-6">
+      <div className="px-4 lg:px-6 pb-6 pt-[calc(24px+env(safe-area-inset-top))] lg:pt-6">
         {/* 标题栏 */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-lg font-semibold text-gray-900">{t.orders.title}</h1>
@@ -250,8 +253,8 @@ export default function OrdersPage() {
           />
         </div>
 
-        {/* 表格 */}
-        <Card data-ds="Table" data-ds-label="订单列表">
+        {/* 表格（桌面端） */}
+        <Card data-ds="Table" data-ds-label="订单列表" className="hidden lg:block">
           <Table
             columns={columns}
             dataSource={filteredOrders}
@@ -276,6 +279,62 @@ export default function OrdersPage() {
             scroll={{ x: 'max-content' }}
           />
         </Card>
+
+        {/* 卡片列表（移动端） */}
+        <div className="lg:hidden space-y-3">
+          {filteredOrders.length === 0 ? (
+            <Card>
+              <p className="text-sm text-gray-400 text-center py-6">{t.orders.searchPlaceholder}</p>
+            </Card>
+          ) : (
+            filteredOrders.map((order) => {
+              const statusConfig = getStatusConfig(order.status, t);
+              const statusColor = statusConfig.color === 'default' ? '#656C85' : statusConfig.color;
+              return (
+                <div
+                  key={order.orderId}
+                  onClick={() => {
+                    setSelectedOrder(order);
+                    setDrawerOpen(true);
+                  }}
+                  className="bg-white rounded-[8px] p-4 cursor-pointer active:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-gray-900 truncate">{order.vehicle.name}</span>
+                    <span className="flex items-center gap-0.5 text-sm font-medium shrink-0" style={{ color: statusColor }}>
+                      {statusConfig.text}
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-gray-400 mt-1">
+                    {formatDateTime(order.scheduledTime || order.createdAt)}
+                    {isParent && (
+                      <> · {order.subAccountId ? subName(order.subAccountId) : (account?.companyName ?? t.orders.parentOwnOrder)}</>
+                    )}
+                  </p>
+
+                  <div className="mt-3 space-y-1.5">
+                    <div className="flex items-start gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#2257D4] mt-1 shrink-0" />
+                      <span className="text-sm text-gray-900 truncate">{order.pickup.address}</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="w-2 h-2 rounded-full border border-gray-400 mt-1 shrink-0" />
+                      <span className="text-sm text-gray-900 truncate">{order.dropoff.address}</span>
+                    </div>
+                  </div>
+
+                  <div className="h-px bg-gray-100 my-3" />
+
+                  <p className="text-base font-semibold text-gray-900">฿{order.totalPrice.toFixed(0)}</p>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
 
       {/* 订单详情抽屉 */}
@@ -290,6 +349,9 @@ export default function OrdersPage() {
           }, 300);
         }}
       />
+
+      {/* 移动端进入订单详情（抽屉全屏覆盖）时隐藏底部 Tab 栏，避免和抽屉自己的头部重复出现导航层级 */}
+      {!drawerOpen && <BottomTabBar />}
     </div>
   );
 }

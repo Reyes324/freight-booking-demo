@@ -1,102 +1,40 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Form, Input, Modal, App, Menu, ConfigProvider } from 'antd';
+import { useRouter } from 'next/navigation';
+import { App, Menu, ConfigProvider } from 'antd';
 import Navbar from '@/components/Navbar';
+import BottomTabBar from '@/components/BottomTabBar';
 import EnterpriseManagementPanel from '@/components/EnterpriseManagementPanel';
+import ProfileContent from '@/components/ProfileContent';
 import { getCurrentAccount, type CurrentAccount } from '@/data/mockData';
-import { enterprises } from '@/data/adminMockData';
-
-const passwordRules = [
-  { required: true, message: '请填写新密码' },
-  { min: 8, max: 20, message: '密码为 8–20 位' },
-  {
-    pattern: /^(?=.*[a-zA-Z])(?=.*\d)[^一-龥\u{1F000}-\u{1FFFF}]*$/u,
-    message: '须包含字母和数字，不可含汉字或表情符号',
-  },
-];
-
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex items-center py-4 border-b border-gray-100 last:border-0">
-      <span className="w-32 text-sm text-gray-500 shrink-0">{label}</span>
-      <div className="flex-1 text-sm text-gray-900">{children}</div>
-    </div>
-  );
-}
-
-function ProfileContent({ account }: { account: CurrentAccount }) {
-  const { message } = App.useApp();
-  const [pwdOpen, setPwdOpen] = useState(false);
-  const [pwdForm] = Form.useForm();
-
-  const enterprise = enterprises.find(e => e.id === account.accountId);
-  const phone = enterprise ? `${enterprise.countryCode} ${enterprise.phone}` : '—';
-
-  const handleChangePwd = () => {
-    pwdForm.validateFields().then(() => {
-      setPwdOpen(false);
-      pwdForm.resetFields();
-      message.success('密码已修改');
-    });
-  };
-
-  return (
-    <div>
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">账户资料</h2>
-      <Row label="企业名称">{account.companyName}</Row>
-      <Row label="登录手机号">{phone}</Row>
-      <Row label="密码">
-        <button
-          onClick={() => setPwdOpen(true)}
-          className="text-sm text-[#2257D4] hover:text-[#1C47AC] transition-colors cursor-pointer"
-        >
-          修改密码
-        </button>
-      </Row>
-
-      <Modal
-        title="修改登录密码"
-        open={pwdOpen}
-        onOk={handleChangePwd}
-        onCancel={() => { setPwdOpen(false); pwdForm.resetFields(); }}
-        okText="确定"
-        cancelText="取消"
-        destroyOnClose
-      >
-        <Form form={pwdForm} layout="vertical" className="mt-4">
-          <Form.Item label="新密码" name="newPassword" rules={passwordRules}>
-            <Input.Password placeholder="8–20 位，须包含字母和数字" />
-          </Form.Item>
-          <Form.Item
-            label="确认新密码"
-            name="confirmPassword"
-            dependencies={['newPassword']}
-            rules={[
-              { required: true, message: '请确认新密码' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('newPassword') === value) return Promise.resolve();
-                  return Promise.reject(new Error('两次输入的密码不一致'));
-                },
-              }),
-            ]}
-          >
-            <Input.Password placeholder="请再次输入新密码" />
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
-  );
-}
 
 export default function SettingsPage() {
+  const router = useRouter();
   const [account, setAccount] = useState<CurrentAccount | null>(null);
   const [activeKey, setActiveKey] = useState('profile');
 
   useEffect(() => {
     setAccount(getCurrentAccount());
+    // 从移动端「子账号管理」二级页拉宽回来时，定位到子账户设置 tab
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tab') === 'account') {
+      setActiveKey('account');
+    }
   }, []);
+
+  // 拉窄到移动端宽度时，切回对应的移动端二级页（本页侧边栏布局在窄屏下不可用）
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 1023px)');
+    const handleChange = () => {
+      if (mql.matches) {
+        router.replace(activeKey === 'account' ? '/profile/sub-accounts' : '/profile/account');
+      }
+    };
+    handleChange();
+    mql.addEventListener('change', handleChange);
+    return () => mql.removeEventListener('change', handleChange);
+  }, [activeKey, router]);
 
   const isParent = account?.accountType === 'parent';
 
@@ -147,18 +85,20 @@ export default function SettingsPage() {
           {/* 右侧内容 */}
           <main className="flex-1 bg-white overflow-y-auto">
             {account && activeKey === 'profile' && (
-              <div style={{ maxWidth: 640 }} className="px-10 py-8">
+              <div style={{ maxWidth: 640 }} className="px-10 py-8 pb-[calc(56px+env(safe-area-inset-bottom)+16px)] lg:pb-8">
                 <ProfileContent account={account} />
               </div>
             )}
             {isParent && activeKey === 'account' && (
-              <div style={{ maxWidth: 860 }} className="px-10 py-8">
+              <div style={{ maxWidth: 860 }} className="px-10 py-8 pb-[calc(56px+env(safe-area-inset-bottom)+16px)] lg:pb-8">
                 <h2 className="text-lg font-semibold text-gray-900 mb-2">子账户设置</h2>
                 <EnterpriseManagementPanel />
               </div>
             )}
           </main>
         </div>
+
+        <BottomTabBar />
       </div>
     </App>
   );

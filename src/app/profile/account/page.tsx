@@ -15,8 +15,16 @@ export default function AccountProfilePage() {
     setAccount(getCurrentAccount());
   }, []);
 
+  // 账户资料/设置只有母账号才有；子账号没有这个功能，直接退回「我的」页
+  useEffect(() => {
+    if (account && account.accountType !== 'parent') {
+      router.replace('/profile');
+    }
+  }, [account, router]);
+
   // 拉宽到桌面宽度时，回到 /settings 侧边栏页面（账户资料 tab 是默认选中项）
   useEffect(() => {
+    if (!account || account.accountType !== 'parent') return;
     const mql = window.matchMedia('(min-width: 1024px)');
     const handleChange = () => {
       if (mql.matches) {
@@ -26,9 +34,9 @@ export default function AccountProfilePage() {
     handleChange();
     mql.addEventListener('change', handleChange);
     return () => mql.removeEventListener('change', handleChange);
-  }, [router]);
+  }, [account, router]);
 
-  if (!account) return null;
+  if (!account || account.accountType !== 'parent') return null;
 
   return (
     <App>

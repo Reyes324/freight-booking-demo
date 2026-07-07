@@ -52,15 +52,15 @@ function ProfileBody() {
         detailHref="/wallet"
       />
 
-      <MobileListGroup>
-        <MobileListRow label="账户资料" onClick={() => router.push('/profile/account')} />
-        {isParent && (
+      {isParent && (
+        <MobileListGroup>
+          <MobileListRow label="账户资料" onClick={() => router.push('/profile/account')} />
           <MobileListRow
             label={t.mine.subAccountManagement}
             onClick={() => router.push('/profile/sub-accounts')}
           />
-        )}
-      </MobileListGroup>
+        </MobileListGroup>
+      )}
 
       <MobileListGroup>
         <Popconfirm

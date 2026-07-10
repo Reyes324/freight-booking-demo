@@ -57,14 +57,19 @@ export default function RegionLanguageSelector() {
       <button
         ref={triggerRef}
         onClick={handleOpen}
-        className="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl
+        className="flex items-start gap-2 px-4 py-2.5 bg-white rounded-xl
                    text-sm font-medium text-gray-700
-                   hover:bg-gray-50 transition-colors cursor-pointer whitespace-nowrap"
-        style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06)" }}
+                   hover:bg-gray-50 transition-colors cursor-pointer"
+        style={{
+          boxShadow: "0 8px 24px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06)",
+          // globals.css 里 `* { max-width: 100% }` 是无 @layer 包裹的全局规则，
+          // 优先级高于 Tailwind 的 @layer utilities（包括 max-w-[...]），只能用内联样式覆盖
+          maxWidth: 240,
+        }}
       >
-        <span>{triggerLabel}</span>
+        <span className="text-left leading-[1.57]">{triggerLabel}</span>
         <svg
-          className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           fill="none" stroke="currentColor" viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -85,7 +90,7 @@ export default function RegionLanguageSelector() {
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1.5 px-1">
               {t.regionSelector.languageLabel}
             </div>
-            <div className="space-y-0.5">
+            <div className="space-y-1">
               {LANGUAGES.map((l) => {
                 const isLangSelected = lang === l.id;
                 return (
@@ -97,7 +102,7 @@ export default function RegionLanguageSelector() {
                       isLangSelected ? "bg-blue-50" : "hover:bg-gray-50"
                     }`}
                   >
-                    <span className={`text-sm font-medium ${isLangSelected ? "text-blue-700" : "text-gray-900"}`}>
+                    <span className={`text-sm font-normal leading-[1.57] ${isLangSelected ? "text-blue-700" : "text-gray-900"}`}>
                       {l.localName}
                     </span>
                     {isLangSelected && (
@@ -127,7 +132,7 @@ export default function RegionLanguageSelector() {
                     </span>
                   </div>
                   {/* 城市列表 — 子级，缩进 */}
-                  <div className="space-y-0.5 pl-3">
+                  <div className="space-y-1 pl-3">
                     {country.cities.map((city) => {
                       const isSelected = cityId === city.id;
                       return (
@@ -137,16 +142,16 @@ export default function RegionLanguageSelector() {
                             setCityId(city.id);
                             setTimeout(() => setIsOpen(false), 150);
                           }}
-                          className={`w-full flex items-center justify-between gap-2 px-2 py-2 rounded-lg
+                          className={`w-full flex items-start justify-between gap-2 px-2 py-2 rounded-lg
                                      transition-colors cursor-pointer text-left ${
                             isSelected ? "bg-blue-50" : "hover:bg-gray-50"
                           }`}
                         >
-                          <span className={`text-sm font-medium ${isSelected ? "text-blue-700" : "text-gray-900"}`}>
+                          <span className={`min-w-0 flex-1 text-sm font-normal leading-[1.57] ${isSelected ? "text-blue-700" : "text-gray-900"}`}>
                             {lang === "zh" ? city.zhName : city.enName}
                           </span>
                           {isSelected && (
-                            <svg className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5 mt-0.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                             </svg>
                           )}

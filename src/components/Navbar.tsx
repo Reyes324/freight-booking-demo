@@ -143,8 +143,9 @@ export default function Navbar() {
                          text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.6 9h16.8M3.6 15h16.8M12 3a14.5 14.5 0 010 18M12 3a14.5 14.5 0 000 18" />
+                <circle cx="12" cy="12" r="9" strokeWidth={1.5} />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12h18" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z" />
               </svg>
               <span>{lang === "zh" ? "中文" : "English"}</span>
             </button>

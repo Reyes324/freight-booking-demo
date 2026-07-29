@@ -170,7 +170,7 @@ export default function AdditionalServices({
       <div className="flex-1 min-w-0">
         <span className="text-sm text-gray-900">{item.name}</span>
         {item.description && (
-          <p className="text-xs text-gray-400 mt-0.5">{item.description}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{item.description}</p>
         )}
       </div>
       {renderPrice(item.price, isChecked)}
@@ -247,7 +247,7 @@ export default function AdditionalServices({
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-900 mb-3">{t.additionalServices.title}</h2>
+      <h2 className="text-xs font-semibold text-gray-500 mb-3">{t.additionalServices.title}</h2>
 
       <div className="space-y-0 border border-gray-200/60 rounded-xl overflow-hidden bg-white">
         {services.map((service: VehicleService, index: number) => {

@@ -32,7 +32,7 @@ export default function VehicleSelector({
     <div>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold text-gray-900">{t.vehicleSelector.serviceType}</h2>
+        <h2 className="text-xs font-semibold text-gray-500">{t.vehicleSelector.serviceType}</h2>
         <a
           href="https://www.lalamove.com/zh-hk/all-vehicle-pricing-detail"
           target="_blank"

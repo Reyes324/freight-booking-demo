@@ -202,7 +202,7 @@ export default function RouteSection({
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-900 mb-3">
+      <h2 className="text-xs font-semibold text-gray-500 mb-3">
         {t.route.title}
       </h2>
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { AddressDetail } from "@/data/mockData";
-import RegionLanguageSelector from "./RegionLanguageSelector";
+import RegionSelector from "./RegionSelector";
 
 // 高德地图 TypeScript 类型声明
 declare global {
@@ -188,9 +188,9 @@ export default function MapView({ pickupAddress, dropoffAddress }: MapViewProps)
       {/* 高德地图容器 */}
       <div ref={mapRef} className="w-full h-full" />
 
-      {/* 地区/语言选择器 */}
+      {/* 地区选择器 */}
       <div className="absolute top-4 right-4 z-10">
-        <RegionLanguageSelector />
+        <RegionSelector />
       </div>
     </div>
   );

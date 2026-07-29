@@ -2,21 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useT } from "@/hooks/useT";
 import { COUNTRY_GROUPS, findCity } from "@/data/cities";
 
-const LANGUAGES = [
-  { id: "zh", localName: "中文" },
-  { id: "en", localName: "English" },
-];
-
-export default function RegionLanguageSelector() {
+export default function RegionSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const [panelPos, setPanelPos] = useState({ top: 0, right: 0 });
-  const { lang, setLang, cityId, setCityId } = useLanguage();
+  const { lang, cityId, setCityId } = useLanguage();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const t = useT();
 
   // 点外部关闭
   useEffect(() => {
@@ -85,39 +78,8 @@ export default function RegionLanguageSelector() {
                      border border-gray-200 overflow-hidden z-[9999]
                      animate-in fade-in slide-in-from-top-2 duration-200"
         >
-          {/* 语言 */}
-          <div className="px-3 pt-3 pb-2 border-b border-gray-100">
-            <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1.5 px-1">
-              {t.regionSelector.languageLabel}
-            </div>
-            <div className="space-y-1">
-              {LANGUAGES.map((l) => {
-                const isLangSelected = lang === l.id;
-                return (
-                  <button
-                    key={l.id}
-                    onClick={() => setLang(l.id as "zh" | "en")}
-                    className={`w-full flex items-center justify-between gap-2 px-2 py-2 rounded-lg
-                               transition-colors cursor-pointer text-left ${
-                      isLangSelected ? "bg-blue-50" : "hover:bg-gray-50"
-                    }`}
-                  >
-                    <span className={`text-sm font-normal leading-[1.57] ${isLangSelected ? "text-blue-700" : "text-gray-900"}`}>
-                      {l.localName}
-                    </span>
-                    {isLangSelected && (
-                      <svg className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           {/* 地区 */}
-          <div className="px-3 pt-3 pb-3">
+          <div className="px-3 py-3">
             <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1.5 px-1">
               {lang === "zh" ? "地区" : "Region"}
             </div>

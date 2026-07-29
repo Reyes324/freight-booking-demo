@@ -13,7 +13,7 @@ import { accountPresets, getCurrentAccount, type CurrentAccount } from "@/data/m
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { lang } = useLanguage();
+  const { lang, setLang } = useLanguage();
   const t = useT();
 
   // 当前账号：挂载后从 localStorage 读取，避免 SSR/CSR 不一致
@@ -52,6 +52,27 @@ export default function Navbar() {
     { key: 'childVN', label: '越南子账号', onClick: () => switchAccount('childVN') },
     { key: 'childTH', label: '泰国子账号', onClick: () => switchAccount('childTH') },
   ];
+
+  // 语言切换（后续增加语种时在此扩展即可）
+  const LANGUAGES: { id: "zh" | "en"; localName: string }[] = [
+    { id: "zh", localName: "中文" },
+    { id: "en", localName: "English" },
+  ];
+
+  const languageMenu: MenuProps['items'] = LANGUAGES.map((l) => ({
+    key: l.id,
+    label: (
+      <div className="flex items-center justify-between gap-6 min-w-[104px]">
+        <span className={lang === l.id ? "text-[#2257D4]" : "text-gray-900"}>{l.localName}</span>
+        {lang === l.id && (
+          <svg className="w-3.5 h-3.5 text-[#2257D4] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+          </svg>
+        )}
+      </div>
+    ),
+    onClick: () => setLang(l.id),
+  }));
 
   return (
     <>
@@ -114,6 +135,21 @@ export default function Navbar() {
 
         {/* 功能图标 */}
         <div className="flex items-center gap-2">
+          {/* 语言切换 */}
+          <Dropdown menu={{ items: languageMenu, selectedKeys: [lang] }} trigger={['click']} placement="bottomRight">
+            <button
+              aria-label={t.regionSelector.languageLabel}
+              className="h-9 px-2.5 flex items-center gap-1 rounded-full text-sm font-medium
+                         text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.6 9h16.8M3.6 15h16.8M12 3a14.5 14.5 0 010 18M12 3a14.5 14.5 0 000 18" />
+              </svg>
+              <span>{lang === "zh" ? "中文" : "English"}</span>
+            </button>
+          </Dropdown>
+
           <Popconfirm
             title={t.nav.confirmLogout}
             description={t.nav.confirmLogoutDesc}

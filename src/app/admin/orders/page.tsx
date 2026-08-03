@@ -171,10 +171,14 @@ export default function AdminOrdersPage() {
 
   const statusConfig: Record<string, { color: string }> = {
     '正在呼叫司机': { color: '#2257D4' },  // Brand/Primary（橙色 #FF6600 不在规范内）
+    '重新呼叫司机': { color: '#2257D4' },
     '司机已接单': { color: '#2257D4' },
     '配送中': { color: '#2257D4' },
     '已完成': { color: 'default' },
     '已取消': { color: '#F23041' },
+    '已取消（司机连续拒绝）': { color: '#F23041' },
+    '已取消（超时）': { color: '#F23041' },
+    '已取消（用户取消）': { color: '#F23041' },
   };
 
   const columns: ColumnsType<AdminOrder> = [
@@ -295,9 +299,9 @@ export default function AdminOrdersPage() {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 110,
+      width: 170,
       render: (v: string) => (
-        <Tag color={statusConfig[v]?.color || 'default'}>{v}</Tag>
+        <Tag color={statusConfig[v]?.color || 'default'} className="whitespace-nowrap">{v}</Tag>
       ),
     },
     {
@@ -421,7 +425,8 @@ export default function AdminOrdersPage() {
           allowClear
           value={statusFilter}
           onChange={setStatusFilter}
-          style={{ width: 130 }}
+          style={{ width: 170 }}
+          popupMatchSelectWidth={false}
           options={statuses.map((s) => ({ value: s, label: s }))}
         />
       </div>
@@ -444,7 +449,7 @@ export default function AdminOrdersPage() {
             pageSize: 15,
             showTotal: (total) => `共 ${total} 条订单`,
           }}
-          scroll={{ x: 1900 }}
+          scroll={{ x: 1960 }}
           size="small"
           locale={{
             emptyText: (

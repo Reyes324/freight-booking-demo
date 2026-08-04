@@ -249,21 +249,6 @@ nav.admin-sidebar a[data-active="true"] {
   color: #0F1229 !important;  /* Ink/T10 - 一级文案 */
 }
 
-/* 树形表格展开图标内联对齐修复：用 flex 行让 indent/expand-icon/内容在同一行 */
-/* 原因：.ant-table-row-indent 和 .ant-table-row-expand-icon 均为 display:block，导致换行 */
-.ant-table-tbody tr td:first-child {
-  display: flex !important;
-  align-items: center !important;
-}
-.ant-table-row-indent {
-  flex-shrink: 0 !important;
-}
-.ant-table-row-expand-icon {
-  flex-shrink: 0 !important;
-  float: none !important;
-  margin-top: 0 !important;
-}
-
 /* Ant Design 链接颜色：统一使用品牌蓝色 */
 .ant-table a,
 .ant-table-tbody a,

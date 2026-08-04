@@ -1,11 +1,22 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Table, Input, Button, Card, Tag, Select, Tooltip, Alert, Empty } from 'antd';
+import { Table, Input, Button, Card, Tag, Select, Tooltip, Alert, Empty, DatePicker } from 'antd';
 import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import dayjs, { Dayjs } from 'dayjs';
+import 'dayjs/locale/zh-cn';
 import { enterprises, adminOrders, type AdminOrder, type FeeBreakdown } from '@/data/adminMockData';
 import * as XLSX from 'xlsx';
+
+const { RangePicker } = DatePicker;
+
+// Demo数据锚点：以mock数据里最新的下单日期代替“今天”，保证默认30天窗口内有数据可看
+// 接后端真实数据后，这里应直接用 dayjs()（当前时间）
+const LATEST_MOCK_ORDER_DATE = adminOrders.reduce(
+  (latest, o) => (o.orderDate > latest ? o.orderDate : latest),
+  adminOrders[0]?.orderDate ?? ''
+);
 
 // 参考汇率（日常运营使用，月末按官方挂牌汇率结算）
 const REFERENCE_RATES: Record<string, number> = {
@@ -72,7 +83,13 @@ export default function AdminOrdersPage() {
   const [subAccountSearch, setSubAccountSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [countryFilter, setCountryFilter] = useState<string | null>(null);
-  const [supplierFilter, setSupplierFilter] = useState<string | null>(null);
+  // 勾选导出：跨页保留选中项，key用orderId
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  // 默认只查最近30天，订单量大时避免一次性拉全量数据
+  const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>([
+    dayjs(LATEST_MOCK_ORDER_DATE).subtract(29, 'day'),
+    dayjs(LATEST_MOCK_ORDER_DATE),
+  ]);
 
   const enterpriseMap = useMemo(() => {
     const map: Record<string, string> = {};
@@ -93,6 +110,13 @@ export default function AdminOrdersPage() {
   const filtered = useMemo(() => {
     let result = adminOrders;
 
+    if (dateRange) {
+      const [start, end] = dateRange;
+      result = result.filter((o) => {
+        const d = dayjs(o.orderDate);
+        return !d.isBefore(start, 'day') && !d.isAfter(end, 'day');
+      });
+    }
     if (enterpriseSearch.trim()) {
       const q = enterpriseSearch.toLowerCase();
       result = result.filter((o) =>
@@ -114,9 +138,6 @@ export default function AdminOrdersPage() {
     if (countryFilter) {
       result = result.filter((o) => o.country === countryFilter);
     }
-    if (supplierFilter) {
-      result = result.filter((o) => o.supplierCode === supplierFilter);
-    }
     if (orderNoSearch.trim()) {
       const q = orderNoSearch.toLowerCase();
       result = result.filter(
@@ -127,10 +148,19 @@ export default function AdminOrdersPage() {
     }
 
     return result;
-  }, [orderNoSearch, enterpriseSearch, subAccountSearch, statusFilter, countryFilter, supplierFilter, enterpriseMap, subAccountMap]);
+  }, [dateRange, orderNoSearch, enterpriseSearch, subAccountSearch, statusFilter, countryFilter, enterpriseMap, subAccountMap]);
+
+  // LLI账单总额（按参考汇率折算为CNY求和，随筛选结果联动）
+  const totalLliCNY = useMemo(
+    () => filtered.reduce((sum, o) => sum + toCNY(o.lliAmount, o.currency), 0),
+    [filtered]
+  );
 
   const handleExport = () => {
-    const data = filtered.map((o) => ({
+    const exportRows = selectedRowKeys.length
+      ? adminOrders.filter((o) => selectedRowKeys.includes(o.orderId))
+      : filtered;
+    const data = exportRows.map((o) => ({
       '下单日期': o.orderDate,
       '企业客户': enterpriseMap[o.enterpriseId] || '',
       '供应商': o.supplierCode,
@@ -165,13 +195,13 @@ export default function AdminOrdersPage() {
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, '全部订单');
-    XLSX.writeFile(wb, `全部企业订单记录.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, '订单');
+    XLSX.writeFile(wb, selectedRowKeys.length ? `已选企业订单记录.xlsx` : `全部企业订单记录.xlsx`);
   };
 
   const statusConfig: Record<string, { color: string }> = {
-    '正在呼叫司机': { color: '#2257D4' },  // Brand/Primary（橙色 #FF6600 不在规范内）
-    '重新呼叫司机': { color: '#2257D4' },
+    '正在呼叫司机': { color: '#FF6600' },  // 呼叫中/等待响应，与 OrderStatusTag 的 calling_driver 保持一致
+    '重新呼叫司机': { color: '#FF6600' },
     '司机已接单': { color: '#2257D4' },
     '配送中': { color: '#2257D4' },
     '已完成': { color: 'default' },
@@ -222,6 +252,15 @@ export default function AdminOrdersPage() {
     },
     { title: '国家', dataIndex: 'country', key: 'country', width: 80 },
     { title: '车型', dataIndex: 'vehicleType', key: 'vehicleType', width: 110 },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 170,
+      render: (v: string) => (
+        <Tag color={statusConfig[v]?.color || 'default'} className="whitespace-nowrap">{v}</Tag>
+      ),
+    },
     {
       title: '起始地址',
       key: 'pickup',
@@ -296,15 +335,6 @@ export default function AdminOrdersPage() {
       },
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      width: 170,
-      render: (v: string) => (
-        <Tag color={statusConfig[v]?.color || 'default'} className="whitespace-nowrap">{v}</Tag>
-      ),
-    },
-    {
       title: 'LLI账单金额',
       key: 'lliAmount',
       width: 150,
@@ -352,7 +382,6 @@ export default function AdminOrdersPage() {
 
   const countries = [...new Set(adminOrders.map((o) => o.country))];
   const statuses = [...new Set(adminOrders.map((o) => o.status))];
-  const suppliers = [...new Set(adminOrders.map((o) => o.supplierCode))];
 
   return (
     <div>
@@ -371,7 +400,7 @@ export default function AdminOrdersPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-gray-900">订单记录</h1>
         <Button icon={<DownloadOutlined />} onClick={handleExport}>
-          导出 Excel
+          {selectedRowKeys.length ? `导出已选 ${selectedRowKeys.length} 条` : '导出 Excel'}
         </Button>
       </div>
 
@@ -384,6 +413,12 @@ export default function AdminOrdersPage() {
           onChange={(e) => setOrderNoSearch(e.target.value)}
           allowClear
           style={{ width: 200 }}
+        />
+        <RangePicker
+          value={dateRange}
+          onChange={(v) => setDateRange(v as [Dayjs, Dayjs] | null)}
+          allowClear={false}
+          style={{ width: 240 }}
         />
         <Input
           placeholder="搜索企业"
@@ -400,15 +435,6 @@ export default function AdminOrdersPage() {
           onChange={(e) => setSubAccountSearch(e.target.value)}
           allowClear
           style={{ width: 160 }}
-        />
-        <Select
-
-          placeholder="供应商"
-          allowClear
-          value={supplierFilter}
-          onChange={setSupplierFilter}
-          style={{ width: 160 }}
-          options={suppliers.map((s) => ({ value: s, label: s }))}
         />
         <Select
 
@@ -445,9 +471,15 @@ export default function AdminOrdersPage() {
           columns={columns}
           dataSource={filtered}
           rowKey="orderId"
+          rowSelection={{
+            selectedRowKeys,
+            onChange: (keys) => setSelectedRowKeys(keys as string[]),
+            preserveSelectedRowKeys: true,
+          }}
           pagination={{
             pageSize: 15,
-            showTotal: (total) => `共 ${total} 条订单`,
+            showTotal: (total) =>
+              `共 ${total} 条订单 · LLI总额 ≈ CNY ¥${totalLliCNY.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           }}
           scroll={{ x: 1960 }}
           size="small"

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Table, Input, Button, Card, Tag, Select, Tooltip, Alert, Empty, DatePicker } from 'antd';
-import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
+import { Table, Input, Button, Card, Tag, Select, Tooltip, Alert, Empty, DatePicker, message } from 'antd';
+import { SearchOutlined, DownloadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/zh-cn';
@@ -66,6 +66,8 @@ function FeeTooltip({ breakdown, currency }: { breakdown: FeeBreakdown; currency
 }
 
 export default function AdminOrdersPage() {
+  const [messageApi, contextHolder] = message.useMessage();
+
   // 捕获模式：用于 Figma Code to Canvas
   // 访问 ?cap 可强制显示所有 Tooltip，方便捕获交互状态
   const [captureMode, setCaptureMode] = useState(false);
@@ -378,6 +380,28 @@ export default function AdminOrdersPage() {
         </Tooltip>
       ),
     },
+    {
+      title: (
+        <span>
+          操作{' '}
+          <Tooltip title="因lalamove价格变更不一定会推送更新，如发现费用异常可尝试手动刷新账单">
+            <QuestionCircleOutlined className="text-gray-400" />
+          </Tooltip>
+        </span>
+      ),
+      key: 'action',
+      width: 100,
+      fixed: 'right',
+      render: (_, r) => (
+        <Button
+          type="link"
+          size="small"
+          onClick={() => messageApi.success(`已刷新 ${r.orderId} 的账单价格`)}
+        >
+          刷新账单
+        </Button>
+      ),
+    },
   ];
 
   const countries = [...new Set(adminOrders.map((o) => o.country))];
@@ -385,6 +409,7 @@ export default function AdminOrdersPage() {
 
   return (
     <div>
+      {contextHolder}
       {/* 捕获模式提示 */}
       {captureMode && (
         <Alert
@@ -481,7 +506,7 @@ export default function AdminOrdersPage() {
             showTotal: (total) =>
               `共 ${total} 条订单 · LLI总额 ≈ CNY ¥${totalLliCNY.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           }}
-          scroll={{ x: 1960 }}
+          scroll={{ x: 2060 }}
           size="small"
           locale={{
             emptyText: (

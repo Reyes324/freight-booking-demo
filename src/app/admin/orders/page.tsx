@@ -384,7 +384,11 @@ export default function AdminOrdersPage() {
       title: (
         <span>
           操作{' '}
-          <Tooltip title="因lalamove价格变更不一定会推送更新，如发现费用异常可尝试手动刷新账单">
+          <Tooltip
+            title="因lalamove价格变更不一定会推送更新，如发现费用异常可尝试手动刷新账单"
+            color="white"
+            styles={{ container: { color: '#0F1229', width: 220, whiteSpace: 'normal' } }}
+          >
             <QuestionCircleOutlined className="text-gray-400" />
           </Tooltip>
         </span>

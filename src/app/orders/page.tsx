@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Table, Input, Card, Select, Button } from 'antd';
+import { Table, Input, Card, Select, Button, Tooltip } from 'antd';
 import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import type { ColumnsType } from 'antd/es/table';
@@ -139,6 +139,20 @@ export default function OrdersPage() {
       ),
     },
     {
+      title: t.orders.remark,
+      dataIndex: 'driverNote',
+      key: 'driverNote',
+      width: 160,
+      render: (remark: string) =>
+        remark ? (
+          <Tooltip title={remark}>
+            <span className="text-sm text-gray-900 truncate block max-w-[160px]">{remark}</span>
+          </Tooltip>
+        ) : (
+          <span className="text-sm text-gray-400">-</span>
+        ),
+    },
+    {
       title: t.orders.price,
       dataIndex: 'totalPrice',
       key: 'totalPrice',
@@ -198,6 +212,7 @@ export default function OrdersPage() {
       '司机': o.driver?.name ?? '-',
       '司机电话': o.driver?.phone ?? '-',
       '车型': o.vehicle.name,
+      '订单备注': o.driverNote || '-',
       '金额(本地货币)': o.totalPrice.toFixed(0),
       '金额(CNY)': (o.totalPrice / 5).toFixed(0),
       ...(isParent ? { '账号名称': o.subAccountId ? subName(o.subAccountId) : (account?.companyName ?? '') } : {}),

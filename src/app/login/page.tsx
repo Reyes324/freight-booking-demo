@@ -16,7 +16,8 @@ const i18n = {
     btnSubmit: '登录',
     contactTitle: '还没有账户？',
     contactBody: '请联系运营人员申请开通账户：',
-    formFooter: '登录即表示您同意货拉拉的服务条款及隐私政策',
+    footerAgreement: '用户协议',
+    footerPrivacy: '隐私政策',
   },
   en: {
     langLabel: 'English',
@@ -28,7 +29,8 @@ const i18n = {
     btnSubmit: 'Sign In',
     contactTitle: 'No account?',
     contactBody: 'Contact our operations team to apply:',
-    formFooter: "By signing in, you agree to Lalamove's Terms of Service and Privacy Policy",
+    footerAgreement: 'User Agreement',
+    footerPrivacy: 'Privacy Policy',
   },
   id: {
     langLabel: 'Indonesia',
@@ -297,7 +299,12 @@ export default function LoginPage() {
             <a href="mailto:nora.xiang@huolala.cn">nora.xiang@huolala.cn</a>
           </div>
 
-          <p className="form-footer">{t.formFooter}</p>
+          {/* 卡片内末尾链接栏 — 参照 Lalamove 官网登录页的 Terms & Conditions · Privacy Notice 样式 */}
+          <div className="page-footer-links">
+            <a href="/settings/terms#user-agreement" target="_blank" rel="noopener noreferrer">{t.footerAgreement}</a>
+            <span className="divider">·</span>
+            <a href="/settings/terms#privacy-policy" target="_blank" rel="noopener noreferrer">{t.footerPrivacy}</a>
+          </div>
         </div>
       </div>
 
@@ -408,7 +415,7 @@ export default function LoginPage() {
           background: #FFFFFF;
           border-radius: 28px;
           box-shadow: 0 24px 64px rgba(0,0,0,0.13), 0 4px 16px rgba(0,0,0,0.07);
-          padding: 44px 40px;
+          padding: 44px 40px 28px;
           width: 100%;
           max-width: 420px;
         }
@@ -515,10 +522,17 @@ export default function LoginPage() {
         }
         .contact-note a:hover { text-decoration: underline; }
 
-        /* ── 底部说明 ── */
-        .form-footer {
-          margin-top: 18px; font-size: 11.5px; color: #94A3B8; line-height: 1.6;
+        /* ── 卡片内末尾链接栏（用户协议 · 隐私政策）── */
+        .page-footer-links {
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          margin-top: 16px;
+          font-size: 12.5px; color: #64748B;
         }
+        .page-footer-links a {
+          color: #64748B; text-decoration: none;
+        }
+        .page-footer-links a:hover { color: #0F1229; text-decoration: underline; }
+        .page-footer-links .divider { color: #CBD5E1; }
 
         /* ── 响应式 ── */
         @media (max-width: 480px) {

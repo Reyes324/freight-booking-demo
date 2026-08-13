@@ -370,12 +370,6 @@ const zh = {
     },
     terms: {
       title: "条款和政策",
-      termsOfService: "服务条款",
-      termsContent: "服务条款内容待补充...",
-      privacyPolicy: "隐私政策",
-      privacyContent: "隐私政策内容待补充...",
-      userAgreement: "用户协议",
-      userContent: "用户协议内容待补充...",
     },
   },
   vehicles: {
@@ -764,12 +758,6 @@ const en: typeof zh = {
     },
     terms: {
       title: "Terms & Policies",
-      termsOfService: "Terms of Service",
-      termsContent: "Terms of Service content coming soon...",
-      privacyPolicy: "Privacy Policy",
-      privacyContent: "Privacy policy content coming soon...",
-      userAgreement: "User Agreement",
-      userContent: "User agreement content coming soon...",
     },
   },
   vehicles: {

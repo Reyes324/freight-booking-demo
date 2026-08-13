@@ -370,6 +370,8 @@ const zh = {
     },
     terms: {
       title: "条款和政策",
+      userAgreement: "用户协议",
+      privacyPolicy: "隐私政策",
     },
   },
   vehicles: {
@@ -758,6 +760,8 @@ const en: typeof zh = {
     },
     terms: {
       title: "Terms & Policies",
+      userAgreement: "User Agreement",
+      privacyPolicy: "Privacy Policy",
     },
   },
   vehicles: {

@@ -301,9 +301,9 @@ export default function LoginPage() {
 
           {/* 卡片内末尾链接栏 — 参照 Lalamove 官网登录页的 Terms & Conditions · Privacy Notice 样式 */}
           <div className="page-footer-links">
-            <a href="/settings/terms#user-agreement" target="_blank" rel="noopener noreferrer">{t.footerAgreement}</a>
+            <a href="/settings/terms" target="_blank" rel="noopener noreferrer">{t.footerAgreement}</a>
             <span className="divider">·</span>
-            <a href="/settings/terms#privacy-policy" target="_blank" rel="noopener noreferrer">{t.footerPrivacy}</a>
+            <a href="/settings/privacy" target="_blank" rel="noopener noreferrer">{t.footerPrivacy}</a>
           </div>
         </div>
       </div>
